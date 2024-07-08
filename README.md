@@ -8,7 +8,7 @@
   - [x] 실시간 급상승 선물랭킹 섹션 : `api/v1/ranking/products` API를 사용하여 Section 구현
   ### Theme 페이지
   - [x] header : url의 pathParams와 `/api/v1/themes` API를 사용하여 Section을 구현
-  - [ ] 상품 목록 섹션 : `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현. API 요청 시 한번에 *20개의 상품 목록*이 내려오도록 한다.
+  - [x] 상품 목록 섹션 : `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현. API 요청 시 한번에 *20개의 상품 목록*이 내려오도록 한다.
 
 ## step 2
 

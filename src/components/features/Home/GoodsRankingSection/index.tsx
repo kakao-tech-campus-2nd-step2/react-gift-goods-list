@@ -32,7 +32,6 @@ export const GoodsRankingSection = () => {
 
     fetchRankingProducts();
   }, [filterOption]);
-  //
 
   return (
     <Wrapper>

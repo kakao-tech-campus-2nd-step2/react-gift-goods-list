@@ -27,7 +27,6 @@ export const ThemeCategorySection = () => {
       try {
         const data = await fetchData('api/v1/themes');
         setThemeApi(data.themes);
-        console.log('Fetched theme data:', data.themes);
       } catch (error) {
         console.error('Error fetching theme data:', error);
       }

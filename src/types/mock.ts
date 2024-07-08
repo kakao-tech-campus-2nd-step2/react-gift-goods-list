@@ -1,4 +1,4 @@
-import type { GoodsData, ThemeData } from '.';
+import type { ProductData, ThemeData } from '.';
 
 export const ThemeMockData: ThemeData = {
   id: 1,
@@ -11,7 +11,7 @@ export const ThemeMockData: ThemeData = {
 
 export const ThemeMockList = [ThemeMockData];
 
-export const GoodsMockData: GoodsData = {
+export const GoodsMockData: ProductData = {
   id: 123,
   name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
   imageURL:
@@ -33,4 +33,4 @@ export const GoodsMockData: GoodsData = {
   },
 };
 
-export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
+export const GoodsMockList: ProductData[] = Array.from({ length: 21 }, () => GoodsMockData);

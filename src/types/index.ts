@@ -1,3 +1,11 @@
+export type ThemesData = {
+  id: number;
+  key: string;
+  label: string;
+  title: string;
+  imageURL: string;
+};
+
 export type ThemeData = {
   id: number;
   key: string;

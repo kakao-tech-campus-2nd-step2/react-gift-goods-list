@@ -25,24 +25,19 @@ export const LoginPage = () => {
     // TODO: API 연동 전까지 임시 로그인 처리
     authSessionStorage.set(id);
 
-    const redirectUrl =
-      queryParams.get('redirect') ?? `${window.location.origin}/`;
+    const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
     return window.location.replace(redirectUrl);
   };
 
   return (
     <Wrapper>
-      <Logo src={KAKAO_LOGO} alt='카카오 CI' />
+      <Logo src={KAKAO_LOGO} alt="카카오 CI" />
       <FormWrapper>
-        <UnderlineTextField
-          placeholder='이름'
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-        />
+        <UnderlineTextField placeholder="이름" value={id} onChange={(e) => setId(e.target.value)} />
         <Spacing />
         <UnderlineTextField
-          type='password'
-          placeholder='비밀번호'
+          type="password"
+          placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

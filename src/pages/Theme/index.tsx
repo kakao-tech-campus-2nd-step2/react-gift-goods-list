@@ -3,10 +3,7 @@ import { Navigate, useParams } from 'react-router-dom';
 
 import { getThemes } from '@/apis/Theme/theme.api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import {
-  getCurrentTheme,
-  ThemeHeroSection,
-} from '@/components/features/Theme/ThemeHeroSection';
+import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
 
 // import { ThemeMockList } from '@/types/mock';

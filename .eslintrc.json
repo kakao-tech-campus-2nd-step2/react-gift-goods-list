@@ -20,14 +20,7 @@
     "project": "./tsconfig.json",
     "createDefaultProgram": true
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jsx-a11y",
-    "import",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "import", "prettier"],
   "settings": {
     "import/resolver": {
       "typescript": {
@@ -38,7 +31,7 @@
       }
     }
   },
-  // "ignorePatterns": ["vite.config.ts"],
+  // "ignorePatterns": [".eslintrc.json", "vite.config.ts"],
   "rules": {
     "no-param-reassign": ["error", { "props": false }],
     "@typescript-eslint/no-non-null-assertion": "off",

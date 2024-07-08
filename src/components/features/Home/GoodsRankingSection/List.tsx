@@ -26,22 +26,20 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(
-          ({ id, imageURL, name, price, brandInfo }, index) => (
-            <RankingGoodsItems
-              key={id}
-              rankingIndex={index + 1}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          )
-        )}
+        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+          <RankingGoodsItems
+            key={id}
+            rankingIndex={index + 1}
+            imageSrc={imageURL}
+            title={name}
+            amount={price.sellingPrice}
+            subtitle={brandInfo.name}
+          />
+        ))}
       </Grid>
       <ButtonWrapper>
         <Button
-          theme='outline'
+          theme="outline"
           style={{ maxWidth: '480px' }}
           onClick={() => {
             setHasMore((prev) => !prev);

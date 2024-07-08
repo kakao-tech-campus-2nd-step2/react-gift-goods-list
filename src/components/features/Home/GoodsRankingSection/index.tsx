@@ -31,10 +31,7 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchRankingData = async () => {
       try {
-        const data = await getRankingProducts(
-          filterOption.targetType,
-          filterOption.rankType
-        );
+        const data = await getRankingProducts(filterOption.targetType, filterOption.rankType);
         if (Array.isArray(data.products)) {
           setRankingData(data.products);
         } else {
@@ -52,10 +49,7 @@ export const GoodsRankingSection = () => {
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter
-          filterOption={filterOption}
-          onFilterOptionChange={setFilterOption}
-        />
+        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         <GoodsRankingList goodsList={rankingData} />
       </Container>
     </Wrapper>

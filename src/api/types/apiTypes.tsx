@@ -1,3 +1,6 @@
+
+/*common types*/
+
 export interface ProductData {
 	id: number;
 	name: string;
@@ -78,6 +81,42 @@ export interface ProductOrderRequestBody {
 	cashReceiptNumber?: string;
 }
 
-export interface ResponseProductData {
-	
+/* response types */
+
+export interface GetRankingProductsResponse {
+	products: ProductData[];
+}
+
+export interface GetThemesResponse {
+	themes: ThemeData[];
+}
+
+export interface GetThemeProductsResponse {
+	products: ProductData[];
+	nextPageToken?: string;
+	pageInfo: {
+		totalResults: number;
+		resultsPerPage: number;
+	};
+}
+
+export interface GetProductDetailResponse {
+	product: ProductDetailData;
+}
+
+export interface GetProductOptionsResponse {
+	options: any; // 정확한 타입을 알고 있다면 여기에 명시
+}
+
+export interface GetMessageCardTemplatesResponse {
+	templates: MessageCardTemplateData[];
+}
+
+export interface GetMyAccountInfoResponse {
+	accountInfo: MyAccountInfoData;
+}
+
+export interface GetMyAccountWishProductsResponse {
+	products: ProductData[];
+	nextPageToken?: string;
 }

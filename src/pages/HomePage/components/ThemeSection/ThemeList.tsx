@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { themeData } from '@/mocks/mockData';
+import { BACKEND_API } from '@/constants/api';
+import { GetThemesResponse, ThemeData } from '@/pages/HomePage/types';
 
 import { Content } from '@/components/Content';
 import { Grid } from '@/components/ui/Layout/Grid';
@@ -9,6 +11,21 @@ import { ThemeListItem } from './ThemeListItem';
 import { gridStyle } from './styles';
 
 export const ThemeList = () => {
+  const [themeData, setThemeData] = useState<ThemeData[]>([]);
+
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const response = await BACKEND_API.get('/api/v1/themes');
+        const data: GetThemesResponse = response.data;
+        setThemeData(data.themes);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchThemeData();
+  }, []);
+
   return (
     <Content height="fit-content" justifyContent="center">
       <Grid

@@ -30,7 +30,7 @@
 #### API 연결하기
 
 - 메인 페이지 - Theme 카테고리 섹션
-  - [ ] /api/v1/themes
+  - [x] /api/v1/themes
 - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
   - [ ] /api/v1/ranking/products
   - [ ] 필터 조건에 맞는 API 요청하기

@@ -1,9 +1,3 @@
-export type ThemeTitleType = {
-  id: number;
-  imageSrc: string;
-  themeTitle: string;
-};
-
 export type ThemeHeaderType = {
   id: number;
   themeTitle: string;

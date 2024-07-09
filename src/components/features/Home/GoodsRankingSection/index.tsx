@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
 import type { GoodsData } from '@/types';
+import { BASE_URL, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -34,9 +34,8 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchGoodsData = async () => {
       try {
-        const res = await axios.get(
-          `https://react-gift-mock-api-diwoni.vercel.app/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
-        );
+        const queryParams = `?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`;
+        const res = await axios.get(`${BASE_URL}/api/v1/ranking/products${queryParams}`);
         setFetchState({ isLoading: false, isError: false, data: res.data.products });
         setIsData(res.data.products.length > 0);
       } catch (err) {

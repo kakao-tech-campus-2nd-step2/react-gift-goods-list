@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import { apiUrl, type ThemeData } from '@/types';
+import { BASE_URL, type ThemeData } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -16,7 +16,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const res = await axios.get(`${apiUrl}api/v1/themes`);
+        const res = await axios.get(`${BASE_URL}/api/v1/themes`);
         const theme = getCurrentTheme(themeKey, res.data.themes);
         setCurrentTheme(theme);
       } catch (err) {

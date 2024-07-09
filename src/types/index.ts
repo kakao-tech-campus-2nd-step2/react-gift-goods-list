@@ -1,4 +1,4 @@
-export const apiUrl: string = 'https://react-gift-mock-api-diwoni.vercel.app/';
+export const BASE_URL: string = 'https://react-gift-mock-api-diwoni.vercel.app';
 
 export type ThemeData = {
   id: number;

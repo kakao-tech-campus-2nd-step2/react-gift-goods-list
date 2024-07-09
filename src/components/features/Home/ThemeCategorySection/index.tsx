@@ -7,7 +7,7 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import { apiUrl, type ThemeData } from '@/types';
+import { BASE_URL, type ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
@@ -27,7 +27,7 @@ export const ThemeCategorySection = () => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const res = await axios.get(`${apiUrl}api/v1/themes`);
+        const res = await axios.get(`${BASE_URL}/api/v1/themes`);
         setFetchState({ isLoading: false, isError: false, data: res.data.themes });
       } catch (err) {
         console.error('Error Fetching ThemeData', err);

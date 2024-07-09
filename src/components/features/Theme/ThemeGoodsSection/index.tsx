@@ -7,7 +7,7 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
-import { apiUrl } from '@/types';
+import { BASE_URL } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -21,7 +21,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       try {
         const maxResults = 20;
         const queryParams = `?maxResults=${maxResults}`;
-        const res = await axios.get(`${apiUrl}api/v1/themes/${themeKey}/products${queryParams}`);
+        const res = await axios.get(`${BASE_URL}/api/v1/themes/${themeKey}/products${queryParams}`);
         setCurrentGoodsList(res.data.products);
       } catch (err) {
         console.error('Error fetching goods list', err);

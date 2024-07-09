@@ -1,3 +1,9 @@
+export interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}
+
 export interface Theme {
   id: number;
   key: string;

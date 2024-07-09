@@ -5,9 +5,15 @@ import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/T
 import { RouterPath } from '@/routes/path';
 import { ThemeMockList } from '@/types/mock';
 
-export const ThemePage = () => {
+export const ThemePage = async () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  
+  const fetchTheme = async () => {
+    const currentTheme = await getCurrentTheme(themeKey, ThemeMockList);
+    return currentTheme;
+  };
+
+  const currentTheme = await fetchTheme();
 
   if (!currentTheme) {
     return <Navigate to={RouterPath.notFound} />;

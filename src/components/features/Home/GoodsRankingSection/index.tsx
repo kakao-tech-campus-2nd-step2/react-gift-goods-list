@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { getRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,19 +15,43 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRankingProducts = async () => {
+      setIsLoading(true);
+      setIsError(null);
+      try {
+        const response = await getRankingProducts(filterOption.targetType, filterOption.rankType);
+        setGoodsList(response.products);
+      } catch (error) {
+        setIsError('Failed to fetch products');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading ? (
+          <TextView>로딩중</TextView>
+        ) : isError ? (
+          <TextView>{isError}</TextView>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
 };
-
 const Wrapper = styled.section`
   padding: 0 16px 32px;
 
@@ -49,4 +73,13 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const TextView = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+  font-size: 16px;
 `;

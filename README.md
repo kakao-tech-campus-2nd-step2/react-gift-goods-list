@@ -8,7 +8,7 @@ FE 카카오 선물하기 3주차 과제: API
 - [x] React Query를 사용하지 말고 axios 를 사용해서 구현해요.
 - [x] 첨부된 oas.yaml 파일과 목 API URL을 사용하여 API를 구현해요.
   - 메인 페이지 - Theme 카테고리 섹션
-  - [ ] /api/v1/themes API를 사용하여 Section을 구현해요.
+  - [x] /api/v1/themes API를 사용하여 Section을 구현해요.
   - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
   - [ ] /api/v1/ranking/products API를 사용하여 Section을 구현해요. (Axios 사용 가능)
   - [ ] 필터 조건을 선택 하면 해당 조건에 맞게 API를 요청하여 보여지게 해요.

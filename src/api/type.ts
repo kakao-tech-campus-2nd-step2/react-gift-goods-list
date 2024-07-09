@@ -94,3 +94,9 @@ export interface ProductDetailData extends ProductData {
   productDescription: productDescription;
   productDetailInfo: ProductDetailInfo;
 }
+export interface MessageCardTemplateData {
+  id: number;
+  defaultTextMessage: string;
+  thumbURL: string;
+  imageURL: string;
+}

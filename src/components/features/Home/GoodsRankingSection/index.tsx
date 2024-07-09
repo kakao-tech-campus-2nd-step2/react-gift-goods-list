@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,7 +14,17 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-
+  const [goodsList, setGoodsList] = useState<GoodsData[]>();
+  useEffect(() => {
+    const fetchGoodsRanking = async () => {
+      const response = await axios.get(
+        process.env.REACT_APP_API_KEY +
+          `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
+      );
+      setGoodsList(response.data.products);
+    };
+    fetchGoodsRanking();
+  }, [filterOption]);
   // GoodsMockData를 21번 반복 생성
 
   return (
@@ -22,7 +32,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {goodsList && <GoodsRankingList goodsList={goodsList} />}
       </Container>
     </Wrapper>
   );

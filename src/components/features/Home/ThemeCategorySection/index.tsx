@@ -7,20 +7,12 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
+import type { ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
-interface ThemeCategoryAPI {
-  backgroundColor: string;
-  description: string;
-  id: number;
-  imageURL: string;
-  key: string;
-  label: string;
-  title: string;
-}
 export const ThemeCategorySection = () => {
-  const [themeCategory, setThemeCategory] = useState<ThemeCategoryAPI[]>();
+  const [themeCategory, setThemeCategory] = useState<ThemeData[]>();
   useEffect(() => {
     const fetchThemes = async () => {
       const response = await axios.get(process.env.REACT_APP_API_KEY + '/api/v1/themes');

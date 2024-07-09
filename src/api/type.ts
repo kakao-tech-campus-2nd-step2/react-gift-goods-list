@@ -129,6 +129,16 @@ export interface ProductDetailData extends ProductData {
   productDescription: productDescription;
   productDetailInfo: ProductDetailInfo;
 }
+
+export interface ThemeData {
+  id: number;
+  key: string;
+  label: string;
+  title: string;
+  description: string;
+  backgroundColor?: string;
+}
+
 export interface MessageCardTemplateData {
   id: number;
   defaultTextMessage: string;

@@ -28,6 +28,7 @@ export interface ThemeData {
 	title: string;
 	description: string;
 	backgroundColor: string;
+	imageURL: string;	
 }
 
 

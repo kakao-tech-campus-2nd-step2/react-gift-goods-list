@@ -35,8 +35,8 @@
   - [x] /api/v1/ranking/products
   - [x] 필터 조건에 맞는 API 요청하기
 - Theme 페이지 - header
-  - [ ] url의 pathParams, /api/v1/themes로 다이나믹 처리
-  - [ ] themeKey가 잘못 된 경우 메인 페이지로 연결
+  - [x] url의 pathParams, /api/v1/themes로 다이나믹 처리
+  - [x] themeKey가 잘못 된 경우 메인 페이지로 연결
 - Theme 페이지 - 상품 목록 섹션
   - [ ] /api/v1/themes/{themeKey}/products
   - [ ] 20개의 상품 목록만 불러오기

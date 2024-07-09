@@ -8,24 +8,24 @@ export const headerStyle = css({
 });
 
 const textColor = {
-  title: colors.whiteOpacity[60],
-  subTitle: colors.white,
+  label: colors.whiteOpacity[60],
+  title: colors.white,
   description: colors.whiteOpacity[60],
 };
 
 const fontWeight = {
+  label: '800',
   title: '800',
-  subTitle: '800',
   description: '500',
 };
 
 const fontSize = {
-  title: '1.25rem',
-  subTitle: '2rem',
+  label: '1.25rem',
+  title: '2rem',
   description: '1.4rem',
 };
 
-export const textStyle = (textType: 'title' | 'subTitle' | 'description') =>
+export const textStyle = (textType: 'label' | 'title' | 'description') =>
   css({
     color: textColor[textType],
     fontWeight: fontWeight[textType],

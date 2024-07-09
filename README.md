@@ -38,6 +38,6 @@ https://kakao-tech-week3-goods-list.pages.dev/
 
 - Theme 페이지 - 상품 목록 섹션
 
-  - [ ] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현해요.
+  - [x] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현해요.
 
-  - [ ] API 요청 시 한번에 20개의 상품 목록이 내려오도록 해요.
+  - [x] API 요청 시 한번에 20개의 상품 목록이 내려오도록 해요.

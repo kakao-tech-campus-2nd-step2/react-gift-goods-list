@@ -33,6 +33,7 @@ export const GoodsRankingSection = () => {
       setIsEmpty(data.products.length === 0);
       setLoading(false);
       setError(false); // Reset error state on successful fetch
+      console.log(data);
     } catch (err) {
       console.error('Failed to fetch ranking products:', err);
       setError(true);

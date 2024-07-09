@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
+import { LoadingSpinner } from '@/components/common/Loading/Loading';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { getTheme, getThemes } from '@/libs/api';
@@ -41,7 +42,7 @@ export const ThemePage = () => {
   }, [themeKey]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error || !label || !goods) {

@@ -23,6 +23,10 @@ export interface GetThemeProductsResponse {
   pageInfo: PageInfo;
 }
 
+export interface GetProductDetailsResponse {
+  product: ProductDetailData;
+}
+
 export interface PageInfo {
   totalResults: number;
   hasNextPage: boolean;

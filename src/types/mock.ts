@@ -12,7 +12,7 @@ export const ThemeMockData: ThemeData = {
 export const ThemeMockList = [ThemeMockData];
 
 export const GoodsMockData: GoodsData = {
-  id: 123,
+  id: 0,
   name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
   imageURL:
     'https://st.kakaocdn.net/product/gift/product/20231030175450_53e90ee9708f45ffa45b3f7b4bc01c7c.jpg',
@@ -33,4 +33,7 @@ export const GoodsMockData: GoodsData = {
   },
 };
 
-export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
+export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, (_, index) => ({
+  ...GoodsMockData,
+  id: index + 1,
+}));

@@ -1,16 +1,35 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import type { ThemeData } from '@/types/api';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // API에서 Theme data 가져오기
+    const getThemes = async () => {
+      const themes = await fetchThemes();
+      const theme = themes.find((e) => e.key === themeKey);
+
+      // themeKey가 잘못된 경우 메인 페이지로 이동
+      if(!theme) navigate('/');
+
+      setCurrentTheme(theme);
+    };
+
+    getThemes();
+
+  }, [themeKey, navigate]);
 
   if (!currentTheme) {
     return null;
@@ -19,7 +38,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   const { backgroundColor, label, title, description } = currentTheme;
 
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={backgroundColor!}>
       <Container>
         <Label>{label}</Label>
         <Title>{title}</Title>

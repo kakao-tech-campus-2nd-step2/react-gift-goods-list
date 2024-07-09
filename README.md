@@ -13,6 +13,8 @@
 
 ## 요구사항
 
+### 1단계
+
 - entities 추가
   - [x] `components.schemas.ThemeData`
   - [x] `conponents.schemas.ProductData`
@@ -24,7 +26,7 @@
   - res
     - products: ProductData array
 - [x] themePage-header: `/api/v1/themes`
-- [ ] themePage-상품목록: `/api/v1/themes/{themeKey}/products`
+- [x] themePage-상품목록: `/api/v1/themes/{themeKey}/products`
   - path params: themeKey
   - query params
     - pageToken: 목록 불러오기에 사용할 페이지 토큰
@@ -34,6 +36,8 @@
     - nextPageToken
     - pageInfo: totalResults, resultsPerPage
 
+### 2단계
+
 ## page
 
 ## 과제 3단계
@@ -41,5 +45,7 @@
 ## 🎸
 
 ### 과제 수행 일지
+
+- [1단계 구현](https://www.notion.so/Day-12-3431b41b37c9495f9a38e716b76dbc3c?pvs=4#60529c9431f742cca9f32f0abfb023a9)
 
 ### 궁금한 점

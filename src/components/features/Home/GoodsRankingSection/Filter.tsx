@@ -95,7 +95,9 @@ const Wrapper = styled.div`
 `;
 
 const TargetTypeWrapper = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: center;
 `;
 
 const RankTypeWrapper = styled.div`

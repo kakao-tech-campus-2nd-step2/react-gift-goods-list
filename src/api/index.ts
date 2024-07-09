@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
 
 import type {
   AjaxResult,
@@ -12,40 +13,68 @@ import type {
 
 axios.defaults.baseURL = 'https://react-gift-mock-api-jasper200207.vercel.app';
 
-export async function ajax<T>(options: AxiosRequestConfig): Promise<AjaxResult<T>> {
-  let result: AjaxResult<T> = { success: false, data: null };
-  await axios(options)
-    .then((response) => {
-      result = { success: true, data: response.data };
-    })
-    .catch((error) => {
-      result = { success: false, data: error };
-    });
-  return result;
+export type UseAxiosReturn<T> = {
+  data: AjaxResult<T>;
+  loading: boolean;
+  refetch: () => void;
+};
+
+function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
+  const [data, setData] = useState<AjaxResult<T>>({ success: false, data: null });
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    const result = await axios(options)
+      .then((response) => {
+        return { success: true, data: response.data } as AjaxResult<T>;
+      })
+      .catch((error) => {
+        return { success: false, data: error } as AjaxResult<T>;
+      });
+    setData(result);
+    setLoading(false);
+  }, [options]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (fetchData) {
+      fetchData();
+    }
+  }, [fetchData]);
+
+  return {
+    data,
+    loading,
+    refetch,
+  };
 }
 
-export async function getRankingProducts(
+export async function useGetRankingProducts(
   params: GetRankingProductsRequestBody,
-): Promise<AjaxResult<GetRankingProductsResponseBody>> {
-  return ajax<GetRankingProductsResponseBody>({
+): Promise<UseAxiosReturn<GetRankingProductsResponseBody>> {
+  return useAxios<GetRankingProductsResponseBody>({
     method: 'GET',
-    url: '/api/v1/ranking/products',
+    url: '/api/v1/ranking',
     params,
   });
 }
 
-export async function getThemes(): Promise<AjaxResult<GetThemesResponseBody>> {
-  return ajax<GetThemesResponseBody>({
+export async function useGetThemes(): Promise<UseAxiosReturn<GetThemesResponseBody>> {
+  return useAxios<GetThemesResponseBody>({
     method: 'GET',
     url: '/api/v1/themes',
   });
 }
 
-export async function getThemesProducts({
+export async function useGetThemesProducts({
   themeKey,
   ...params
-}: GetThemesProductsRequestBody): Promise<AjaxResult<GetThemesProductsResponseBody>> {
-  return ajax<GetThemesProductsResponseBody>({
+}: GetThemesProductsRequestBody): Promise<UseAxiosReturn<GetThemesProductsResponseBody>> {
+  return useAxios<GetThemesProductsResponseBody>({
     method: 'GET',
     url: `/api/v1/themes/${themeKey}/products`,
     params,

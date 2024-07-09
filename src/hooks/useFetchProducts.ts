@@ -11,7 +11,7 @@ interface FetchParams {
   rankFilter?: RankFilter;
 }
 
-function useFetchGifts({ targetFilter, rankFilter }: FetchParams) {
+function useFetchProducts({ targetFilter, rankFilter }: FetchParams) {
   const [products, setProducts] = useState<ProductData[]>([]);
   useEffect(() => {
     const params: RankingProductsRequestQuery = {
@@ -31,4 +31,4 @@ function useFetchGifts({ targetFilter, rankFilter }: FetchParams) {
   return products;
 }
 
-export default useFetchGifts;
+export default useFetchProducts;

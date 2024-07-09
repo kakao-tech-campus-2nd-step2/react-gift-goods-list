@@ -1,8 +1,12 @@
 export const TARGET_FILTER_ITEMS = [
-  { icon: 'ALL', text: '전체' },
-  { icon: '👩🏻', text: '여성이' },
-  { icon: '👨🏻', text: '남성이' },
-  { icon: '👦🏻', text: '청소년이' },
+  { name: 'ALL', icon: 'ALL', text: '전체' },
+  { name: 'FEMALE', icon: '👩🏻', text: '여성이' },
+  { name: 'MALE', icon: '👨🏻', text: '남성이' },
+  { name: 'TEEN', icon: '👦🏻', text: '청소년이' },
 ] as const;
 
-export const TYPE_FILTER_ITEMS = [{ text: '받고 싶어한' }, { text: '많이 선물한' }, { text: '위시로 받은' }] as const;
+export const RANK_FILTER_ITEMS = [
+  { name: 'MANY_WISH', text: '받고 싶어한' },
+  { name: 'MANY_RECEIVE', text: '많이 선물한' },
+  { name: 'MANY_WISH_RECEIVE', text: '위시로 받은' },
+] as const;

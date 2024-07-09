@@ -16,10 +16,11 @@ export const TargetFilter = ({ targetValue, onTargetChange }: ITargetFilter) => 
       {TARGET_FILTER_ITEMS.map((item) => (
         <Item
           key={item.text}
+          name={item.name}
           icon={item.icon}
           text={item.text}
           targetValue={targetValue}
-          onClick={() => onTargetChange(item.text)}
+          onClick={() => onTargetChange(item.name)}
         />
       ))}
     </List>

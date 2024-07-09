@@ -3,17 +3,19 @@ import styled from '@emotion/styled';
 export interface IItem {
   icon?: string;
   text: string;
+  name: string;
   targetValue?: string;
-  typeValue?: string;
+  rankValue?: string;
   onClick?: () => void;
 }
-export const Item = ({ icon, text, targetValue, onClick }: IItem) => {
+
+export const Item = ({ name, icon, text, targetValue, onClick }: IItem) => {
   return (
     <ItemWrapper onClick={onClick}>
-      <Icon targetValue={targetValue} text={text}>
+      <Icon targetValue={targetValue} name={name}>
         {icon}
       </Icon>
-      <Text targetValue={targetValue} text={text}>
+      <Text targetValue={targetValue} name={name}>
         {text}
       </Text>
     </ItemWrapper>
@@ -31,7 +33,7 @@ const ItemWrapper = styled.div`
     gap: 6px;
   }
 `;
-const Icon = styled.div<Pick<IItem, 'targetValue' | 'text'>>`
+const Icon = styled.div<Pick<IItem, 'targetValue' | 'name'>>`
   display: flex;
   justify-content: center;
   text-align: center;
@@ -43,7 +45,7 @@ const Icon = styled.div<Pick<IItem, 'targetValue' | 'text'>>`
   color: white;
   font-weight: bolder;
   font-size: 20px;
-  background-color: ${(props) => (props.targetValue === props.text ? '#4684E9' : 'rgb(230, 241, 255)')};
+  background-color: ${(props) => (props.targetValue === props.name ? '#4684E9' : 'rgb(230, 241, 255)')};
   transition: background-color 0.2s;
 
   @media screen and (max-width: 768px) {
@@ -54,10 +56,10 @@ const Icon = styled.div<Pick<IItem, 'targetValue' | 'text'>>`
   }
 `;
 
-const Text = styled.p<Pick<IItem, 'targetValue' | 'text'>>`
+const Text = styled.p<Pick<IItem, 'targetValue' | 'name'>>`
   font-size: 20px;
-  font-weight: ${(props) => (props.targetValue === props.text ? 'bold' : '400')};
-  color: ${(props) => (props.targetValue === props.text ? '#4684E9' : 'black')};
+  font-weight: ${(props) => (props.targetValue === props.name ? 'bold' : '400')};
+  color: ${(props) => (props.targetValue === props.name ? '#4684E9' : 'black')};
   text-align: center;
   transition:
     color 0.2s,

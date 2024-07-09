@@ -3,22 +3,18 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import type { IChangeFilter } from './Filter';
-
 import { Button } from '@/components/common/Button';
 import { GoodsItem } from '@/components/common/GoodsItem';
 import { Container } from '@/components/common/Layout/Container';
 import { Grid } from '@/components/common/Layout/Grid';
-import { goodsItems } from '@/constant/GoodsItems';
+import type { Product } from '@/services/types';
 
-export const FilteredList = ({ filter }: Pick<IChangeFilter, 'filter'>) => {
+interface FilteredListProps {
+  filterdList: Product[];
+}
+export const FilteredList = ({ filterdList }: FilteredListProps) => {
   const [more, setMore] = useState(false);
-
-  const filteredItems = goodsItems.filter((goods) => {
-    return (filter.target === '전체' || goods.filterTarget === filter.target) && goods.filterType === filter.type;
-  });
-
-  const visibleItems = more ? filteredItems : filteredItems.slice(0, 6);
+  const visibleItems = more ? filterdList : filterdList.slice(0, 6);
 
   return (
     <ListWrapper>
@@ -30,27 +26,29 @@ export const FilteredList = ({ filter }: Pick<IChangeFilter, 'filter'>) => {
             padding: 50px 0px;
           `}
         >
-          {visibleItems.map((item) => (
+          {visibleItems.map((item, index) => (
             <GoodsItem
-              key={item.key}
-              imageSrc={item.imageSrc}
-              subtitle={item.subtitle}
-              title={item.title}
-              amount={item.amount}
-              rankingIndex={item.rankingIndex}
+              key={item.id}
+              imageSrc={item.imageURL}
+              subtitle={item.brandInfo.name}
+              title={item.name}
+              amount={item.price.basicPrice}
+              rankingIndex={index + 1}
             />
           ))}
         </Grid>
-        <Button
-          themetype="outline"
-          onClick={() => setMore(!more)}
-          css={css`
-            max-width: 500px;
-            max-height: 60px;
-          `}
-        >
-          {more ? '접기' : '더보기'}
-        </Button>
+        {filterdList.length > 6 && (
+          <Button
+            themetype="outline"
+            onClick={() => setMore(!more)}
+            css={css`
+              max-width: 500px;
+              max-height: 60px;
+            `}
+          >
+            {more ? '접기' : '더보기'}
+          </Button>
+        )}
       </Container>
     </ListWrapper>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -36,20 +37,14 @@ function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
     setLoading(false);
   }, [options]);
 
-  const refetch = useCallback(() => {
-    fetchData();
-  }, [fetchData]);
-
   useEffect(() => {
-    if (fetchData) {
-      fetchData();
-    }
-  }, [fetchData]);
+    fetchData();
+  }, []);
 
   return {
     data,
     loading,
-    refetch,
+    refetch: fetchData,
   };
 }
 

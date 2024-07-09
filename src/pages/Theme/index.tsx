@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Header from '@/components/features/Header';
+import type { Products } from '@/entities/Product';
 import type { ThemeData, Themes } from '@/entities/Theme';
 import useGetData from '@/hooks/useGetData';
 
@@ -11,6 +12,7 @@ import ThemeHeader from './ThemeHeader';
 
 export default () => {
     const themeKey = useParams().themeKey ?? '';
+    const products = useGetData<Products>(`/themes/${themeKey}/products?maxResults=20`);
     const themes = useGetData<Themes>('/themes');
     const [theme, setTheme] = useState<ThemeData>();
     const navigate = useNavigate();
@@ -45,7 +47,7 @@ export default () => {
                     margin-bottom: 100px;
                 `}
             >
-                <DefaultList />
+                <DefaultList items={products?.data?.products ?? []} />
             </section>
         </div>
     );

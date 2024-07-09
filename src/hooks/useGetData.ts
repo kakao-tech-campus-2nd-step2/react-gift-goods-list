@@ -8,7 +8,14 @@ const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | nu
 
     useEffect(() => {
         axios.get(url)
-            .then((response) => { setData(response.data); setIsLoading(true); });
+            .then((response) => {
+                setData(response.data);
+                setIsLoading(true);
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsLoading(false);
+            });
     }, [url]);
 
     return { data, isLoading };

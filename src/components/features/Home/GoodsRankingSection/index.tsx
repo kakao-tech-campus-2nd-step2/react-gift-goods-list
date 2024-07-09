@@ -17,11 +17,15 @@ export const GoodsRankingSection = () => {
   const [goodsList, setGoodsList] = useState<GoodsData[]>();
   useEffect(() => {
     const fetchGoodsRanking = async () => {
-      const response = await axios.get(
-        process.env.REACT_APP_API_KEY +
-          `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
-      );
-      setGoodsList(response.data.products);
+      try {
+        const response = await axios.get(
+          process.env.REACT_APP_API_KEY +
+            `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
+        );
+        setGoodsList(response.data.products);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchGoodsRanking();
   }, [filterOption]);

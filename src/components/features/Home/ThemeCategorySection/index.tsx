@@ -15,8 +15,12 @@ export const ThemeCategorySection = () => {
   const [themeCategory, setThemeCategory] = useState<ThemeData[]>();
   useEffect(() => {
     const fetchThemes = async () => {
-      const response = await axios.get(process.env.REACT_APP_API_KEY + '/api/v1/themes');
-      setThemeCategory(response.data.themes);
+      try {
+        const response = await axios.get(process.env.REACT_APP_API_KEY + '/api/v1/themes');
+        setThemeCategory(response.data.themes);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchThemes();
   }, []);

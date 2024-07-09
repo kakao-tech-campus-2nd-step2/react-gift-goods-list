@@ -1,16 +1,36 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types/index';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+
+  useEffect(() => {
+    const fetchGoods = async () => {
+      try {
+        const { data } = await axios.get<{ products: GoodsData[] }>(
+          `https://react-gift-mock-api-ychy61.vercel.app/api/v1/themes/${themeKey}/products?pageSize=20`
+        );
+        setGoodsList(data.products);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        // 에러 처리 로직을 추가할 수 있습니다.
+      }
+    };
+
+    fetchGoods();
+  }, [themeKey]);
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +41,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

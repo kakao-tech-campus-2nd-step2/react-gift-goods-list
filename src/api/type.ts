@@ -43,6 +43,12 @@ export interface GetMyAccountInfoResponse {
   myAccountInfo: MyAccountInfoData;
 }
 
+export interface GetMyWishProductsResponse {
+  products: ProductData[];
+  nextPageToken?: string;
+  pageInfo: PageInfo;
+}
+
 export interface PageInfo {
   totalResults: number;
   hasNextPage: boolean;

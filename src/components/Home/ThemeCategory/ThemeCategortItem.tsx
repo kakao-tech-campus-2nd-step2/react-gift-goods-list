@@ -3,9 +3,10 @@ import styled from '@emotion/styled';
 import { Image } from '@/components/common/Image';
 
 export interface IThemeCategoryItem {
-  src: string;
+  src: string | undefined;
   title: string;
 }
+
 export const ThemeCategoryItem = ({ src, title }: IThemeCategoryItem) => {
   return (
     <ThemeItemWrapper>

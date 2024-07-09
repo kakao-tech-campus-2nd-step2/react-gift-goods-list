@@ -5,6 +5,7 @@ import { fetchData } from '@/components/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import Loading from '@/components/common/Loading/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 
@@ -14,6 +15,7 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchThemeData = async () => {
@@ -25,6 +27,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         setCurrentGoods(data.products);
       } catch (error) {
         console.error('Error fetching theme data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -33,25 +37,31 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   return (
     <Wrapper>
-      <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {currentGoods.map((goods) => (
-            <DefaultGoodsItems
-              key={goods.id}
-              imageSrc={goods.imageURL}
-              title={goods.name}
-              amount={goods.price.sellingPrice}
-              subtitle={goods.brandInfo.name}
-            />
-          ))}
-        </Grid>
-      </Container>
+      {loading ? (
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+      ) : (
+        <Container>
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {currentGoods.map((goods) => (
+              <DefaultGoodsItems
+                key={goods.id}
+                imageSrc={goods.imageURL}
+                title={goods.name}
+                amount={goods.price.sellingPrice}
+                subtitle={goods.brandInfo.name}
+              />
+            ))}
+          </Grid>
+        </Container>
+      )}
     </Wrapper>
   );
 };
@@ -63,4 +73,12 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 `;

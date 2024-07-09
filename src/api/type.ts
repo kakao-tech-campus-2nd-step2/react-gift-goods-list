@@ -22,6 +22,10 @@ export interface GetMyWishProductsParameters {
   maxResults?: number;
 }
 
+export interface PointRequestBody {
+  point: number;
+}
+
 export interface GetRankingProductsResponse {
   products: ProductData[];
 }

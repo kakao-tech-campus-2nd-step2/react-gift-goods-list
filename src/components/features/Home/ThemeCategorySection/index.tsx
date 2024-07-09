@@ -25,7 +25,7 @@ export const ThemeCategorySection = () => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const data = await fetchData('api/v1/themes');
+        const data = await fetchData('/api/v1/themes');
         setThemeApi(data.themes);
       } catch (error) {
         console.error('Error fetching theme data:', error);

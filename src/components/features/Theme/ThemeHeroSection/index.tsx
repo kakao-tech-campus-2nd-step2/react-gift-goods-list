@@ -16,7 +16,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const data = await fetchData(`api/v1/themes`);
+        const data = await fetchData(`/api/v1/themes`);
         const theme = getCurrentTheme(themeKey, data.themes);
         setCurrentTheme(theme);
       } catch (error) {

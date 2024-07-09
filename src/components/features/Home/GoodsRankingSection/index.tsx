@@ -22,7 +22,7 @@ export const GoodsRankingSection = () => {
       try {
         const { targetType, rankType } = filterOption;
         const data = await fetchData(
-          `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
+          `/api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         );
         setRankingProducts(data.products);
       } catch (error) {

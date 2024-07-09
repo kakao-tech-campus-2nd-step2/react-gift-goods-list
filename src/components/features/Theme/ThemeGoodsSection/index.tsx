@@ -21,7 +21,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const maxResults = 20;
         const queryParams = `?maxResults=${maxResults}`;
 
-        const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`);
+        const data = await fetchData(`/api/v1/themes/${themeKey}/products${queryParams}`);
         setCurrentGoods(data.products);
       } catch (error) {
         console.error('Error fetching theme data:', error);

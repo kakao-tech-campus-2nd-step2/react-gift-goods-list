@@ -4,6 +4,7 @@
 
 **할 일 목록:**
 
+- [x] Request, Response Type 정의, API 구현
 - [ ] 메인 페이지 - Theme 카테고리 섹션
   - [ ] /api/v1/themes API를 사용하여 section을 구현
 - [ ] 메인 페이지 - 실시간 급상승 선물 랭킹 섹션

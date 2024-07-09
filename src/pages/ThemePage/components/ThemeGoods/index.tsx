@@ -1,4 +1,4 @@
-import { ThemeListType } from '@/types/themeType';
+import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
 import { GoodsItem } from '@/components/ui/GoodsItem/Default';
@@ -6,11 +6,11 @@ import { Grid } from '@/components/ui/Layout/Grid';
 
 import { contentStyle } from './styles';
 
-type ThemeContentProps = {
-  items: ThemeListType[];
+type ThemeGoodsProps = {
+  products: ProductData[];
 };
 
-export const ThemeContent = ({ items }: ThemeContentProps) => {
+export const ThemeGoods = ({ products }: ThemeGoodsProps) => {
   return (
     <Content>
       <Grid
@@ -23,12 +23,13 @@ export const ThemeContent = ({ items }: ThemeContentProps) => {
         }}
         css={contentStyle}
       >
-        {items.map((item) => (
+        {products.map((product) => (
           <GoodsItem
-            key={item.id}
-            subtitle={item.subtitle}
-            title={item.title}
-            amount={item.amount}
+            key={product.id}
+            imageSrc={product.imageURL}
+            subtitle={product.brandInfo.name}
+            title={product.name}
+            amount={product.price.sellingPrice}
           />
         ))}
       </Grid>

@@ -45,6 +45,32 @@ export interface BrandInfo {
   imageURL: string;
 }
 
+export interface Review {
+  averageRating: number;
+  totalReviewCount: number;
+}
+
+export interface productDescription {
+  images: string[];
+}
+
+export interface Announcement {
+  displayOrder: number;
+  name: string;
+  value: string;
+}
+
+export interface Terms {
+  displayOrder: number;
+  title: string;
+  description: string;
+}
+
+export interface ProductDetailInfo {
+  announcements: Announcement[];
+  terms: Terms[];
+}
+
 export interface ProductData {
   id: number;
   name: string;
@@ -52,4 +78,11 @@ export interface ProductData {
   wish: Wish;
   price: Price;
   brandInfo: BrandInfo;
+}
+
+export interface ProductDetailData extends ProductData {
+  isAccessableProductPage: boolean;
+  review: Review;
+  productDescription: productDescription;
+  productDetailInfo: ProductDetailInfo;
 }

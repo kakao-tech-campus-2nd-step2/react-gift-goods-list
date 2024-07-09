@@ -5,17 +5,13 @@ import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { product } from '@/types';
+import type { ProductsListProps } from '@/types';
 
-type Props = {
-  goodsList: GoodsData[];
-};
-
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ productsList }: ProductsListProps) => {
   const [hasMore, setHasMore] = useState(false);
-
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
-
+  const currentGoodsList = hasMore ? productsList : productsList.slice(0, 6);
+  
   return (
     <Wrapper>
       <Grid
@@ -26,14 +22,14 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+        {currentGoodsList.map((product: product, index: number) => (
           <RankingGoodsItems
-            key={id}
+            key={product.id}
             rankingIndex={index + 1}
-            imageSrc={imageURL}
-            title={name}
-            amount={price.sellingPrice}
-            subtitle={brandInfo.name}
+            imageSrc={product.imageURL}
+            title={product.name}
+            amount={product.price.sellingPrice}
+            subtitle={product.brandInfo.name}
           />
         ))}
       </Grid>

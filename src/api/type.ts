@@ -52,6 +52,11 @@ export interface GetThemeProductsResponse {
 export interface GetProductDetailsResponse {
   product: ProductDetailData;
 }
+
+export interface GetThemesResponse {
+  themes: ThemeData[];
+}
+
 export interface GetMessageCardTemplatesResponse {
   templates: MessageCardTemplateData[];
 }

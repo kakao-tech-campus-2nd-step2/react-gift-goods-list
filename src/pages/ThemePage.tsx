@@ -2,16 +2,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
-import useFetchProducts from '@hooks/useFetchProducts';
 import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import { useContext, useEffect } from 'react';
+import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 import { isThemesLoaded } from '@/utils';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const products = useFetchProducts({});
+  const products = useFetchThemeProducts({ themeKey: themeKey || '' });
   const themes = useContext(ThemeContext);
   const navigate = useNavigate();
 

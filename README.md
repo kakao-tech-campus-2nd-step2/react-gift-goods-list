@@ -32,8 +32,8 @@
 - 메인 페이지 - Theme 카테고리 섹션
   - [x] /api/v1/themes
 - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
-  - [ ] /api/v1/ranking/products
-  - [ ] 필터 조건에 맞는 API 요청하기
+  - [x] /api/v1/ranking/products
+  - [x] 필터 조건에 맞는 API 요청하기
 - Theme 페이지 - header
   - [ ] url의 pathParams, /api/v1/themes로 다이나믹 처리
   - [ ] themeKey가 잘못 된 경우 메인 페이지로 연결

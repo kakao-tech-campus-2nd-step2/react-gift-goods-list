@@ -1,31 +1,26 @@
 import { useVisibleList } from '@/pages/HomePage/hooks/useFilteredList';
 import { useVisibleCount } from '@/pages/HomePage/hooks/useVisibleCount';
-import {
-  FilterRankItemType,
-  GiftFilterType,
-  UserFilterType,
-} from '@/types/rankTypes';
+import { ProductData, RankingFilter } from '@/pages/HomePage/types';
 
 import { Container } from '@/components/ui/Layout/Container';
 
 import { RankList } from './RankList';
 import { ShowMoreButton } from './ShowMoreButton';
 
-type RankListContentProps = {
-  filteredList: FilterRankItemType[];
-  userFilter: UserFilterType;
-  giftFilter: GiftFilterType;
+type GoodsRankingListProps = {
+  goodsList: ProductData[];
+  filter: RankingFilter;
 };
 
-export const FilteredRankList = ({
-  filteredList,
-  userFilter,
-  giftFilter,
-}: RankListContentProps) => {
+export const GoodsRankingList = ({
+  goodsList,
+  filter,
+}: GoodsRankingListProps) => {
   const { visibleItems, visibleItemCount, setVisibleItemCount } =
-    useVisibleList(filteredList, userFilter, giftFilter);
+    useVisibleList(goodsList, filter);
+
   const { isExpanded, handleShowLess, handleShowMore } = useVisibleCount(
-    filteredList.length,
+    goodsList.length,
     visibleItemCount,
     setVisibleItemCount
   );
@@ -35,7 +30,7 @@ export const FilteredRankList = ({
 
   return (
     <Container flexDirection="column" gap="2rem">
-      <RankList filteredList={visibleItems} />
+      <RankList filteredRankList={visibleItems} />
       <ShowMoreButton text={text} onClick={onClick} />
     </Container>
   );

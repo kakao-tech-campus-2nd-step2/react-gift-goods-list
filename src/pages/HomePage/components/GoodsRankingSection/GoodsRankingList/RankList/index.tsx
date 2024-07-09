@@ -1,4 +1,4 @@
-import { FilterRankItemType } from '@/types/rankTypes';
+import { ProductData } from '@/pages/HomePage/types';
 
 import { RankingGoodsItem } from '@/components/ui/GoodsItem/Ranking';
 import { Grid } from '@/components/ui/Layout/Grid';
@@ -6,10 +6,10 @@ import { Grid } from '@/components/ui/Layout/Grid';
 import { itemContainerStyle } from './styles';
 
 type RankListProps = {
-  filteredList: FilterRankItemType[];
+  filteredRankList: ProductData[];
 };
 
-export const RankList = ({ filteredList }: RankListProps) => {
+export const RankList = ({ filteredRankList }: RankListProps) => {
   return (
     <Grid
       columns={{
@@ -20,13 +20,14 @@ export const RankList = ({ filteredList }: RankListProps) => {
       }}
       placeItems="start"
     >
-      {filteredList.map((item) => (
+      {filteredRankList.map((item, index) => (
         <div key={item.id} css={itemContainerStyle}>
           <RankingGoodsItem
-            rank={item.rank}
-            title={item.title}
-            subtitle={item.subtitle}
-            amount={item.amount}
+            imageSrc={item.imageURL}
+            rank={index}
+            title={item.name}
+            subtitle={item.brandInfo.name}
+            amount={item.price.sellingPrice}
           />
         </div>
       ))}

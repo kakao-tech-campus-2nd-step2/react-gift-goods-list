@@ -1,10 +1,22 @@
 import { useState } from 'react';
 
-import { GiftFilterType, UserFilterType } from '@/types/rankTypes';
+import { RankingFilter } from '../types';
 
 export const useRankFilters = () => {
-  const [userFilter, setUserFilter] = useState<UserFilterType>('전체');
-  const [giftFilter, setGiftFilter] = useState<GiftFilterType>('받고 싶어한');
+  const [filter, setFilter] = useState<RankingFilter>({
+    targetType: 'ALL',
+    rankType: 'MANY_WISH_RECEIVE',
+  });
 
-  return { userFilter, giftFilter, setUserFilter, setGiftFilter };
+  const handleFilter = (
+    key: keyof RankingFilter,
+    value: RankingFilter[keyof RankingFilter]
+  ) => {
+    setFilter({
+      ...filter,
+      [key]: value,
+    });
+  };
+
+  return { filter, handleFilter };
 };

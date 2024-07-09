@@ -3,7 +3,6 @@ import {
   GOODS_IMAGE_DEFAULT_RADIUS,
   GOODS_IMAGE_DEFAULT_RATIO,
 } from '@/constants/styles';
-import { ThemeListType } from '@/types/themeType';
 
 import { Image } from '@/components/ui/Image/Default';
 import { Container } from '@/components/ui/Layout/Container';
@@ -11,9 +10,12 @@ import { Container } from '@/components/ui/Layout/Container';
 import { GoodsItemDetail } from './GoodsItemDetail';
 import { containerStyle } from './styles';
 
-export interface GoodsItemProps extends Omit<ThemeListType, 'id'> {
+export type GoodsItemProps = {
   imageSrc?: string;
-}
+  title: string;
+  subtitle: string;
+  amount: number;
+};
 
 export const GoodsItem = ({
   imageSrc = DEFAULT_IMAGE_URL,

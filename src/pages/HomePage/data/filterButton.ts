@@ -1,14 +1,48 @@
-import { GiftFilterButtonType, UserFilterButtonType } from '@/types/rankTypes';
+import { RankingFilter } from '@/pages/HomePage/types';
 
-export const UserContents: UserFilterButtonType[] = [
-  { index: 0, value: '전체', emoji: 'ALL' },
-  { index: 1, value: '여성이', emoji: '👩🏻' },
-  { index: 2, value: '남성이', emoji: '👱🏻‍♂️' },
-  { index: 3, value: '청소년이', emoji: '👦🏻' },
+type TargetFilterButton = {
+  index: number;
+  value: RankingFilter['targetType'];
+  text: {
+    icon: string;
+    label: string;
+  };
+};
+
+type RankFilterButton = {
+  index: number;
+  value: RankingFilter['rankType'];
+  label: string;
+};
+
+const TARGET_TYPE_TEXT = {
+  ALL: {
+    icon: 'ALL',
+    label: '전체',
+  },
+  FEMALE: {
+    icon: '👩🏻‍🦳',
+    label: '여성이',
+  },
+  MALE: {
+    icon: '👨🏻‍🦳',
+    label: '남성이',
+  },
+  TEEN: {
+    icon: '👦🏻',
+    label: '청소년이',
+  },
+};
+
+export const TargetButtons: TargetFilterButton[] = [
+  { index: 0, value: 'ALL', text: TARGET_TYPE_TEXT.ALL },
+  { index: 1, value: 'FEMALE', text: TARGET_TYPE_TEXT.FEMALE },
+  { index: 2, value: 'MALE', text: TARGET_TYPE_TEXT.MALE },
+  { index: 3, value: 'TEEN', text: TARGET_TYPE_TEXT.TEEN },
 ];
 
-export const GiftContents: GiftFilterButtonType[] = [
-  { index: 0, value: '받고 싶어한' },
-  { index: 1, value: '많이 선물한' },
-  { index: 2, value: '위시로 받은' },
+export const RankButtons: RankFilterButton[] = [
+  { index: 0, value: 'MANY_WISH', label: '받고 싶어한' },
+  { index: 1, value: 'MANY_RECEIVE', label: '많이 선물한' },
+  { index: 2, value: 'MANY_WISH_RECEIVE', label: '위시로 받은' },
 ];

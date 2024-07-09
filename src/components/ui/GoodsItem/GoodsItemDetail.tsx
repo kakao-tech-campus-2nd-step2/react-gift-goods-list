@@ -10,7 +10,7 @@ import {
 interface GoodsItemDetailProps {
   subtitle: string;
   title: string;
-  amount: string;
+  amount: number;
 }
 
 export const GoodsItemDetail = ({

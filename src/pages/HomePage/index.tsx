@@ -2,16 +2,16 @@ import BaseLayout from '@/layouts/BaseLayout';
 
 import { BannerBottom } from './components/BannerBottom';
 import { BannerTop } from './components/BannerTop';
-import { RankSection } from './components/RankSection';
-import { ThemeList } from './components/ThemeSection/ThemeList';
+import { GoodsRankingSection } from './components/GoodsRankingSection';
+import { ThemeSection } from './components/ThemeSection';
 
 export const HomePage = () => {
   return (
     <BaseLayout>
       <BannerTop />
-      <ThemeList />
+      <ThemeSection />
       <BannerBottom />
-      <RankSection />
+      <GoodsRankingSection />
     </BaseLayout>
   );
 };

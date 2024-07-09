@@ -1,24 +1,24 @@
 import { ButtonHTMLAttributes } from 'react';
 
-import { UserFilterButtonType } from '@/types/rankTypes';
-
 import { Callout } from '@/components/Callout';
 
 import { buttonStyle, calloutStyle, textStyle } from './styles';
 
-interface ActiveUserButtonProps
+interface ActiveTargetButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
-  user: UserFilterButtonType;
+  icon: string;
+  label: string;
   isActive: boolean;
   onClick: () => void;
 }
 
-export const ActiveUserButton = ({
-  user,
+export const ActiveTargetButton = ({
+  icon,
+  label,
   isActive,
   onClick,
   ...props
-}: ActiveUserButtonProps) => {
+}: ActiveTargetButtonProps) => {
   return (
     <button onClick={onClick} css={buttonStyle} {...props}>
       <Callout
@@ -29,9 +29,9 @@ export const ActiveUserButton = ({
         alignItems="center"
         css={calloutStyle}
       >
-        {user.emoji}
+        {icon}
       </Callout>
-      <div css={textStyle(isActive)}>{user.value}</div>
+      <div css={textStyle(isActive)}>{label}</div>
     </button>
   );
 };

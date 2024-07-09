@@ -1,23 +1,19 @@
 import { useEffect, useState } from 'react';
 
 import { INITIAL_ITEMS_COUNT } from '@/pages/HomePage/data/initailCount';
-import {
-  FilterRankItemType,
-  GiftFilterType,
-  UserFilterType,
-} from '@/types/rankTypes';
+
+import { ProductData, RankingFilter } from '../types';
 
 export const useVisibleList = (
-  filteredList: FilterRankItemType[],
-  userFilter: UserFilterType,
-  giftFilter: GiftFilterType
+  filteredList: ProductData[],
+  filter: RankingFilter
 ) => {
   const [visibleItemCount, setVisibleItemCount] = useState(INITIAL_ITEMS_COUNT);
   const visibleItems = filteredList.slice(0, visibleItemCount);
 
   useEffect(() => {
     setVisibleItemCount(INITIAL_ITEMS_COUNT);
-  }, [userFilter, giftFilter]);
+  }, [filter]);
 
   return { visibleItems, visibleItemCount, setVisibleItemCount };
 };

@@ -13,6 +13,7 @@ type Props = {
 
 export const GoodsRankingList = ({ goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
+  console.log(goodsList);
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
 

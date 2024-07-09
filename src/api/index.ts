@@ -13,7 +13,7 @@ export const getRankingProducts = async (
   params?: RankingFilterOption,
 ): Promise<Array<GoodsData>> => {
   const response = await apiClient.get("/api/v1/ranking/products", { params });
-  return response.data;
+  return response.data.products;
 };
 
 export const getThemes = async (): Promise<Array<ThemeData>> => {

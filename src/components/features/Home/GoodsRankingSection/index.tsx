@@ -1,28 +1,47 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { getRankingProducts } from '@/apis/products/products';
+import type { ProductData } from '@/apis/products/type';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-export const GoodsRankingSection = () => {
-  const [filterOption, setFilterOption] = useState<RankingFilterOption>({
-    targetType: 'ALL',
-    rankType: 'MANY_WISH',
-  });
+const defaultFilter: RankingFilterOption = {
+  targetType: 'ALL',
+  rankType: 'MANY_WISH',
+};
 
-  // GoodsMockData를 21번 반복 생성
+export const GoodsRankingSection = () => {
+  const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
+  const [products, setProducts] = useState<ProductData[]>([]);
+
+  useEffect(() => {
+    getRankingProducts(filterOption)
+      .then((data) => {
+        setProducts(data.products);
+      })
+      .catch((err) => {
+        /**
+         * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
+         */
+        if (err.response.status === 400) {
+          setProducts([]);
+        } else {
+          console.error(err);
+        }
+      });
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={products} />
       </Container>
     </Wrapper>
   );

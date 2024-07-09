@@ -1,34 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Gift } from '@dto/Gift';
-import { ThemeKey, TargetFilter, RankFilter } from '@/types';
+import { axiosInstance } from '@utils/network';
+import RequestURLs from '@constants/RequestURLs';
+import { RankingProductsResponse } from '@/types/response';
+import { RankingProductsRequestQuery } from '@/types/request';
+import { ProductData } from '@/dto';
+import { TargetFilter, RankFilter } from '@/types';
 
 interface FetchParams {
-  groupFilter?: TargetFilter;
-  popularityFilter?: RankFilter;
-  themeFilter?: 'all' | ThemeKey;
+  targetFilter?: TargetFilter;
+  rankFilter?: RankFilter;
 }
 
-function useFetchGifts({ groupFilter, popularityFilter, themeFilter }: FetchParams) {
-  const [gifts, setGifts] = useState<Gift[]>([]);
+function useFetchGifts({ targetFilter, rankFilter }: FetchParams) {
+  const [products, setProducts] = useState<ProductData[]>([]);
   useEffect(() => {
-    // 올바르지 않은 필터값일 경우 예외처리
-    const fetchedGifts = [];
+    const params: RankingProductsRequestQuery = {
+      targetType: targetFilter,
+      rankType: rankFilter,
+    };
 
-    for (let i = 0; i < 16; i += 1) {
-      fetchedGifts.push({
-        imageSrc:
-          'https://picsum.photos/300',
-        subtitle: '이건 선물일까 그냥 이미지일까?',
-        title:
-          '선물 테스트',
-        amount: 100000,
-      });
+    async function request() {
+      const response = await axiosInstance
+        .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params });
+      setProducts(response.data.products);
     }
 
-    setGifts(fetchedGifts);
-  }, [groupFilter, popularityFilter, themeFilter]);
+    request();
+  }, [targetFilter, rankFilter]);
 
-  return gifts;
+  return products;
 }
 
 export default useFetchGifts;

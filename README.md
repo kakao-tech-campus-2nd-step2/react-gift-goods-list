@@ -20,9 +20,9 @@ https://kakao-tech-week3-goods-list.pages.dev/
 
 - 메인 페이지 - Theme 카테고리 섹션
 
-  - [ ] `/api/v1/themes` API를 사용하여 Section을 구현해요.
+  - [x] `/api/v1/themes` API를 사용하여 Section을 구현해요.
 
-  - [ ] API는 Axios또는 React Query 등을 모두 활용해서 구현해도 좋아요.
+  - [x] API는 Axios또는 React Query 등을 모두 활용해서 구현해도 좋아요.
 
 - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
 

@@ -1,8 +1,11 @@
+export const apiUrl: string = 'https://react-gift-mock-api-diwoni.vercel.app/';
+
 export type ThemeData = {
   id: number;
   key: string;
   label: string;
   title: string;
+  imageURL: string;
   description?: string;
   backgroundColor: string;
 };

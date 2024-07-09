@@ -12,7 +12,7 @@ export default () => {
 
     return (
         <Grid columns={{ initial: 2, xs: 4, sm: 4, md: 6 }}>
-            {themes?.themes.map((theme) => (
+            {themes?.data?.themes.map((theme) => (
                 <ThemeButton key={theme.id} themeKey={theme.key} themeLabel={theme.label} themeImg={theme.imageURL} />
             ))}
         </Grid>

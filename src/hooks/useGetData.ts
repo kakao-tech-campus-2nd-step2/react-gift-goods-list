@@ -2,15 +2,16 @@
 import axios from "axios";
 import { useEffect,useState } from "react";
 
-const useGetData = <T>(url: string): T | null => {
+const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | null => {
     const [data, setData] = useState<T | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         axios.get(url)
-            .then((response) => { setData(response.data); });
+            .then((response) => { setData(response.data); setIsLoading(true); });
     }, [url]);
 
-    return data;
+    return { data, isLoading };
 }
 
 export default useGetData; 

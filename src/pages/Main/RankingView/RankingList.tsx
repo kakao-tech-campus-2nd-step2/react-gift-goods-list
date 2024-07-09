@@ -13,11 +13,10 @@ interface Props {
 
 export default ({ showMoreDetail, targetType, rankType }: Props) => {
     const items = useGetData<RankedProducts>(`ranking/products?targetType=${targetType}&rankType=${rankType}`);
-    console.log(items);
 
     return (
         <Grid columns={{ initial: 2, xs: 3, sm: 3, md: 6 }} gap={20}>
-            {items?.products.slice(0, showMoreDetail ? undefined : 6).map((item, index) => (
+            {items?.data?.products.slice(0, showMoreDetail ? undefined : 6).map((item, index) => (
                 <RankingGoodsItems
                     key={item.id}
                     rankingIndex={index + 1}

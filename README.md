@@ -1,5 +1,5 @@
 - [ ] 본인만의 기준으로 일관된 코드를 작성해주세요.
-- [ ] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.
+- [x] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.
 - [ ] React Query를 사용하지 말고 axios 를 사용해서 구현해요.
 - [ ] 첨부된 oas.yaml 파일과 목 API URL을 사용하여 API를 구현해요.
   - 메인 페이지 - Theme 카테고리 섹션

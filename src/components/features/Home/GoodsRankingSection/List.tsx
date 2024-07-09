@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import type { ProductData } from '@/api/types';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  goodsList: ProductData[];
 };
 
 export const GoodsRankingList = ({ goodsList }: Props) => {

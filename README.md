@@ -6,13 +6,13 @@
 
 2. Axios API 구현
 
-- [] 각 API 경로별로 함수 구현
+- [ｏ] 각 API 경로별로 함수 구현
 
 3. Main Page
 
 - [o] 테마 카테고리 섹션 : /api/v1/themes API 활용
-- [] 실시간 급상승 선물랭킹 섹션 : /api/v1/ranking/products 활용
-- [] 필터 조건을 선택하면 해당 조건에 맞게 api 보임
+- [ｏ] 실시간 급상승 선물랭킹 섹션 : /api/v1/ranking/products 활용
+- [ｏ] 필터 조건을 선택하면 해당 조건에 맞게 api 보임
 
 4. Theme Page
 

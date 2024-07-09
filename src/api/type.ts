@@ -3,6 +3,12 @@ export interface GetRankingProductsParameters {
   rankType?: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
 }
 
+export interface GetThemeProductsParameters {
+  themeKey: string;
+  pageToken?: string;
+  maxResults?: number;
+}
+
 export interface GetRankingProductsResponse {
   products: ProductData[];
 }

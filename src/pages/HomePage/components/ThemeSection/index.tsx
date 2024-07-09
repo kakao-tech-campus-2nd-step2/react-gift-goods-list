@@ -7,10 +7,10 @@ import { GetThemesResponse, ThemeData } from '@/pages/HomePage/types';
 import { Content } from '@/components/Content';
 import { Grid } from '@/components/ui/Layout/Grid';
 
-import { ThemeListItem } from './ThemeListItem';
+import { ThemeItem } from './ThemeItem';
 import { gridStyle } from './styles';
 
-export const ThemeList = () => {
+export const ThemeSection = () => {
   const [themeData, setThemeData] = useState<ThemeData[]>([]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const ThemeList = () => {
         {themeData.map((theme) => {
           return (
             <Link key={theme.id} to={`/theme/${theme.id}`}>
-              <ThemeListItem theme={theme} />
+              <ThemeItem theme={theme} />
             </Link>
           );
         })}

@@ -6,11 +6,11 @@ import { Container } from '@/components/ui/Layout/Container';
 
 import { containerStyle, titleStyle } from './styles';
 
-type ThemeListItemProps = {
+type ThemeItemProps = {
   theme: ThemeData;
 };
 
-export const ThemeListItem = ({ theme }: ThemeListItemProps) => {
+export const ThemeItem = ({ theme }: ThemeItemProps) => {
   const imageURL = theme.imageURL || DEFAULT_IMAGE_URL;
 
   return (

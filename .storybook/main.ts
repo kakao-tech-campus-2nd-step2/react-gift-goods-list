@@ -1,6 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-webpack5';
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import path from 'path';
+
+import { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -11,22 +11,19 @@ const config: StorybookConfig = {
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
   ],
-  webpackFinal: async (config) => {
-    config.resolve?.plugins?.push(
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, '../tsconfig.json'),
-      }),
-    );
+  viteFinal: (config) => {
+    config.resolve = {
+      alias: {
+        '@': path.resolve(__dirname, '../src'),
+      },
+    };
 
     return config;
   },
+
   framework: {
-    name: '@storybook/react-webpack5',
-    options: {
-      builder: {
-        useSWC: true,
-      },
-    },
+    name: '@storybook/react-vite',
+    options: {},
   },
   docs: {
     autodocs: 'tag',

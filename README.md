@@ -25,7 +25,7 @@
 #### API 초기 세팅
 
 - [x] axios 설치하기
-- [ ] base url 설정하기
+- [x] base url 설정하기
 
 #### API 연결하기
 

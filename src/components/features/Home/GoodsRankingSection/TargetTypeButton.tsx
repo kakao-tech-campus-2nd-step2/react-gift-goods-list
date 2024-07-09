@@ -6,15 +6,12 @@ import type { RankingFilterOption } from '@/types';
 type Props = {
   value: RankingFilterOption['targetType'];
   selected: boolean;
-  onClick: (value: RankingFilterOption['targetType']) => void;
+  onClick: () => void;
 };
+
 export const TargetTypeButton = ({ value, selected, onClick }: Props) => {
   return (
-    <Wrapper
-      onClick={() => {
-        onClick(value);
-      }}
-    >
+    <Wrapper onClick={onClick}>
       <Icon selected={selected}>{TARGET_TYPE_TEXT[value].icon}</Icon>
       <Label selected={selected}>{TARGET_TYPE_TEXT[value].label}</Label>
     </Wrapper>

@@ -18,18 +18,21 @@ const defaultFilter: RankingFilterOption = {
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
   const [products, setProducts] = useState<ProductData[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getRankingProducts(filterOption)
       .then((data) => {
         setProducts(data.products);
+        setIsLoading(false);
       })
       .catch((err) => {
         /**
          * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
          */
         if (err.response.status === 400) {
-          setProducts([]);
+          setIsError(true);
         } else {
           console.error(err);
         }
@@ -40,8 +43,19 @@ export const GoodsRankingSection = () => {
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={products} />
+        <GoodsRankingFilter
+          filterOption={filterOption}
+          onFilterOptionChange={setFilterOption}
+          setIsError={setIsError}
+          setIsLoading={setIsLoading}
+        />
+        {isLoading ? (
+          <Container alignItems="center">로딩중</Container>
+        ) : isError ? (
+          <Container alignItems="center">데이터를 불러오는 중에 문제가 발생했습니다.</Container>
+        ) : (
+          <GoodsRankingList goodsList={products} />
+        )}
       </Container>
     </Wrapper>
   );

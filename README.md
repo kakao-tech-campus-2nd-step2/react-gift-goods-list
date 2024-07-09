@@ -4,9 +4,8 @@
 
 **할 일 목록:**
 
-- [ ] 첨부된 oas.yaml 파일을 토대로 Request, Response Type 정의
-- [ ] 메인 페이지 - Theme 카테고리 섹션
-  - [ ] /api/v1/themes API를 사용하여 section을 구현
+- [x] 메인 페이지 - Theme 카테고리 섹션
+  - [x] /api/v1/themes API를 사용하여 section을 구현
 - [ ] 메인 페이지 - 실시간 급상승 선물 랭킹 섹션
   - [ ] /api/v1/ranking/products API를 사용하여 section 구현
   - [ ] 필터 조건을 선택하면 해당 조건에 맞게 API를 요청해서 보이도록 구현

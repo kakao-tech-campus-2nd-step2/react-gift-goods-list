@@ -25,6 +25,7 @@ export interface Theme {
   title: string;
   description: string;
   backgroundColor: string;
+  imageURL: string;
 }
 
 export interface WishProduct extends Product {

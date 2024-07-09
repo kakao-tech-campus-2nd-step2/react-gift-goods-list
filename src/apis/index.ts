@@ -1,9 +1,9 @@
-import type { ThemeData } from '@/types';
+import type { Theme } from '@/types/product';
 
 import { getThemes } from './theme';
 
 class Mock {
-  public getThemes: () => Promise<ThemeData[]>;
+  public getThemes: () => Promise<Theme[]>;
 
   constructor() {
     //theme

@@ -1,13 +1,24 @@
 import styled from '@emotion/styled';
 
 import { GoodsItem } from '@/components/common/GoodsItem';
+import { HandleBox, Loading } from '@/components/common/Handle';
 import { Container } from '@/components/common/Layout/Container';
 import { Grid } from '@/components/common/Layout/Grid';
 import { useThemeProducts } from '@/services/useThemeProducts';
 
 export const ItemList = ({ themeKey }: { themeKey: string }) => {
-  const data = useThemeProducts(themeKey);
+  const { isLoading, isError, data } = useThemeProducts(themeKey);
   const products = data?.products ?? [];
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <HandleBox>데이터를 불러오는 중에 문제가 발생했습니다.</HandleBox>;
+  }
+  if (products.length == 0) {
+    return <HandleBox>상품이 없어요!</HandleBox>;
+  }
 
   return (
     <ListWrapper>

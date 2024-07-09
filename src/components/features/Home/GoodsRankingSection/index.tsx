@@ -21,7 +21,7 @@ export const GoodsRankingSection = () => {
     const fetchThemes = async () => {
       try {
         const products = await getRankingProducts(filterOption);
-        setRankingProducts(products);
+        setRankingProducts(products.products);
       } catch (error) {
         console.error("Error fetching RankingProducts:", error);
         setRankingProducts([]);

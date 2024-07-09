@@ -15,7 +15,7 @@ const App = () => {
     const fetchThemes = async () => {
       try {
         const result = await getThemes();
-        setThemes(result);
+        setThemes(result.themes);
       } catch (error) {
         console.error("Error fetching themes:", error);
       }

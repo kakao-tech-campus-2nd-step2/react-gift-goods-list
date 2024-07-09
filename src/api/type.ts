@@ -3,6 +3,10 @@ export interface GetRankingProductsParameters {
   rankType?: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
 }
 
+export interface GetRankingProductsResponse {
+  products: ProductData[];
+}
+
 export interface Wish {
   wishCount: number;
   isWished: boolean;

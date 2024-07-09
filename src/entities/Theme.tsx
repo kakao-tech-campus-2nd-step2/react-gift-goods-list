@@ -3,6 +3,7 @@ export interface ThemeData {
     key: string;
     label: string;
     title: string;
+    imageURL: string;
     description?: string;
     backgroundColor?: string;
 }

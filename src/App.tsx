@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -8,6 +9,8 @@ import Login from './pages/Login';
 import Main from './pages/Main';
 import MyAccount from './pages/MyAccount';
 import Theme from './pages/Theme';
+
+axios.defaults.baseURL = 'https://react-gift-mock-api-self.vercel.app/api/v1';
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

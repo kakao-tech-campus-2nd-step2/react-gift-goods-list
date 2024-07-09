@@ -98,7 +98,7 @@ export interface Review {
   totalReviewCount: number;
 }
 
-export interface productDescription {
+export interface ProductDescription {
   images: string[];
 }
 
@@ -131,7 +131,7 @@ export interface ProductData {
 export interface ProductDetailData extends ProductData {
   isAccessableProductPage: boolean;
   review: Review;
-  productDescription: productDescription;
+  productDescription: ProductDescription;
   productDetailInfo: ProductDetailInfo;
 }
 
@@ -142,6 +142,7 @@ export interface ThemeData {
   title: string;
   description: string;
   backgroundColor?: string;
+  imageURL: string;
 }
 
 export interface MessageCardTemplateData {

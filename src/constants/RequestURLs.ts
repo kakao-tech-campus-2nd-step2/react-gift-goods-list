@@ -2,7 +2,7 @@ const BASE_API_PATH = '/api/v1';
 
 const endpoints = {
   RANKING_PRODUCTS: '/ranking/products',
-  THEME_PRODUCTS_ALL: '/themes',
+  THEMES: '/themes',
   THEME_PRODUCTS: '/themes/:themeKey/products',
   PRODUCT_DETAILS: '/products/:productId/detail',
   PRODUCT_OPTIONS: '/products/:productId/options',

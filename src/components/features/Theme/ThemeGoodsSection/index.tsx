@@ -1,19 +1,35 @@
 import styled from '@emotion/styled';
 
+import useFetch from '@/apis/useFetch';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+interface GoodsDataArray {
+  products: GoodsData[];
+}
+
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const { data, status } = useFetch<GoodsDataArray>(
+    `api/v1/themes/${themeKey}/products?maxResults=20`,
+    { products: [] },
+  );
+  const goodsItemsData = data.products;
+  let currentStatus;
+  if (status.loading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
+  else if (status.error) currentStatus = <StatusDiv>에러에러에러</StatusDiv>;
+  else if (goodsItemsData.length === 0) currentStatus = <StatusDiv>상품이 없어요.</StatusDiv>;
+
   return (
     <Wrapper>
       <Container>
+        {currentStatus}
         <Grid
           columns={{
             initial: 2,
@@ -21,7 +37,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {goodsItemsData?.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -43,4 +59,10 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const StatusDiv = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 40px 16px 60px;
 `;

@@ -44,6 +44,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       );
     }
 
+    if (currentGoods.length === 0) {
+      return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+    }
+
     return (
       <Grid
         columns={{
@@ -87,4 +91,14 @@ const LoadingWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+`;
+
+const NoItemsMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: #666;
+  margin-top: 20px;
 `;

@@ -1,10 +1,6 @@
-import axios from 'axios';
-
 import type { ThemeData } from '@/types/api';
 
-const apiClient = axios.create({
-  baseURL: 'https://react-kakao-gift-mock-api.vercel.app/api/v1',
-});
+import apiClient from './apiClient';
 
 /* Theme data 가져오기 */
 export const fetchThemes = async (): Promise<ThemeData[]> => {

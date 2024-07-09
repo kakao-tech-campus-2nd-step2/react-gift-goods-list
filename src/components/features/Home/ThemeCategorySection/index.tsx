@@ -7,7 +7,7 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
-import Api from '../../../common/API/api';
+import { fetchData } from '../../../common/API/api';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 interface ThemeData {
@@ -17,6 +17,7 @@ interface ThemeData {
   title: string;
   description: string;
   backgroundColor: string;
+  imageURL?: string;
 }
 
 interface FetchState<T> {
@@ -36,10 +37,8 @@ export const ThemeCategorySection: React.FC = () => {
     const fetchThemes = async () => {
       setFetchState({ isLoading: true, isError: false, data: null });
       try {
-        const response = await Api.get<{ themes: ThemeData[] }>('/api/v1/themes');
-        //console.log('API response:', response.data);
-        setFetchState({ isLoading: false, isError: false, data: response.data.themes });
-
+        const data = await fetchData('/api/v1/themes');
+        setFetchState({ isLoading: false, isError: false, data: data.themes });
       } catch (error) {
         console.error('Error fetching themes:', error);
         setFetchState({ isLoading: false, isError: true, data: null });
@@ -64,7 +63,7 @@ export const ThemeCategorySection: React.FC = () => {
           {fetchState.data?.map((theme) => (
             <Link to={getDynamicPath.theme(theme.key)} key={theme.id}>
               <ThemeCategoryItem
-                image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
+                image={theme.imageURL || "https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"}
                 label={theme.label}
               />
             </Link>

@@ -35,33 +35,39 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     fetchThemeData();
   }, [themeKey]);
 
-  return (
-    <Wrapper>
-      {loading ? (
+  const renderContent = () => {
+    if (loading) {
+      return (
         <LoadingWrapper>
           <Loading />
         </LoadingWrapper>
-      ) : (
-        <Container>
-          <Grid
-            columns={{
-              initial: 2,
-              md: 4,
-            }}
-            gap={16}
-          >
-            {currentGoods.map((goods) => (
-              <DefaultGoodsItems
-                key={goods.id}
-                imageSrc={goods.imageURL}
-                title={goods.name}
-                amount={goods.price.sellingPrice}
-                subtitle={goods.brandInfo.name}
-              />
-            ))}
-          </Grid>
-        </Container>
-      )}
+      );
+    }
+
+    return (
+      <Grid
+        columns={{
+          initial: 2,
+          md: 4,
+        }}
+        gap={16}
+      >
+        {currentGoods.map((goods) => (
+          <DefaultGoodsItems
+            key={goods.id}
+            imageSrc={goods.imageURL}
+            title={goods.name}
+            amount={goods.price.sellingPrice}
+            subtitle={goods.brandInfo.name}
+          />
+        ))}
+      </Grid>
+    );
+  };
+
+  return (
+    <Wrapper>
+      <Container>{renderContent()}</Container>
     </Wrapper>
   );
 };

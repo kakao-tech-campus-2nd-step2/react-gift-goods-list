@@ -4,12 +4,12 @@ import { Container } from '@/components/common/Layout/Container';
 import { useThemes } from '@/services/useThemes';
 
 export const HeaderSection = ({ themeKey }: { themeKey: string }) => {
-  const data = useThemes();
+  const { isError, data } = useThemes();
   const themes = data?.themes ?? [];
   const theme = themes.find((themeData) => themeData.key === themeKey);
 
-  if (!theme) {
-    return <>존재하지 않는 theme입니다.</>;
+  if (isError || !theme) {
+    return null;
   }
 
   return (

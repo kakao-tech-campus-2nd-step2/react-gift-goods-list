@@ -1,22 +1,28 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { RouterPath } from '@/routes/path';
+import { LoadingIcon } from '@/components/common/LoadingIcon';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
-
+interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [GoodsList, setGoodsList] = useState<GoodsData[]>();
-  const navigate = useNavigate();
+  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
 
   useEffect(() => {
     const fetchGoods = async () => {
@@ -24,14 +30,20 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const response = await axios.get(
           process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products?maxResults=20`,
         );
-        setGoodsList(response.data.products);
+        setFetchState({ isLoading: false, isError: false, data: response.data.products });
       } catch {
-        navigate(RouterPath.root);
+        setFetchState({ isLoading: false, isError: true, data: null });
       }
     };
     fetchGoods();
-  }, [navigate, themeKey]);
+  }, [themeKey]);
 
+  if (fetchState.isLoading) {
+    return <LoadingIcon />;
+  }
+  if (fetchState.isError) {
+    return <Error>에러가 발생했습니다.</Error>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -42,7 +54,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {GoodsList?.map(({ id, imageURL, name, price, brandInfo }) => (
+          {fetchState.data?.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -64,4 +76,8 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+const Error = styled.div`
+  margin: 50px 0;
+  text-align: center;
 `;

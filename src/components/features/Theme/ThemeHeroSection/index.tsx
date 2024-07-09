@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
-import { Container } from '@/components/common/layouts/Container';
-import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { Container } from "@/components/common/layouts/Container";
+import { breakpoints } from "@/styles/variants";
+import type { ThemeData } from "@/types";
+import { ThemeMockList } from "@/types/mock";
 
 type Props = {
   themeKey: string;

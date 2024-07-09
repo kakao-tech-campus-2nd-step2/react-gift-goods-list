@@ -1,13 +1,13 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
-import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
+import { breakpoints } from "@/styles/variants";
+import type { RankingFilterOption } from "@/types";
 
 type Props = {
   label: string;
-  value: RankingFilterOption['rankType'];
+  value: RankingFilterOption["rankType"];
   selected: boolean;
-  onClick: (value: RankingFilterOption['rankType']) => void;
+  onClick: (value: RankingFilterOption["rankType"]) => void;
 };
 
 export const RankTypeButton = ({ value, selected, label, onClick }: Props) => {
@@ -23,11 +23,11 @@ export const RankTypeButton = ({ value, selected, label, onClick }: Props) => {
   );
 };
 
-const Wrapper = styled.button<Pick<Props, 'selected'>>`
+const Wrapper = styled.button<Pick<Props, "selected">>`
   padding: 13px 20px;
   font-size: 16px;
   line-height: 16px;
-  color: ${({ selected }) => (selected ? '#4684e9' : 'rgba(70, 132, 233, 0.7)')};
+  color: ${({ selected }) => (selected ? "#4684e9" : "rgba(70, 132, 233, 0.7)")};
   font-weight: ${({ selected }) => (selected ? 700 : 400)};
   transition:
     color 200ms,

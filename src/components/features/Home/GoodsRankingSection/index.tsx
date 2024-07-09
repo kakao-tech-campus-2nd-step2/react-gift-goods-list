@@ -1,18 +1,18 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
+import styled from "@emotion/styled";
+import { useState } from "react";
 
-import { Container } from '@/components/common/layouts/Container';
-import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import { Container } from "@/components/common/layouts/Container";
+import { breakpoints } from "@/styles/variants";
+import type { RankingFilterOption } from "@/types";
+import { GoodsMockList } from "@/types/mock";
 
-import { GoodsRankingFilter } from './Filter';
-import { GoodsRankingList } from './List';
+import { GoodsRankingFilter } from "./Filter";
+import { GoodsRankingList } from "./List";
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
-    targetType: 'ALL',
-    rankType: 'MANY_WISH',
+    targetType: "ALL",
+    rankType: "MANY_WISH",
   });
 
   // GoodsMockData를 21번 반복 생성

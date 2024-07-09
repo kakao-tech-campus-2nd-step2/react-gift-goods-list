@@ -1,11 +1,11 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
+import styled from "@emotion/styled";
+import { useState } from "react";
 
-import { Button } from '@/components/common/Button';
-import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
-import { Grid } from '@/components/common/layouts/Grid';
-import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import { Button } from "@/components/common/Button";
+import { RankingGoodsItems } from "@/components/common/GoodsItem/Ranking";
+import { Grid } from "@/components/common/layouts/Grid";
+import { breakpoints } from "@/styles/variants";
+import type { GoodsData } from "@/types";
 
 type Props = {
   goodsList: GoodsData[];
@@ -40,12 +40,12 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
       <ButtonWrapper>
         <Button
           theme="outline"
-          style={{ maxWidth: '480px' }}
+          style={{ maxWidth: "480px" }}
           onClick={() => {
             setHasMore((prev) => !prev);
           }}
         >
-          {hasMore ? '접기' : '더보기'}
+          {hasMore ? "접기" : "더보기"}
         </Button>
       </ButtonWrapper>
     </Wrapper>

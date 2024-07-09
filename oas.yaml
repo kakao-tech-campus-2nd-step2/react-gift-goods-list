@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: 'API'
-  description: 'API'
+  title: "API"
+  description: "API"
   version: 1.0.0
 paths:
   /api/v1/ranking/products:
@@ -34,7 +34,7 @@ paths:
                   products:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ProductData'
+                      $ref: "#/components/schemas/ProductData"
                 required:
                   - products
 
@@ -52,7 +52,7 @@ paths:
                   themes:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ThemeData'
+                      $ref: "#/components/schemas/ThemeData"
                 required:
                   - themes
 
@@ -90,7 +90,7 @@ paths:
                   products:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ProductData'
+                      $ref: "#/components/schemas/ProductData"
                   nextPageToken:
                     type: string
                     description: 다음 페이지를 불러오기 위한 토큰 (만약 없다면 null)
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductDetailData'
+                $ref: "#/components/schemas/ProductDetailData"
 
   /api/v1/products/{productId}/options:
     get:
@@ -161,7 +161,7 @@ paths:
                   templates:
                     type: array
                     items:
-                      $ref: '#/components/schemas/MessageCardTemplateData'
+                      $ref: "#/components/schemas/MessageCardTemplateData"
 
   /api/v1/my-account/info:
     get:
@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MyAccountInfoData'
+                $ref: "#/components/schemas/MyAccountInfoData"
 
   /api/v1/my-account/wish/products:
     get:
@@ -202,7 +202,7 @@ paths:
                   products:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ProductData'
+                      $ref: "#/components/schemas/ProductData"
                   nextPageToken:
                     type: string
                     description: 다음 페이지를 불러오기 위한 토큰 (만약 없다면 null)
@@ -248,7 +248,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductOrderRequestBody'
+              $ref: "#/components/schemas/ProductOrderRequestBody"
       responses:
         204:
           description: 상품 주문 요청을 보냈어요.
@@ -322,7 +322,7 @@ components:
         name:
           type: string
           description: 선물 이름
-          example: 'BBQ 양념치킨+크림치즈볼+콜라1.25L'
+          example: "BBQ 양념치킨+크림치즈볼+콜라1.25L"
         imageURL:
           type: string
           description: 선물 이미지 url
@@ -389,7 +389,7 @@ components:
 
     ProductDetailData:
       allOf:
-        - $ref: '#/components/schemas/ProductData'
+        - $ref: "#/components/schemas/ProductData"
         - type: object
           properties:
             isAccessableProductPage:
@@ -505,7 +505,7 @@ components:
         backgroundColor:
           type: string
           description: 선물 테마 카테고리 배경색
-          example: '#F5F5F5'
+          example: "#F5F5F5"
       required:
         - id
         - key
@@ -544,7 +544,7 @@ components:
         name:
           type: string
           description: 내 이름
-          example: '김카카오'
+          example: "김카카오"
         birthday:
           type: string
           description: 내 생일

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { api } from '@/api/api';
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
@@ -14,16 +14,16 @@ export const ThemeCategorySection = () => {
   const [themes, setThemes] = useState<ThemesResponse['themes']>([]);
 
   useEffect(() => {
-    const fetchThemes = async () => {
+    const getThemes = async () => {
       try {
-        const response = await api.get<ThemesResponse>('/api/v1/themes');
-        setThemes(response.data.themes);
+        const themesData = await fetchThemes();
+        setThemes(themesData);
       } catch (error) {
         console.error('Failed to fetch themes:', error);
       }
     };
 
-    fetchThemes();
+    getThemes();
   }, []);
 
   return (

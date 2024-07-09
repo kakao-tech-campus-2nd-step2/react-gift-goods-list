@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { fetchTheme } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
@@ -16,10 +16,9 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchThemes = async () => {
+    const getTheme = async () => {
       try {
-        const { data } = await axios.get<{ themes: ThemeData[] }>('https://react-gift-mock-api-ychy61.vercel.app/api/v1/themes');
-        const foundTheme = data.themes.find(theme => theme.key === themeKey);
+        const foundTheme = await fetchTheme(themeKey);
         if (!foundTheme) {
           navigate('/');
           return;
@@ -31,7 +30,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
       }
     };
 
-    fetchThemes();
+    getTheme();
   }, [themeKey, navigate]);
 
   if (!currentTheme) {

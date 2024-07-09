@@ -34,12 +34,12 @@ export const GoodsRankingSection = () => {
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         <Grid
-        columns={{
-          initial: 3,
-          sm: 4,
-          md: 6,
-        }}
-        gap={16}
+          columns={{
+            initial: 3,
+            sm: 4,
+            md: 6,
+          }}
+          gap={16}
         >
           {products.map((product, index) => (
             <RankingGoodsItems

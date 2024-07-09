@@ -22,13 +22,12 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
       const theme = themes.find((e) => e.key === themeKey);
 
       // themeKey가 잘못된 경우 메인 페이지로 이동
-      if(!theme) navigate('/');
+      if (!theme) navigate('/');
 
       setCurrentTheme(theme);
     };
 
     getThemes();
-
   }, [themeKey, navigate]);
 
   if (!currentTheme) {

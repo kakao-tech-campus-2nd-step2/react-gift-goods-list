@@ -53,7 +53,7 @@ export function useGetRankingProducts(
 ): UseAxiosReturn<GetRankingProductsResponseBody> {
   return useAxios<GetRankingProductsResponseBody>({
     method: 'GET',
-    url: '/api/v1/ranking',
+    url: '/api/v1/ranking/products',
     params,
   });
 }

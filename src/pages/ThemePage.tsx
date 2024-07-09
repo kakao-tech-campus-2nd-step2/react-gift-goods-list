@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import GiftThemes from '@constants/GiftThemes';
+import Themes from '@constants/Themes';
 import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
@@ -11,7 +11,7 @@ function ThemePage() {
   const { themeKey } = useParams();
   const gifts = useFetchGifts({ themeFilter: themeKey });
 
-  if (!themeKey || !(themeKey in GiftThemes)) {
+  if (!themeKey || !(themeKey in Themes)) {
     return (
       <div>
         테마 지정 오류!

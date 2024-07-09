@@ -48,7 +48,7 @@ interface ResponsiveContainerProps extends ContainerProps { // padding은 어떻
 }
 
 interface ThemeItemProps {
-  themeKey: GiftThemeKey;
+  themeKey: ThemeKey;
 }
 
 export interface FixedSize {
@@ -58,10 +58,10 @@ export interface FixedSize {
 
 export type ContainerSize = FixedSize | 'full-width';
 
-const giftThemeKeys = ['birthday', 'graduation', 'smallluxury', 'luxury', 'marriage', 'warm',
+const themeKeys = ['birthday', 'graduation', 'smallluxury', 'luxury', 'marriage', 'warm',
   'small', 'fan', 'exchange', 'health', 'grocery', 'kids'];
 
-export type GiftThemeKey = typeof giftThemeKeys[number];
+export type ThemeKey = typeof themeKeys[number];
 
 export type ElementSize = FixedSize | 'responsive' | 'small' | 'big';
 

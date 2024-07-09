@@ -1,4 +1,4 @@
-import GiftThemes from '@constants/GiftThemes';
+import Themes from '@constants/Themes';
 import Container from '@components/atoms/container/Container';
 import Image from '@components/atoms/image/Image';
 import { css } from '@emotion/react';
@@ -19,7 +19,7 @@ const ResponsiveThemeCaption = styled.p`
 `;
 
 function MainThemeItem({ themeKey }: ThemeItemProps) {
-  const theme = GiftThemes[themeKey];
+  const theme = Themes[themeKey];
 
   return (
     <Link to={Paths.THEME_PAGE(themeKey)}>

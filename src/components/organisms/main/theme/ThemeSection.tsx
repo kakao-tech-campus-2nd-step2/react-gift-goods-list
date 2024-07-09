@@ -1,5 +1,5 @@
 import Container from '@components/atoms/container/Container';
-import GiftThemes from '@constants/GiftThemes';
+import Themes from '@constants/Themes';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import ResponsiveGrid from '@components/atoms/grid/responsive/ResponsiveGrid';
 import MainThemeItem from '@components/organisms/main/theme/MainThemeItem';
@@ -7,7 +7,7 @@ import ResponsiveThemeSection
   from '@components/organisms/main/theme/ResponsiveThemeSection';
 
 function ThemeSection() {
-  const themes = GiftThemes;
+  const themes = Themes;
 
   return (
     <ResponsiveThemeSection>

@@ -1,16 +1,16 @@
 import Container from '@components/atoms/container/Container';
 import { backgroundColors } from '@styles/colors';
-import GiftThemes from '@constants/GiftThemes';
+import Themes from '@constants/Themes';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
-import { GiftThemeKey } from '@/types';
+import { ThemeKey } from '@/types';
 import { ThemeName, ThemeSubtitle, ThemeTitle } from './Banner.styles';
 
 interface BannerProps {
-  themeKey: GiftThemeKey;
+  themeKey: ThemeKey;
 }
 
 function Banner({ themeKey }: BannerProps) {
-  const themeTexts = GiftThemes[themeKey];
+  const themeTexts = Themes[themeKey];
 
   return (
     <Container backgroundColor={backgroundColors.containerDark} elementSize="full-width" justifyContent="center">

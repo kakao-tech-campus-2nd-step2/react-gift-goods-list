@@ -1,4 +1,4 @@
-import { ProductData } from '@/pages/HomePage/types';
+import { ProductData } from '@/types/productType';
 
 import { RankingGoodsItem } from '@/components/ui/GoodsItem/Ranking';
 import { Grid } from '@/components/ui/Layout/Grid';

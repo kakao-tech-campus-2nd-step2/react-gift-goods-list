@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { BACKEND_API } from '@/constants/api';
 import { useRankFilters } from '@/pages/HomePage/hooks/useRankFilters';
-import { GetRankingResponse, ProductData } from '@/pages/HomePage/types';
+import { GetRankingResponse } from '@/pages/HomePage/types';
+import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
 import { Container } from '@/components/ui/Layout/Container';
@@ -19,14 +20,17 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchRankData = async () => {
       try {
-        const response = await BACKEND_API.get('/api/v1/ranking/products', {
-          params: {
-            targetType: filter.targetType,
-            rankType: filter.rankType,
-          },
-        });
-        const data: GetRankingResponse = response.data;
-        setRankData(data.products);
+        const response = await BACKEND_API.get<GetRankingResponse>(
+          '/api/v1/ranking/products',
+          {
+            params: {
+              targetType: filter.targetType,
+              rankType: filter.rankType,
+            },
+          }
+        );
+
+        setRankData(response.data.products);
       } catch (error) {
         console.error(error);
       }

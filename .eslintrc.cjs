@@ -2,7 +2,6 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    'axios/globals': true,
   },
   extends: [
     'plugin:react/recommended',
@@ -52,6 +51,7 @@ module.exports = {
     'import/no-default-export': 'off',
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'prettier/prettier': 'error',
   },
   settings: {

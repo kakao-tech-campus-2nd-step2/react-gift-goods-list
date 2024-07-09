@@ -7,8 +7,8 @@ export default function ThemePage() {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
   return (
     <>
-      <HeaderSection path={themeKey} />
-      <ItemList />
+      <HeaderSection themeKey={themeKey} />
+      <ItemList themeKey={themeKey} />
     </>
   );
 }

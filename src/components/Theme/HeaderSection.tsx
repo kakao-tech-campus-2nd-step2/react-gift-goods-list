@@ -1,29 +1,28 @@
 import styled from '@emotion/styled';
 
 import { Container } from '@/components/common/Layout/Container';
-import { ThemeData } from '@/constant/ThemeData';
+import { useThemes } from '@/services/useThemes';
 
-export interface IThemeHeader {
-  path: string;
-}
-export const HeaderSection = ({ path }: IThemeHeader) => {
-  const theme = ThemeData.find((item) => item.key === path);
+export const HeaderSection = ({ themeKey }: { themeKey: string }) => {
+  const data = useThemes();
+  const themes = data?.themes ?? [];
+  const theme = themes.find((themeData) => themeData.key === themeKey);
 
   if (!theme) {
-    return null;
+    return <>존재하지 않는 theme입니다.</>;
   }
-  const { backgroundColor, label, title, description } = theme;
+
   return (
-    <HeaderWrapper backgroundColor={backgroundColor}>
+    <HeaderWrapper backgroundColor={theme.backgroundColor}>
       <CustomContainer flexDirection="column" maxWidth="1024px">
-        {label && <SubText>{label}</SubText>}
-        <MainText dangerouslySetInnerHTML={{ __html: title }} />
-        {description && <DescriptText dangerouslySetInnerHTML={{ __html: description }} />}
+        {theme.label && <SubText>{theme.label}</SubText>}
+        <MainText>{theme.title}</MainText>
+        {theme.description && <DescriptText>{theme.description}</DescriptText>}
       </CustomContainer>
     </HeaderWrapper>
   );
 };
-const HeaderWrapper = styled.section<{ backgroundColor: string }>`
+const HeaderWrapper = styled.section<{ backgroundColor: string | undefined }>`
   width: 100%;
   background-color: ${(props) => props.backgroundColor};
   padding: 54px 20px;

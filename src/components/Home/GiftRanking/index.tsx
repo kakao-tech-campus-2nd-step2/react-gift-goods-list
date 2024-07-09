@@ -5,29 +5,32 @@ import { Filter } from './Filter';
 import { FilteredList } from './FilteredList';
 
 import { Container } from '@/components/common/Layout/Container';
-import type { TARGET_FILTER_ITEMS, TYPE_FILTER_ITEMS } from '@/constant/Filter';
+import type { RANK_FILTER_ITEMS, TARGET_FILTER_ITEMS } from '@/constant/Filter';
+import { useRankingProducts } from '@/services/useRankingProducts';
 
-export type Target = (typeof TARGET_FILTER_ITEMS)[number]['text'];
-export type Type = (typeof TYPE_FILTER_ITEMS)[number]['text'];
+export type Target = (typeof TARGET_FILTER_ITEMS)[number]['name'];
+export type Rank = (typeof RANK_FILTER_ITEMS)[number]['name'];
 
-export interface IFilter {
-  target: Target;
-  type: Type;
+export interface RankingProductType {
+  targetType: Target;
+  rankType: Rank;
 }
-
 export const GiftRanking = () => {
-  const [filter, setFilter] = useState<IFilter>({ target: '전체', type: '받고 싶어한' });
-
-  const changeFilter = ({ target, type }: Partial<IFilter>) => {
-    setFilter((prev) => ({ target: target ?? prev.target, type: type ?? prev.type }));
+  const [filter, setFilter] = useState<RankingProductType>({ targetType: 'ALL', rankType: 'MANY_WISH' });
+  
+  const changeFilter = ({ targetType, rankType }: Partial<RankingProductType>) => {
+    setFilter((prev) => ({ targetType: targetType ?? prev.targetType, rankType: rankType ?? prev.rankType }));
   };
+  
+  const data = useRankingProducts(filter);
+  const filterdList = data?.products ?? [];
 
   return (
     <RankingWrapper>
       <Container flexDirection="column" justifyContent="center" maxWidth="1024px">
         <Title>실시간 급상승 선물랭킹</Title>
         <Filter filter={filter} changeFilter={changeFilter} />
-        <FilteredList filter={filter} />
+        <FilteredList filterdList={filterdList} />
       </Container>
     </RankingWrapper>
   );

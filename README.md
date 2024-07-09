@@ -7,8 +7,8 @@
 - [x] 첨부된 **`oas.yaml`** 파일을 토대로 Request, Response Type을 정의
 - [x] 메인 페이지 - Theme 카테고리 섹션
 - [x] 메인 페이지 -실시간 급상승 선물랭킹 섹션
-- [ ] Theme 페이지 - header
-- [ ] Theme 페이지 - 상품 목록 섹션
+- [x] Theme 페이지 - header
+- [x] Theme 페이지 - 상품 목록 섹션
 
 ## Week 3. 2단계 - Error, Loading Status 핸들링 하기
 

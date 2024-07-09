@@ -1,29 +1,47 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [Themes, setThemes] = useState<ThemeData[]>([]);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await axios.get(
+          'https://react-gift-mock-api-ten.vercel.app/api/v1/themes'
+        );
+        setThemes(response.data.themes);
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+      }
+    };
+
+    fetchThemes();
+  }, []);
+  
+  const currentTheme = getCurrentTheme(themeKey, Themes);
 
   if (!currentTheme) {
-    return null;
+    return <Navigate to={RouterPath.home} />;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -84,5 +102,5 @@ const Description = styled.p`
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
+  return themeList.find((theme) => themeKey === theme.key);
 };

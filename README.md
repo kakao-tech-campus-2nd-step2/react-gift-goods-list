@@ -16,10 +16,10 @@
 - entities 추가
   - [x] `components.schemas.ThemeData`
   - [x] `conponents.schemas.ProductData`
-- [ ] 메인페이지-테마 카테고리 섹션: `/api/v1/themes`로부터 데이터를 받아 랜더링
+- [x] 메인페이지-테마 카테고리 섹션: `/api/v1/themes`로부터 데이터를 받아 랜더링
   - res
     - themes: ThemeData array
-- [ ] 메인페이지-실시간 급상승 선물랭킹 섹션: `/api/v1/ranking/products/..query params..`
+- [x] 메인페이지-실시간 급상승 선물랭킹 섹션: `/api/v1/ranking/products/..query params..`
   - query params: targetType, rankType
   - res
     - products: ProductData array

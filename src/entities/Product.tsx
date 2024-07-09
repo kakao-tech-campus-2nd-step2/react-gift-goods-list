@@ -1,7 +1,7 @@
 export interface ProductData {
     id: number;
     name: string;
-    image: string;
+    imageURL: string;
     wish: {
         wishCount: number;
         isWished: boolean;

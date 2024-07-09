@@ -1,13 +1,14 @@
 import Container from '@components/atoms/container/Container';
-import Themes from '@constants/Themes';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import ResponsiveGrid from '@components/atoms/grid/responsive/ResponsiveGrid';
 import MainThemeItem from '@components/organisms/main/theme/MainThemeItem';
 import ResponsiveThemeSection
   from '@components/organisms/main/theme/ResponsiveThemeSection';
+import { useContext } from 'react';
+import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemeSection() {
-  const themes = Themes;
+  const themes = useContext(ThemeContext);
 
   return (
     <ResponsiveThemeSection>

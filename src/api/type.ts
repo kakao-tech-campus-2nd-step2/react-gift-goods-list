@@ -13,6 +13,17 @@ export interface GetRankingProductsResponse {
   products: ProductData[];
 }
 
+export interface GetThemeProductsResponse {
+  products: ProductData[];
+  nextPageToken?: string;
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  totalResults: number;
+  hasNextPage: boolean;
+}
+
 export interface Wish {
   wishCount: number;
   isWished: boolean;

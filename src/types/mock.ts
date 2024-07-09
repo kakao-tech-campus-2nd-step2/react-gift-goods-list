@@ -7,7 +7,9 @@ export const ThemeMockData: ThemeData = {
   title: '예산은 가볍게, 감동은 무겁게❤️',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
+  imageURL: 'https://example.com/image.png',
 };
+
 
 export const ThemeMockList = [ThemeMockData];
 

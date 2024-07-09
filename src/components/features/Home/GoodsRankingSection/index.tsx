@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 import { GoodsMockList } from '@/types/mock';
-
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 

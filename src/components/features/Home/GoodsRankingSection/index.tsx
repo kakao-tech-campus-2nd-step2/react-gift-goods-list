@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { fetchRankingProducts } from '@/api/Api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -17,12 +17,27 @@ export const GoodsRankingSection = () => {
 
   // GoodsMockData를 21번 반복 생성
 
+  const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
+
+  useEffect(() => {
+    const fetchRanking = async () => {
+      try {
+        const data = await fetchRankingProducts(filterOption);
+        setRankingProducts(data.products || []);
+      } catch (err) {
+        console.error('Error fetching ranking products: ', err);
+        setRankingProducts([]);
+      }
+    };
+    fetchRanking();
+  }, [filterOption]);
+
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={rankingProducts} />
       </Container>
     </Wrapper>
   );

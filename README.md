@@ -26,9 +26,9 @@ https://kakao-tech-week3-goods-list.pages.dev/
 
 - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
 
-  - [ ] `/api/v1/ranking/products` API를 사용하여 Section을 구현해요. (Axios 사용 가능)
+  - [x] `/api/v1/ranking/products` API를 사용하여 Section을 구현해요. (Axios 사용 가능)
 
-  - [ ] 필터 조건을 선택 하면 해당 조건에 맞게 API를 요청하여 보여지게 해요.
+  - [x] 필터 조건을 선택 하면 해당 조건에 맞게 API를 요청하여 보여지게 해요.
 
 - Theme 페이지 - header
 

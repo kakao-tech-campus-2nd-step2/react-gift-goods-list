@@ -1,13 +1,20 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
+
+interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -15,14 +22,50 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
+
+  const [isData, setIsData] = useState(true);
+
+  // filterOption 마다 API 요청 다르게
+  useEffect(() => {
+    const fetchGoodsData = async () => {
+      try {
+        const res = await axios.get(
+          `https://react-gift-mock-api-diwoni.vercel.app/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
+        );
+        setFetchState({ isLoading: false, isError: false, data: res.data.products });
+        setIsData(res.data.products.length > 0);
+      } catch (err) {
+        console.error('Error Fetching GoodsData', err);
+        setFetchState({ isLoading: false, isError: true, data: null });
+      }
+    };
+    fetchGoodsData();
+  }, [filterOption]);
+
+  const renderList = () => {
+    if (fetchState.isError) {
+      return <div>데이터를 불러오는 중에 문제가 발생했습니다.</div>;
+    }
+    if (!isData) {
+      return <div>보여줄 상품이 없습니다!</div>;
+    }
+    if (fetchState.isLoading) {
+      return <div>로딩 중</div>;
+    }
+    return <GoodsRankingList goodsList={fetchState.data} />;
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {renderList()}
       </Container>
     </Wrapper>
   );

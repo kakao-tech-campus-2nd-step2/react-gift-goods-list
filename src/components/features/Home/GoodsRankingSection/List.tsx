@@ -8,13 +8,13 @@ import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  goodsList: GoodsData[] | null;
 };
 
 export const GoodsRankingList = ({ goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+  const currentGoodsList = hasMore ? goodsList : goodsList?.slice(0, 6);
 
   return (
     <Wrapper>
@@ -26,7 +26,7 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+        {currentGoodsList?.map(({ id, imageURL, name, price, brandInfo }, index) => (
           <RankingGoodsItems
             key={id}
             rankingIndex={index + 1}

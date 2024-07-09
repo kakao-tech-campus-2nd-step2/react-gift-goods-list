@@ -14,5 +14,5 @@ FE 카카오 선물하기 3주차 과제
 		- [X] URL의 pathParams와 `/api/v1/themes` API를 사용하여 Section을 구현
 		- [X] `themeKey`가 잘못된 경우 메인 페이지로 연결
 	- **Theme 페이지 - 상품 목록 섹션**
-		- [ ] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록 구현
-		- [ ] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 구현
+		- [X] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록 구현
+		- [X] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 구현

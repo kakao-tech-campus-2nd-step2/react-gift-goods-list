@@ -1,16 +1,29 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { fetchThemeProducts } from '@/api/themeProducts';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { ProductData } from '@/types/api';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [products, setProducts] = useState<ProductData[]>([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const productsData = await fetchThemeProducts(themeKey);
+      setProducts(productsData);
+    };
+
+    getProducts();
+  }, [themeKey]);
+
   return (
     <Wrapper>
       <Container>
@@ -21,13 +34,13 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map((product) => (
             <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
+              key={product.id}
+              imageSrc={product.imageURL}
+              title={product.name}
+              amount={product.price.sellingPrice}
+              subtitle={product.brandInfo.name}
             />
           ))}
         </Grid>

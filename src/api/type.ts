@@ -52,6 +52,7 @@ export type ThemeData = {
   id: number;
   key: string;
   label: string;
+  imageURL: string;
   title: string;
   description?: string;
   backgroundColor?: string;

@@ -53,9 +53,9 @@ function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
   };
 }
 
-export async function useGetRankingProducts(
+export function useGetRankingProducts(
   params: GetRankingProductsRequestBody,
-): Promise<UseAxiosReturn<GetRankingProductsResponseBody>> {
+): UseAxiosReturn<GetRankingProductsResponseBody> {
   return useAxios<GetRankingProductsResponseBody>({
     method: 'GET',
     url: '/api/v1/ranking',
@@ -63,17 +63,17 @@ export async function useGetRankingProducts(
   });
 }
 
-export async function useGetThemes(): Promise<UseAxiosReturn<GetThemesResponseBody>> {
+export function useGetThemes(): UseAxiosReturn<GetThemesResponseBody> {
   return useAxios<GetThemesResponseBody>({
     method: 'GET',
     url: '/api/v1/themes',
   });
 }
 
-export async function useGetThemesProducts({
+export function useGetThemesProducts({
   themeKey,
   ...params
-}: GetThemesProductsRequestBody): Promise<UseAxiosReturn<GetThemesProductsResponseBody>> {
+}: GetThemesProductsRequestBody): UseAxiosReturn<GetThemesProductsResponseBody> {
   return useAxios<GetThemesProductsResponseBody>({
     method: 'GET',
     url: `/api/v1/themes/${themeKey}/products`,

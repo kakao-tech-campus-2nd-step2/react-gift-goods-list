@@ -22,7 +22,7 @@ export type UseAxiosReturn<T> = {
 
 function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
   const [data, setData] = useState<AjaxResult<T>>({ success: false, data: null });
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchData = useCallback(async () => {
     setLoading(true);

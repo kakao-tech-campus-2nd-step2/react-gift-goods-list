@@ -1,10 +1,13 @@
-import type { GoodsData, ThemeData } from '.';
+import type { ThemeData } from '@/api/type';
+
+import type { GoodsData } from '.';
 
 export const ThemeMockData: ThemeData = {
   id: 1,
   key: 'life_small_gift',
   label: '가벼운 선물',
   title: '예산은 가볍게, 감동은 무겁게❤️',
+  imageURL: '',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
 };

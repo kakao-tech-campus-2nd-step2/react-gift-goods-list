@@ -55,7 +55,7 @@ export type ThemeData = {
   imageURL: string;
   title: string;
   description?: string;
-  backgroundColor?: string;
+  backgroundColor: string;
 };
 
 export type MessageCardTemplateData = {

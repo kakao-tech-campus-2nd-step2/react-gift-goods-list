@@ -2,7 +2,7 @@
 
 1. API 타입 정의
 
-- [] OAS 파일을 참조하여 Request 및 Response 타입 정의
+- [o] OAS 파일을 참조하여 Request 및 Response 타입 정의
 
 2. Axios API 구현
 
@@ -10,7 +10,7 @@
 
 3. Main Page
 
-- [] 테마 카테고리 섹션 : /api/v1/themes API 활용
+- [o] 테마 카테고리 섹션 : /api/v1/themes API 활용
 - [] 실시간 급상승 선물랭킹 섹션 : /api/v1/ranking/products 활용
 - [] 필터 조건을 선택하면 해당 조건에 맞게 api 보임
 

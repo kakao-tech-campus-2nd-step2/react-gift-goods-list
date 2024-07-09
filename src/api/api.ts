@@ -23,7 +23,7 @@ export const fetchRankingProducts = (filterOption: RankingFilterOption): Promise
   });
 };
 
-export const fetchThemeProducts = (themeKey: string, pageSize = 20): Promise<GoodsData[]> => {
+export const fetchThemeProducts = async (themeKey: string, pageSize = 20): Promise<GoodsData[]> => {
   return getRequest<ProductsResponse>(`/api/v1/themes/${themeKey}/products`, { pageSize }).then((data) => data.products);
 };
 
@@ -32,6 +32,6 @@ export const fetchTheme = async (themeKey: string): Promise<ThemeData | undefine
   return themes.find((theme: ThemeData) => theme.key === themeKey);
 };
 
-export const fetchThemes = (): Promise<ThemesResponse['themes']> => {
+export const fetchThemes = async (): Promise<ThemesResponse['themes']> => {
   return getRequest<ThemesResponse>('/api/v1/themes').then((data) => data.themes);
 };

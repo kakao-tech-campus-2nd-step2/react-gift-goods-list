@@ -1,10 +1,10 @@
-import useFetchGifts from '@hooks/useFetchGifts';
+import useFetchProducts from '@hooks/useFetchProducts';
 import { useState } from 'react';
 import Container from '@components/atoms/container/Container';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
-import GroupFilterArea from '@components/organisms/main/ranking/GroupFilterArea';
-import PopularityFilterArea from '@components/organisms/main/ranking/PopularityFilterArea';
+import TargetFilterArea from '@components/organisms/main/ranking/TargetFilterArea';
+import RankFilterArea from '@components/organisms/main/ranking/RankFilterArea';
 import Button from '@components/atoms/button/Button';
 import {
   RankingSectionTitle, RankingSectionTitleContainer,
@@ -12,12 +12,11 @@ import {
 import { TargetFilter, RankFilter } from '@/types';
 
 function RankingSection() {
-  const [groupFilter, setGroupFilter] = useState<TargetFilter>('all');
-  const [popularityFilter, setPopularityFilter] = useState<RankFilter>('mostWanted');
+  const [targetFilter, setTargetFilter] = useState<TargetFilter>('ALL');
+  const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
   const [isFolded, setIsFolded] = useState(true);
-  const themeFilter = 'all';
 
-  const gifts = useFetchGifts({ groupFilter, popularityFilter, themeFilter });
+  const products = useFetchProducts({ targetFilter, rankFilter });
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -32,14 +31,14 @@ function RankingSection() {
             실시간 급상승 선물랭킹
           </RankingSectionTitle>
         </RankingSectionTitleContainer>
-        <GroupFilterArea currentFilter={groupFilter} setGroupFilter={setGroupFilter} />
-        <PopularityFilterArea
-          currentFilter={popularityFilter}
-          setPopularityFilter={setPopularityFilter}
+        <TargetFilterArea currentFilter={targetFilter} setTargetFilter={setTargetFilter} />
+        <RankFilterArea
+          currentFilter={rankFilter}
+          setPopularityFilter={setRankFilter}
         />
         <Container padding="40px 0 20px">
           <GiftDisplaySection
-            gifts={isFolded ? gifts.slice(0, 6) : gifts}
+            products={isFolded ? products.slice(0, 6) : products}
             maxColumns={6}
             minColumns={3}
             indexed

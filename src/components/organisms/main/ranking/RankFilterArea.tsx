@@ -24,11 +24,11 @@ const FilterButton = styled.div<{ selected: boolean }>`
   }
 `;
 
-function PopularityFilterArea({ currentFilter, setPopularityFilter }: PopularityFilterProps) {
+function RankFilterArea({ currentFilter, setPopularityFilter }: PopularityFilterProps) {
   const filterNames: { [key in RankFilter]: string } = {
-    mostWanted: '받고 싶어한',
-    mostGiven: '많이 선물한',
-    mostGivenByWish: '위시로 받은',
+    MANY_WISH: '받고 싶어한',
+    MANY_RECEIVE: '많이 선물한',
+    MANY_WISH_RECEIVE: '위시로 받은',
   };
 
   return (
@@ -57,4 +57,4 @@ function PopularityFilterArea({ currentFilter, setPopularityFilter }: Popularity
   );
 }
 
-export default PopularityFilterArea;
+export default RankFilterArea;

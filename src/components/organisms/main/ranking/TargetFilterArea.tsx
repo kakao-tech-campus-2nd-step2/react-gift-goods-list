@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import Container from '@components/atoms/container/Container';
 import { TargetFilter } from '@/types';
 
-interface GroupFilterProps {
+interface TargetFilterProps {
   currentFilter: string;
-  setGroupFilter: (filter: TargetFilter) => void;
+  setTargetFilter: (filter: TargetFilter) => void;
 }
 
 const FilterButton = styled.button<{ selected: boolean }>`
@@ -16,14 +16,14 @@ const FilterButton = styled.button<{ selected: boolean }>`
   cursor: pointer;
 `;
 
-function GroupFilterArea({ currentFilter, setGroupFilter }: GroupFilterProps) {
+function TargetFilterArea({ currentFilter, setTargetFilter }: TargetFilterProps) {
   const filterNames: {
     [key in TargetFilter]: string;
   } = {
-    all: '전체',
-    men: '남성이',
-    women: '여성이',
-    adolescent: '청소년이',
+    ALL: '전체',
+    MALE: '남성이',
+    FEMALE: '여성이',
+    TEEN: '청소년이',
   };
 
   return (
@@ -42,7 +42,7 @@ function GroupFilterArea({ currentFilter, setGroupFilter }: GroupFilterProps) {
           <FilterButton
             key={key}
             selected={currentFilter === filter}
-            onClick={() => setGroupFilter(filter)}
+            onClick={() => setTargetFilter(filter)}
           >
             {filterName}
           </FilterButton>
@@ -52,4 +52,4 @@ function GroupFilterArea({ currentFilter, setGroupFilter }: GroupFilterProps) {
   );
 }
 
-export default GroupFilterArea;
+export default TargetFilterArea;

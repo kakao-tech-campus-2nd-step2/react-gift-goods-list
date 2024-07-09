@@ -3,13 +3,13 @@ import Themes from '@constants/Themes';
 import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
-import useFetchGifts from '@hooks/useFetchGifts';
+import useFetchProducts from '@hooks/useFetchProducts';
 import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const gifts = useFetchGifts({ themeFilter: themeKey });
+  const gifts = useFetchProducts({ themeFilter: themeKey });
 
   if (!themeKey || !(themeKey in Themes)) {
     return (

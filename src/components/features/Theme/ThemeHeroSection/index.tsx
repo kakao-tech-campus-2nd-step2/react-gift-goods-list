@@ -1,16 +1,18 @@
 import styled from '@emotion/styled';
 
+import { useCurrentTheme } from '@/api/hooks/useCurrentTheme';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { isRender, currentTheme } = useCurrentTheme({ themeKey });
+
+  if (!isRender) return null;
 
   if (!currentTheme) {
     return null;

@@ -23,7 +23,7 @@
   - query params: targetType, rankType
   - res
     - products: ProductData array
-- [ ] themePage-header: `/api/v1/themes`
+- [x] themePage-header: `/api/v1/themes`
 - [ ] themePage-상품목록: `/api/v1/themes/{themeKey}/products`
   - path params: themeKey
   - query params

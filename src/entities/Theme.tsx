@@ -1,4 +1,4 @@
-interface ThemeData {
+export interface ThemeData {
     id: number;
     key: string;
     label: string;
@@ -6,4 +6,8 @@ interface ThemeData {
     description?: string;
     backgroundColor?: string;
 }
-export default ThemeData;
+
+// /api/v1/themes response
+export interface Themes {
+    themes: ThemeData[];
+}

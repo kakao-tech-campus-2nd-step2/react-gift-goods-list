@@ -1,4 +1,4 @@
-interface ProductData {
+export interface ProductData {
     id: number;
     name: string;
     image: string;
@@ -15,5 +15,18 @@ interface ProductData {
         id: number;
         name: string;
         imageURL: string;
+    }
+}
+
+export interface RankedProducts {
+    products: ProductData[];
+}
+
+export interface Products {
+    products: ProductData[];
+    nextPageToken: string;
+    pageInfo: {
+        totalResults: number;
+        resultsPerPage: number;
     }
 }

@@ -14,10 +14,25 @@
 ## 요구사항
 
 - entities 추가
-- [] 메인페이지-테마 카테고리 섹션: `/api/v1/themes`로부터 데이터를 받아 랜더링
-- [] 메인페이지-실시간 급상승 선물랭킹 섹션: `/api/v1/ranking/products/..query params..`
-- [] themePage-header: `/api/v1/themes`
-- [] themePage-상품목록: `/api/v1/themes/{themeKey}/products`
+  - [x] `components.schemas.ThemeData`
+  - [x] `conponents.schemas.ProductData`
+- [ ] 메인페이지-테마 카테고리 섹션: `/api/v1/themes`로부터 데이터를 받아 랜더링
+  - res
+    - themes: ThemeData array
+- [ ] 메인페이지-실시간 급상승 선물랭킹 섹션: `/api/v1/ranking/products/..query params..`
+  - query params: targetType, rankType
+  - res
+    - products: ProductData array
+- [ ] themePage-header: `/api/v1/themes`
+- [ ] themePage-상품목록: `/api/v1/themes/{themeKey}/products`
+  - path params: themeKey
+  - query params
+    - pageToken: 목록 불러오기에 사용할 페이지 토큰
+    - maxResults
+  - res
+    - products: ProdectDtat array
+    - nextPageToken
+    - pageInfo: totalResults, resultsPerPage
 
 ## page
 

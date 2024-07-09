@@ -24,8 +24,8 @@
 
 #### API 초기 세팅
 
-- [ ] oas.yaml 파일로 Request, Response Type 정의하기
-- [ ] axios 설치하기
+- [x] axios 설치하기
+- [ ] base url 설정하기
 
 #### API 연결하기
 

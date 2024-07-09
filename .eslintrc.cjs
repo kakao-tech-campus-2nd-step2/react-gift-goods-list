@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    'axios/globals': true,
   },
   extends: [
     'plugin:react/recommended',

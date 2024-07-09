@@ -18,7 +18,7 @@ export const getRankingProducts = async (
 
 export const getThemes = async (): Promise<Array<ThemeData>> => {
   const response = await apiClient.get("/api/v1/themes");
-  return response.data;
+  return response.data.themes;
 };
 
 export const getThemeProducts = async (

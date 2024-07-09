@@ -11,3 +11,8 @@ export type ThemeData = {
 export type GetThemesResponse = {
   themes: ThemeData[];
 };
+
+export type ThemeListData = Pick<
+  ThemeData,
+  'id' | 'key' | 'label' | 'imageURL'
+>;

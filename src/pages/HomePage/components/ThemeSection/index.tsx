@@ -1,31 +1,19 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { BACKEND_API } from '@/constants/api';
-import { GetThemesResponse, ThemeData } from '@/types/themeType';
+import { useThemeListData } from '@/pages/HomePage/hooks/useThemeListData';
 
 import { Content } from '@/components/Content';
+import { Container } from '@/components/ui/Layout/Container';
 import { Grid } from '@/components/ui/Layout/Grid';
 
 import { ThemeItem } from './ThemeItem';
 import { gridStyle } from './styles';
 
 export const ThemeSection = () => {
-  const [themeData, setThemeData] = useState<ThemeData[]>([]);
+  const { themeList, loading, error } = useThemeListData();
 
-  useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const response =
-          await BACKEND_API.get<GetThemesResponse>('/api/v1/themes');
-
-        setThemeData(response.data.themes);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchThemeData();
-  }, []);
+  if (error) return <Content justifyContent="center">{error}</Content>;
+  if (loading) return <Container justifyContent="center">loading...</Container>;
 
   return (
     <Content height="fit-content" justifyContent="center">
@@ -38,13 +26,11 @@ export const ThemeSection = () => {
         }}
         css={gridStyle}
       >
-        {themeData.map((theme) => {
-          return (
-            <Link key={theme.id} to={`/theme/${theme.key}`}>
-              <ThemeItem theme={theme} />
-            </Link>
-          );
-        })}
+        {themeList.map((theme) => (
+          <Link key={theme.id} to={`/theme/${theme.key}`}>
+            <ThemeItem label={theme.label} imageURL={theme.imageURL} />
+          </Link>
+        ))}
       </Grid>
     </Content>
   );

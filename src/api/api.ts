@@ -14,3 +14,18 @@ export const fetchRankingFromAPI = async (): Promise<ProductData[]> => {
   const response = await api.get<{ products: ProductData[] }>('api/v1/ranking/products');
   return response.data.products;
 };
+
+export const fetchProductsByTheme = async (
+  themeKey: string,
+  maxResults = 20,
+): Promise<ProductData[]> => {
+  const response = await api.get<{ products: ProductData[] }>(
+    `/api/v1/themes/${themeKey}/products`,
+    {
+      params: {
+        maxResults,
+      },
+    },
+  );
+  return response.data.products;
+};

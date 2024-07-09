@@ -1,29 +1,31 @@
 import Container from '@components/atoms/container/Container';
 import { backgroundColors } from '@styles/colors';
-import Themes from '@constants/Themes';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
+import { useContext } from 'react';
 import { ThemeKey } from '@/types';
 import { ThemeName, ThemeSubtitle, ThemeTitle } from './Banner.styles';
+import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 interface BannerProps {
   themeKey: ThemeKey;
 }
 
 function Banner({ themeKey }: BannerProps) {
-  const themeTexts = Themes[themeKey];
+  const themes = useContext(ThemeContext);
+  const theme = themes[themeKey];
 
   return (
-    <Container backgroundColor={backgroundColors.containerDark} elementSize="full-width" justifyContent="center">
+    <Container backgroundColor={theme.backgroundColor || backgroundColors.containerDark} elementSize="full-width" justifyContent="center">
       <Container maxWidth={MAX_CONTENT_WIDTH} elementSize="full-width" padding="50px 20px">
         <Container flexDirection="column">
           <ThemeName>
-            {themeTexts.keyword}
+            {theme.label}
           </ThemeName>
           <ThemeTitle>
-            {themeTexts.title}
+            {theme.title}
           </ThemeTitle>
           <ThemeSubtitle>
-            {themeTexts.subtitle}
+            {theme.description}
           </ThemeSubtitle>
         </Container>
       </Container>

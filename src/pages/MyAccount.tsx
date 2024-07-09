@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/common/Button';
-import Header from '@/components/Header';
+import Header from '@/components/features/Header';
 import AuthContext from '@/context/AuthContext';
 
 export default () => {

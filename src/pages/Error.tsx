@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-import Header from '@/components/Header';
+import Header from '@/components/features/Header';
 
 export default () => {
     const httpStatus = useParams().http_status;

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Grid } from '../common/layouts/Grid';
+import { Grid } from '../../common/layouts/Grid';
 
 export default () => {
     return (

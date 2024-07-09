@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import Header from '@/components/Header';
+import Header from '@/components/features/Header';
 
 import DefaultList from './DefaultList';
 import ThemeHeader from './ThemeHeader';

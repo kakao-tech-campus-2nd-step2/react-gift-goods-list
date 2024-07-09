@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '@/context/AuthContext';
 
-import { Image } from '../common/Image';
+import { Image } from '../../common/Image';
 
 export default () => {
     const navigate = useNavigate();

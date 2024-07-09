@@ -19,3 +19,7 @@ export function getSizeStyles(size?: ContainerSize) {
     height: ${size.height};
   `;
 }
+
+export function isThemesLoaded(themes: Object) {
+  return Object.keys(themes).length !== 0;
+}

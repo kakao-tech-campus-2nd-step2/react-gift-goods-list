@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/common/Button';
 import { GoodsItem } from '@/components/common/GoodsItem';
+import { HandleBox } from '@/components/common/Handle';
 import { Container } from '@/components/common/Layout/Container';
 import { Grid } from '@/components/common/Layout/Grid';
 import type { Product } from '@/services/types';
@@ -15,6 +16,10 @@ interface FilteredListProps {
 export const FilteredList = ({ filterdList }: FilteredListProps) => {
   const [more, setMore] = useState(false);
   const visibleItems = more ? filterdList : filterdList.slice(0, 6);
+
+  if (filterdList.length == 0) {
+    return <HandleBox>보여줄 상품이 없어요!</HandleBox>;
+  }
 
   return (
     <ListWrapper>

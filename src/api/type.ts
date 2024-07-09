@@ -9,6 +9,10 @@ export interface GetThemeProductsParameters {
   maxResults?: number;
 }
 
+export interface GetProductDetailsParameters {
+  productId: string;
+}
+
 export interface GetRankingProductsResponse {
   products: ProductData[];
 }

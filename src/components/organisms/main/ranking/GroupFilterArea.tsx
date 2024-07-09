@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import Container from '@components/atoms/container/Container';
-import { GroupFilter } from '@/types';
+import { TargetFilter } from '@/types';
 
 interface GroupFilterProps {
   currentFilter: string;
-  setGroupFilter: (filter: GroupFilter) => void;
+  setGroupFilter: (filter: TargetFilter) => void;
 }
 
 const FilterButton = styled.button<{ selected: boolean }>`
@@ -18,7 +18,7 @@ const FilterButton = styled.button<{ selected: boolean }>`
 
 function GroupFilterArea({ currentFilter, setGroupFilter }: GroupFilterProps) {
   const filterNames: {
-    [key in GroupFilter]: string;
+    [key in TargetFilter]: string;
   } = {
     all: '전체',
     men: '남성이',
@@ -34,7 +34,7 @@ function GroupFilterArea({ currentFilter, setGroupFilter }: GroupFilterProps) {
       }}
       padding="20px 0 7px"
     >
-      {(Object.keys(filterNames) as GroupFilter[]).map((filter) => {
+      {(Object.keys(filterNames) as TargetFilter[]).map((filter) => {
         const key = `groupFilter-${filter}`;
         const filterName = filterNames[filter];
 

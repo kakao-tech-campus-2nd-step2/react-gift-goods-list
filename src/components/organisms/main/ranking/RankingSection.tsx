@@ -9,11 +9,11 @@ import Button from '@components/atoms/button/Button';
 import {
   RankingSectionTitle, RankingSectionTitleContainer,
 } from '@components/organisms/main/ranking/RankingSection.styles';
-import { GroupFilter, PopularityFilter } from '@/types';
+import { TargetFilter, RankFilter } from '@/types';
 
 function RankingSection() {
-  const [groupFilter, setGroupFilter] = useState<GroupFilter>('all');
-  const [popularityFilter, setPopularityFilter] = useState<PopularityFilter>('mostWanted');
+  const [groupFilter, setGroupFilter] = useState<TargetFilter>('all');
+  const [popularityFilter, setPopularityFilter] = useState<RankFilter>('mostWanted');
   const [isFolded, setIsFolded] = useState(true);
   const themeFilter = 'all';
 

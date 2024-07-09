@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Gift } from '@dto/Gift';
-import { GiftThemeKey, GroupFilter, PopularityFilter } from '@/types';
+import { GiftThemeKey, TargetFilter, RankFilter } from '@/types';
 
 interface FetchParams {
-  groupFilter?: GroupFilter;
-  popularityFilter?: PopularityFilter;
+  groupFilter?: TargetFilter;
+  popularityFilter?: RankFilter;
   themeFilter?: 'all' | GiftThemeKey;
 }
 

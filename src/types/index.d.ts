@@ -65,6 +65,6 @@ export type GiftThemeKey = typeof giftThemeKeys[number];
 
 export type ElementSize = FixedSize | 'responsive' | 'small' | 'big';
 
-export type GroupFilter = 'all' | 'men' | 'women' | 'adolescent';
+export type TargetFilter = 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
 
-export type PopularityFilter = 'mostWanted' | 'mostGiven' | 'mostGivenByWish';
+export type RankFilter = 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';

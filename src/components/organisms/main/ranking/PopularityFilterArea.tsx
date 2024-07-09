@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import Container from '@components/atoms/container/Container';
 import { BREAKPOINT_SM } from '@styles/size';
-import { PopularityFilter } from '@/types';
+import { RankFilter } from '@/types';
 
 interface PopularityFilterProps {
   currentFilter: string;
-  setPopularityFilter: (filter: PopularityFilter) => void;
+  setPopularityFilter: (filter: RankFilter) => void;
 }
 
 const FilterButton = styled.div<{ selected: boolean }>`
@@ -25,7 +25,7 @@ const FilterButton = styled.div<{ selected: boolean }>`
 `;
 
 function PopularityFilterArea({ currentFilter, setPopularityFilter }: PopularityFilterProps) {
-  const filterNames: { [key in PopularityFilter]: string } = {
+  const filterNames: { [key in RankFilter]: string } = {
     mostWanted: '받고 싶어한',
     mostGiven: '많이 선물한',
     mostGivenByWish: '위시로 받은',
@@ -39,7 +39,7 @@ function PopularityFilterArea({ currentFilter, setPopularityFilter }: Popularity
       }}
       backgroundColor="rgb(230, 241, 255)"
     >
-      {(Object.keys(filterNames) as PopularityFilter[]).map((filter) => {
+      {(Object.keys(filterNames) as RankFilter[]).map((filter) => {
         const key = `popularityFilter-${filter}`;
         const filterName = filterNames[filter];
 

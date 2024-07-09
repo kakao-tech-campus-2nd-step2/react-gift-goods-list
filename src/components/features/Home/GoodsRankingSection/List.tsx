@@ -11,6 +11,18 @@ type Props = {
   goodsList: GoodsData[];
 };
 
+export type Product = {
+  id: number;
+  imageURL: string;
+  name: string;
+  price: {
+    sellingPrice: number;
+  };
+  brandInfo: {
+    name: string;
+  };
+};
+
 export const GoodsRankingList = ({ goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
@@ -26,14 +38,14 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+        {currentGoodsList.map((product, index) => (
           <RankingGoodsItems
-            key={id}
+            key={product.id}
             rankingIndex={index + 1}
-            imageSrc={imageURL}
-            title={name}
-            amount={price.sellingPrice}
-            subtitle={brandInfo.name}
+            imageSrc={product.imageURL}
+            title={product.name}
+            amount={product.price.sellingPrice}
+            subtitle={product.brandInfo.name}
           />
         ))}
       </Grid>

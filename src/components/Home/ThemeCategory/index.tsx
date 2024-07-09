@@ -8,8 +8,12 @@ import { Grid } from '@/components/common/Layout/Grid';
 import { useThemes } from '@/services/useThemes';
 
 export const ThemeCategory = () => {
-  const data = useThemes();
+  const { isLoading, isError, data } = useThemes();
   const ThemeCategoryList = data?.themes ?? [];
+
+  if (isLoading || isError) {
+    return null;
+  }
 
   return (
     <ThemeWrapper>

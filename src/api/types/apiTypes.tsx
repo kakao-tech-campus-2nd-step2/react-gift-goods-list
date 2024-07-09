@@ -105,7 +105,8 @@ export interface GetProductDetailResponse {
 }
 
 export interface GetProductOptionsResponse {
-	options: any; // 정확한 타입을 알고 있다면 여기에 명시
+	options: any;
+	// 재귀적인 옵션 객체?
 }
 
 export interface GetMessageCardTemplatesResponse {

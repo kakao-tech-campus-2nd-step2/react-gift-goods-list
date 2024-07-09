@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://kakao-tech-campus-mock-server.vercel.app';
+const API_BASE_URL = 'https://react-gift-mock-api-nnoonjy.vercel.app';
 
 export const getThemes = async () => {
   const response = await axios.get(`${API_BASE_URL}/api/v1/themes`);

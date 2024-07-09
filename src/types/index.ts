@@ -5,6 +5,7 @@ export type ThemeData = {
   title: string;
   description?: string;
   backgroundColor: string;
+  imageURL?: string;
 };
 
 export const validTargetTypes = ['ALL', 'FEMALE', 'MALE', 'TEEN'] as const;

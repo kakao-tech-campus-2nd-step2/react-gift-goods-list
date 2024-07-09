@@ -1,10 +1,9 @@
-import styled from '@emotion/styled';
-
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import { GoodsMockList } from '@/types/mock';
+import styled from '@emotion/styled';
 
 type Props = {
   themeKey: string;

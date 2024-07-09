@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import { getRankingProducts } from '@/libs/api';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +15,44 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchRankingProducts = async (filter: RankingFilterOption) => {
+    try {
+      setLoading(true);
+      const data = await getRankingProducts({
+        targetType: filter.targetType,
+        rankType: filter.rankType,
+      });
+      setGoodsList(data.products);
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to fetch ranking products:', err);
+      setError(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRankingProducts(filterOption);
+  }, [filterOption]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Failed to load ranking products.</div>;
+  }
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={goodsList} />
       </Container>
     </Wrapper>
   );

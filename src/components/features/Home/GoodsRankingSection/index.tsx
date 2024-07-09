@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { fetchRankingProducts } from '@/api/ranking';
+import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Container } from '@/components/common/layouts/Container';
+import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { ProductData } from '@/types/api';
 
 import { GoodsRankingFilter } from './Filter';
-import { GoodsRankingList } from './List';
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -15,14 +17,41 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [products, setProducts] = useState<ProductData[]>([]);
+
+  useEffect(() => {
+    const getRankingProducts = async () => {
+      const productsData = await fetchRankingProducts(filterOption);
+      setProducts(productsData);
+    };
+
+    getRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <Grid
+        columns={{
+          initial: 3,
+          sm: 4,
+          md: 6,
+        }}
+        gap={16}
+        >
+          {products.map((product, index) => (
+            <RankingGoodsItems
+              key={product.id}
+              rankingIndex={index + 1}
+              imageSrc={product.imageURL}
+              title={product.name}
+              amount={product.price.sellingPrice}
+              subtitle={product.brandInfo.name}
+            />
+          ))}
+        </Grid>
       </Container>
     </Wrapper>
   );

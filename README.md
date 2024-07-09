@@ -8,8 +8,8 @@ FE 카카오 선물하기 3주차 과제
 		- [X] `/api/v1/themes` API를 사용하여 Section 구현
 		- [X] API는 Axios 또는 React Query 등을 모두 활용해서 구현 가능
 	- **메인 페이지 - 실시간 급상승 선물 랭킹 섹션**
-		- [ ] `/api/v1/ranking/products` API를 사용하여 Section 구현(Axios 사용 가능)
-		- [ ] 필터 조건을 선택하면 해당 조건에 맞게 API를 요청하여 보여지도록 구현
+		- [X] `/api/v1/ranking/products` API를 사용하여 Section 구현(Axios 사용 가능)
+		- [X] 필터 조건을 선택하면 해당 조건에 맞게 API를 요청하여 보여지도록 구현
 	- **Theme 페이지 - Header**
 		- [ ] URL의 pathParams와 `/api/v1/themes` API를 사용하여 Section을 구현
 		- [ ] `themeKey`가 잘못된 경우 메인 페이지로 연결

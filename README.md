@@ -1,6 +1,7 @@
 <h1> 카카테크 캠퍼스 - 프론트엔드 카카오 선물하기 편</h1>
 
-<h3> 🚀 Getting Started
+<h3> 🚀 Getting Started</h3>
+
 ✔️ Frontend에서 비동기 데이터를 처리하는 방법에 대해 고민해요.
 
 ✔️ Axios 만을 사용해서 React에서 비동기 데이터를 구현해요.
@@ -9,7 +10,7 @@
 
 https://kakao-tech-week3-goods-list.pages.dev/
 
-<h3>📝 요구사항
+<h3>📝 요구사항</h3>
 
 - [ ] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.
 

@@ -1,16 +1,37 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [GoodsList, setGoodsList] = useState<GoodsData[]>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchGoods = async () => {
+      try {
+        const response = await axios.get(
+          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products?maxResults=20`,
+        );
+        setGoodsList(response.data.products);
+      } catch {
+        navigate(RouterPath.root);
+      }
+    };
+    fetchGoods();
+  }, [navigate, themeKey]);
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +42,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {GoodsList?.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

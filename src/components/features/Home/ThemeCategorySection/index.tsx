@@ -45,7 +45,7 @@ export const ThemeCategorySection = () => {
           }}
         >
           {themeList.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+            <Link key={theme.key} to={getDynamicPath.theme(theme.key)}>
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
             </Link>
           ))}

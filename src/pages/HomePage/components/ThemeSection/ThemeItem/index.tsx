@@ -1,5 +1,5 @@
 import { DEFAULT_IMAGE_URL } from '@/constants/data';
-import { ThemeData } from '@/pages/HomePage/types';
+import { ThemeData } from '@/types/themeType';
 
 import { Image } from '@/components/ui/Image/Default';
 import { Container } from '@/components/ui/Layout/Container';

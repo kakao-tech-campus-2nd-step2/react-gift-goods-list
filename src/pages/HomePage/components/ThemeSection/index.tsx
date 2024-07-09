@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { BACKEND_API } from '@/constants/api';
-import { GetThemesResponse, ThemeData } from '@/pages/HomePage/types';
+import { GetThemesResponse, ThemeData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
 import { Grid } from '@/components/ui/Layout/Grid';
@@ -16,9 +16,10 @@ export const ThemeSection = () => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const response = await BACKEND_API.get('/api/v1/themes');
-        const data: GetThemesResponse = response.data;
-        setThemeData(data.themes);
+        const response =
+          await BACKEND_API.get<GetThemesResponse>('/api/v1/themes');
+
+        setThemeData(response.data.themes);
       } catch (error) {
         console.error(error);
       }
@@ -39,7 +40,7 @@ export const ThemeSection = () => {
       >
         {themeData.map((theme) => {
           return (
-            <Link key={theme.id} to={`/theme/${theme.id}`}>
+            <Link key={theme.id} to={`/theme/${theme.key}`}>
               <ThemeItem theme={theme} />
             </Link>
           );

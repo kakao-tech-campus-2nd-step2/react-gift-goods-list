@@ -5,6 +5,7 @@ export type ThemeData = {
   title: string;
   description?: string;
   backgroundColor: string;
+  imageURL: string;
 };
 
 export type RankingFilterOption = {
@@ -29,5 +30,30 @@ export type GoodsData = {
     id: number;
     name: string;
     imageURL: string;
+  };
+};
+
+export type GoodsResponse = {
+  products: GoodsData[];
+  nextPageToken: string | null;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+};
+
+export type ThemesResponse = {
+  themes: ThemeData[];
+};
+export type RankingResponse = {
+  products: GoodsData[];
+};
+
+export type ProductsResponse = {
+  products: GoodsData[];
+  nextPageToken?: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
   };
 };

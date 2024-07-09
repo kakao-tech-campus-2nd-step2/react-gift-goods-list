@@ -6,16 +6,19 @@ export interface RankingProductsRequestQuery {
 }
 
 export interface ThemeProductsRequestQuery {
-  themeKey: string;
   pageToken?: string;
   maxResults?: number;
 }
 
-export interface ProductDetailRequestQuery {
+export interface ThemeProductsRequestPath {
+  themeKey: string;
+}
+
+export interface ProductDetailRequestPath {
   productId: string;
 }
 
-export interface ProductOptionsRequestQuery extends ProductDetailRequestQuery {}
+export interface ProductOptionsRequestPath extends ProductDetailRequestPath {}
 
 export interface MyWishProductsRequestQuery {
   pageToken?: string;

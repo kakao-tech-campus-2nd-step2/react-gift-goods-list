@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import mock from '@/apis/index';
-import { Theme } from '@/types/product';
+import type { Theme } from '@/types/product';
 
 import useQueryState from '../useQueryState';
 

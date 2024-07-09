@@ -58,8 +58,10 @@ const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
     }
   }, [fetchState, themeKey, navigate]);
 
-  if (fetchState.isLoading) return <p>Loading...</p>;
-  if (fetchState.isError) return <p>데이터를 불러오는 중에 문제가 발생했습니다.</p>;
+  if (fetchState.isLoading)
+    return <p>Loading...</p>;
+  if (fetchState.isError)
+    return <p>데이터를 불러오는 중에 문제가 발생했습니다.</p>;
 
   const currentTheme = fetchState.data?.find((theme) => theme.key === themeKey);
   if (!currentTheme) {

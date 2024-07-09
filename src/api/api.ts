@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ProductData, ThemeData } from '@/types/index';
+import { ProductData, ThemeData, RankingFilterOption } from '@/types/index';
 
 const api = axios.create({
   baseURL: 'https://react-gift-mock-api-hojeong26-git-main-hojeongs-projects.vercel.app',
@@ -10,8 +10,12 @@ export const fetchThemesFromAPI = async (): Promise<ThemeData[]> => {
   return response.data.themes;
 };
 
-export const fetchRankingFromAPI = async (): Promise<ProductData[]> => {
-  const response = await api.get<{ products: ProductData[] }>('api/v1/ranking/products');
+export const fetchRankingFromAPI = async (
+  filterOption: RankingFilterOption,
+): Promise<ProductData[]> => {
+  const response = await api.get<{ products: ProductData[] }>('api/v1/ranking/products', {
+    params: filterOption,
+  });
   return response.data.products;
 };
 

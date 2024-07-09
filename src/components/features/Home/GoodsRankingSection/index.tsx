@@ -23,7 +23,7 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchRankingProducts = async () => {
       try {
-        const fetchedRankProducts = await fetchRankingFromAPI();
+        const fetchedRankProducts = await fetchRankingFromAPI(filterOption);
         setRankProducts(fetchedRankProducts);
       } catch (error) {
         setFetchError(error as Error);
@@ -32,7 +32,7 @@ export const GoodsRankingSection = () => {
       }
     };
     fetchRankingProducts();
-  }, []);
+  }, [filterOption]);
 
   if (loading) return <div>Loading...</div>;
   if (fetchError) return <div>Error loading themes</div>;

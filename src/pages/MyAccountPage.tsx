@@ -10,9 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 export default function MyAccountPage() {
   const { authToken, setAuthToken } = useAuth();
   const navigate = useNavigate();
-  // if (!authToken) {
-  //   return <Navigate to="/login" replace={true} />;
-  // }
+
   const HandleLogout = () => {
     sessionStorage.clear();
     setAuthToken(null);

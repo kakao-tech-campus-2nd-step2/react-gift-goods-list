@@ -25,10 +25,9 @@ export interface Theme {
   title: string;
   description: string;
   backgroundColor: string;
-  imageURL: string;
 }
 
-export interface ProductWithInfo extends Array<Product> {
+export interface WishProduct extends Product {
   nextPageToken: string;
   pageInfo: {
     totalResults: number;

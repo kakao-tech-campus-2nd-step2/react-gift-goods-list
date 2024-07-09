@@ -73,7 +73,7 @@ export interface GetMyWishProductsResponse {
 
 export interface PageInfo {
   totalResults: number;
-  hasNextPage: boolean;
+  resultsPerPage: boolean;
 }
 
 export interface Wish {

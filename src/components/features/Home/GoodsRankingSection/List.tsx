@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Button } from '@/components/common/Button';
@@ -6,6 +5,7 @@ import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
+import styled from '@emotion/styled';
 
 type Props = {
   goodsList: GoodsData[];
@@ -26,20 +26,22 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
-          <RankingGoodsItems
-            key={id}
-            rankingIndex={index + 1}
-            imageSrc={imageURL}
-            title={name}
-            amount={price.sellingPrice}
-            subtitle={brandInfo.name}
-          />
-        ))}
+        {currentGoodsList.map(
+          ({ id, imageURL, name, price, brandInfo }, index) => (
+            <RankingGoodsItems
+              key={id}
+              rankingIndex={index + 1}
+              imageSrc={imageURL}
+              title={name}
+              amount={price.sellingPrice}
+              subtitle={brandInfo.name}
+            />
+          )
+        )}
       </Grid>
       <ButtonWrapper>
         <Button
-          theme="outline"
+          theme='outline'
           style={{ maxWidth: '480px' }}
           onClick={() => {
             setHasMore((prev) => !prev);

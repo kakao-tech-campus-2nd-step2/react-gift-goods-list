@@ -11,7 +11,7 @@ const API_URL = axios.create({
 
 export const fetchThemes = async (): Promise<ThemeData[]> => {
     try {
-      const response = await API_URL.get<{themes : ThemeData[]}>('/api/v1/themes');
+      const response = await API_URL.get<{themes : ThemeData[]}>('api/v1/themes');
       if (response.status === 200 && response.data && response.data.themes) {
         return response.data.themes;
       } else {
@@ -26,15 +26,31 @@ export const fetchThemes = async (): Promise<ThemeData[]> => {
   
 
   export const fetchRankingProducts = async(targetType:string, rankType:string) : Promise<GoodsData[]> => {
-    const response = await axios.get(`${API_URL}/ranking/products`, {
+    const response = await API_URL.get('api/v1/ranking/products', {
         params : {targetType, rankType}
     });
     return response.data.products;
   }
 
-  export const fetchThemeProducts = async (themeKey: string): Promise<GoodsData[]> => {
-    const response = await axios.get(`${API_URL}/themes/${themeKey}/products`, {
-      params: { maxResults: 20 }
+  export const fetchThemeProducts = async (themeKey: string, maxResults: number = 20): Promise<GoodsData[]> => {
+    const response = await API_URL.get(`api/v1/themes/${themeKey}/products`, {
+      params: { maxResults }
     });
     return response.data.products;
   };
+
+  export const fetchTheme = async (themeKey: string): Promise<ThemeData> => {
+    try {
+      const response = await API_URL.get<ThemeData>(`/api/v1/themes/${themeKey}`, {
+      });
+      if (response.status === 200 && response.data) {
+        return response.data;
+      } else {
+        throw new Error("No theme data received");
+      }
+    } catch (error) {
+      console.error("Failed to fetch theme", error);
+      throw error;
+    }
+  };
+  

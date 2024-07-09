@@ -1,16 +1,26 @@
 import styled from '@emotion/styled';
+import { useEffect,useState } from 'react';
 
+import { fetchThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import { GoodsData } from '@/types';
 
-type Props = {
+
+interface ThemeGoodsSectionProps {
   themeKey: string;
-};
+}
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
+  const [products, setProducts] = useState<GoodsData[]>([]);
+
+  useEffect(() => {
+    fetchThemeProducts(themeKey).then(fetchedProducts => {
+      setProducts(fetchedProducts);  
+    }).catch(console.error);
+  }, [themeKey]);
   return (
     <Wrapper>
       <Container>
@@ -21,7 +31,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

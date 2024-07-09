@@ -16,7 +16,7 @@
 
 4. Theme Page
 
-- [] Header : url의 themekey 사용
-- [] url의 pathParams와 /api/vi/themes API를 사용
-- [] themeKey가 잘못된 경우 메인 페이지로
-- [] 요청시 한번에 20개의 상품 목록이 내려오도록 구현
+- [ｏ] Header : url의 themekey 사용
+- [ｏ] url의 pathParams와 /api/vi/themes API를 사용
+- [ｏ] themeKey가 잘못된 경우 메인 페이지로
+- [ｏ] 요청시 한번에 20개의 상품 목록이 내려오도록 구현

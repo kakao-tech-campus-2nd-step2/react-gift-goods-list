@@ -17,6 +17,11 @@ export interface ProductOptionsParameters {
   productId: string;
 }
 
+export interface GetMyWishProductsParameters {
+  pageToken?: string;
+  maxResults?: number;
+}
+
 export interface GetRankingProductsResponse {
   products: ProductData[];
 }

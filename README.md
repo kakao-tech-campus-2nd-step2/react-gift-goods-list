@@ -32,9 +32,9 @@ https://kakao-tech-week3-goods-list.pages.dev/
 
 - Theme 페이지 - header
 
-  - [ ] url의 `pathParams`와 `/api/v1/themes` API를 사용하여 Section을 구현해요.
+  - [x] url의 `pathParams`와 `/api/v1/themes` API를 사용하여 Section을 구현해요.
 
-  - [ ] themeKey가 잘못 된 경우 메인 페이지로 연결해요.
+  - [x] themeKey가 잘못 된 경우 메인 페이지로 연결해요.
 
 - Theme 페이지 - 상품 목록 섹션
 

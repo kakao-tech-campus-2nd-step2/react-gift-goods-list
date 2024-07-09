@@ -1,29 +1,41 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { apiUrl, type ThemeData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
+
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}api/v1/themes`);
+        const theme = getCurrentTheme(themeKey, res.data.themes);
+        setCurrentTheme(theme);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchThemeData();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

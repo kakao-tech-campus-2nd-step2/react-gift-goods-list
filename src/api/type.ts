@@ -30,6 +30,9 @@ export interface GetThemeProductsResponse {
 export interface GetProductDetailsResponse {
   product: ProductDetailData;
 }
+export interface GetMessageCardTemplatesResponse {
+  templates: MessageCardTemplateData[];
+}
 
 export interface PageInfo {
   totalResults: number;

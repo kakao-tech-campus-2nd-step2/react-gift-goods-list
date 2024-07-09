@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance, replacePathParams } from '@utils/network';
 import RequestURLs from '@constants/RequestURLs';
+import { ThemeProductsRequestQuery } from '@/types/request';
 import {
   ThemeProductsResponse,
 } from '@/types/response';
@@ -16,7 +17,12 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
     async function request() {
       const paths = { themeKey };
       const url = replacePathParams(RequestURLs.THEME_PRODUCTS, paths);
-      const response = await axiosInstance.get<ThemeProductsResponse>(url);
+      const params: ThemeProductsRequestQuery = {
+        maxResults: 20,
+      };
+      const response = await axiosInstance.get<ThemeProductsResponse>(url, {
+        params,
+      });
       setProducts(response.data.products);
     }
 

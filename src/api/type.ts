@@ -34,6 +34,10 @@ export interface GetMessageCardTemplatesResponse {
   templates: MessageCardTemplateData[];
 }
 
+export interface GetMyAccountInfoResponse {
+  myAccountInfo: MyAccountInfoData;
+}
+
 export interface PageInfo {
   totalResults: number;
   hasNextPage: boolean;

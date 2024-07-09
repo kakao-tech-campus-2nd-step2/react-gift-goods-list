@@ -13,6 +13,10 @@ export interface GetProductDetailsParameters {
   productId: string;
 }
 
+export interface ProductOptionsParameters {
+  productId: string;
+}
+
 export interface GetRankingProductsResponse {
   products: ProductData[];
 }

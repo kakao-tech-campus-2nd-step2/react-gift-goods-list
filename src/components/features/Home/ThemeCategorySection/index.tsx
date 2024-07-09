@@ -27,7 +27,6 @@ export const ThemeCategorySection = () => {
           'https://react-gift-mock-api-daeun0726.vercel.app/api/v1/themes',
         );
         setThemeList(response.data.themes);
-        console.log('themeList:', themeList);
       } catch (error) {
         console.error(error);
       }

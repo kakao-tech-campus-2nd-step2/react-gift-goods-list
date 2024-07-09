@@ -6,7 +6,6 @@ import { fetchRankingProducts } from '@/api/fetchRankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-// import { GoodsMockList } from '@/types/mock';
 import type { GoodsData } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';

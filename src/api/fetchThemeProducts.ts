@@ -17,6 +17,7 @@ export const fetchThemeProducts = async (
   maxResults: number = 20,
 ): Promise<FetchThemeProductsResponse> => {
   const params: { pageToken?: string; maxResults: number } = { maxResults };
+
   if (pageToken) {
     params.pageToken = pageToken;
   }

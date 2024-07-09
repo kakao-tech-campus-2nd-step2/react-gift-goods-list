@@ -103,3 +103,11 @@ export interface MessageCardTemplateData {
   thumbURL: string;
   imageURL: string;
 }
+
+export interface MyAccountInfoData {
+  id: number;
+  name: string;
+  birthday?: string;
+  profileImageURL: string;
+  point: number;
+}

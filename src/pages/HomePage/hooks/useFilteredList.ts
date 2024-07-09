@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { INITIAL_ITEMS_COUNT } from '@/pages/HomePage/data/initailCount';
+import { ProductData } from '@/types/productType';
 
-import { ProductData, RankingFilter } from '../types';
+import { RankingFilter } from '../types';
 
 export const useVisibleList = (
   filteredList: ProductData[],

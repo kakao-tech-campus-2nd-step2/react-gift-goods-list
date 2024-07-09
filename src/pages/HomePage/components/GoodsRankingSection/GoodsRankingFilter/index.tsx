@@ -1,4 +1,4 @@
-import { RankingFilter } from '@/pages/HomePage/types';
+import { RankingFilter } from '@/types/productType';
 
 import { FilterRank } from './FilterRank';
 import { FilterTarget } from './FilterTarget';

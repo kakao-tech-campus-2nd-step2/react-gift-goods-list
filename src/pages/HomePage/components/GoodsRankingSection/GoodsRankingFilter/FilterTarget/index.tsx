@@ -1,5 +1,5 @@
 import { TargetButtons } from '@/pages/HomePage/data/filterButton';
-import { RankingFilter } from '@/pages/HomePage/types';
+import { RankingFilter } from '@/types/productType';
 
 import { Container } from '@/components/ui/Layout/Container';
 

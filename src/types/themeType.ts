@@ -8,11 +8,16 @@ export type ThemeData = {
   backgroundColor?: string;
 };
 
-export type GetThemesResponse = {
-  themes: ThemeData[];
-};
-
 export type ThemeListData = Pick<
   ThemeData,
   'id' | 'key' | 'label' | 'imageURL'
 >;
+
+export type ThemeHeaderData = Pick<
+  ThemeData,
+  'label' | 'title' | 'description' | 'backgroundColor'
+>;
+
+export type GetThemesResponse = {
+  themes: ThemeData[];
+};

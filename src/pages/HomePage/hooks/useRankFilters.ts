@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { RankingFilter } from '../types';
+import { RankingFilter } from '@/types/productType';
 
 export const useRankFilters = () => {
   const [filter, setFilter] = useState<RankingFilter>({

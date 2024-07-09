@@ -1,5 +1,5 @@
 import { RankButtons } from '@/pages/HomePage/data/filterButton';
-import { RankingFilter } from '@/pages/HomePage/types';
+import { RankingFilter } from '@/types/productType';
 
 import { Callout } from '@/components/Callout';
 

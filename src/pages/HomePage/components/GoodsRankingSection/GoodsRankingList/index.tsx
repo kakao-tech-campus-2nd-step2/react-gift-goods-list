@@ -1,9 +1,9 @@
-import { useVisibleList } from '@/pages/HomePage/hooks/useFilteredList';
+import { useExpansionControl } from '@/pages/HomePage/hooks/useExpansionControl';
 import { useRankListData } from '@/pages/HomePage/hooks/useRankListData';
-import { useVisibleCount } from '@/pages/HomePage/hooks/useVisibleCount';
-import { RankingFilter } from '@/pages/HomePage/types';
+import { useVisibleList } from '@/pages/HomePage/hooks/useVisibleList';
+import { RankingFilter } from '@/types/productType';
 
-import { CenteredContent } from '@/components/CenteredContent';
+import { OneTextContainer } from '@/components/OneTextContainer';
 import { Container } from '@/components/ui/Layout/Container';
 
 import { RankList } from './RankList';
@@ -19,7 +19,7 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
   const { visibleItems, visibleItemCount, setVisibleItemCount } =
     useVisibleList(rankList, filter);
 
-  const { isExpanded, handleShowLess, handleShowMore } = useVisibleCount(
+  const { isExpanded, handleShowLess, handleShowMore } = useExpansionControl(
     rankList.length,
     visibleItemCount,
     setVisibleItemCount
@@ -28,12 +28,10 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
   const text = isExpanded ? '접기' : '더보기';
   const onClick = isExpanded ? handleShowLess : handleShowMore;
 
-  if (error) return <CenteredContent height="10rem">{error}</CenteredContent>;
-  if (loading) return <CenteredContent height="10rem">loading</CenteredContent>;
+  if (error) return <OneTextContainer>{error}</OneTextContainer>;
+  if (loading) return <OneTextContainer>loading...</OneTextContainer>;
   if (!rankList.length)
-    return (
-      <CenteredContent height="10rem">상품 목록이 없습니다.</CenteredContent>
-    );
+    return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 
   return (
     <Container flexDirection="column" gap="2rem">

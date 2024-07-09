@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { INITIAL_ITEMS_COUNT } from '@/pages/HomePage/data/initailCount';
 
-export const useVisibleCount = (
+export const useExpansionControl = (
   filtereditemCount: number,
   visibleItemCount: number,
   setVisibleItemCount: Dispatch<SetStateAction<number>>

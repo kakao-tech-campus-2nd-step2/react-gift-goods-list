@@ -1,4 +1,4 @@
-import { RankingFilter } from '@/pages/HomePage/types';
+import { RankingFilter } from '@/types/productType';
 
 type TargetFilterButton = {
   index: number;

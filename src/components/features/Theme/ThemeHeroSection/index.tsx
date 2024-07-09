@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchData } from '@/components/common/API/api';
 import { Container } from '@/components/common/layouts/Container';
@@ -31,6 +32,8 @@ const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
     data: null,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchTheme = async (key: string) => {
       setFetchState({ isLoading: true, isError: false, data: null });
@@ -48,12 +51,19 @@ const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
     }
   }, [themeKey]);
 
+  useEffect(() => {
+    if (!fetchState.isLoading && !fetchState.isError && !fetchState.data?.find((theme) => theme.key === themeKey)) {
+      console.log('Invalid theme key, redirecting...');
+      navigate('/');
+    }
+  }, [fetchState, themeKey, navigate]);
+
   if (fetchState.isLoading) return <p>Loading...</p>;
   if (fetchState.isError) return <p>데이터를 불러오는 중에 문제가 발생했습니다.</p>;
 
   const currentTheme = fetchState.data?.find((theme) => theme.key === themeKey);
   if (!currentTheme) {
-    return <p>테마를 찾을 수 없습니다.</p>;
+    return null;
   }
 
   const { backgroundColor, label, title, description } = currentTheme;

@@ -5,8 +5,8 @@ FE 카카오 선물하기 3주차 과제: API
 ## step1
 
 - [x] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.
-- [ ] React Query를 사용하지 말고 axios 를 사용해서 구현해요.
-- [ ] 첨부된 oas.yaml 파일과 목 API URL을 사용하여 API를 구현해요.
+- [x] React Query를 사용하지 말고 axios 를 사용해서 구현해요.
+- [x] 첨부된 oas.yaml 파일과 목 API URL을 사용하여 API를 구현해요.
   - 메인 페이지 - Theme 카테고리 섹션
   - [ ] /api/v1/themes API를 사용하여 Section을 구현해요.
   - 메인 페이지 - 실시간 급상승 선물랭킹 섹션

@@ -30,6 +30,7 @@ interface ProductData {
 }
 
 interface ThemeData {
+  imageURL: string;
   id: number;
   key: string;
   label: string;

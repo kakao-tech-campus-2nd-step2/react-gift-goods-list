@@ -33,7 +33,7 @@ const GoodsItemWrapper = styled.div`
 `;
 const GoodsDescription = styled.div`
   width: 100%;
-  padding-top: 10px;
+  padding-top: 14px;
   word-break: break-word;
   display: flex;
   flex-direction: column;
@@ -42,7 +42,7 @@ const GoodsDescription = styled.div`
 const GoodsItemSubtitle = styled.p`
   width: 100%;
   color: gray;
-  font-size: 12px;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -51,6 +51,7 @@ const GoodsItemSubtitle = styled.p`
 const GoodsItemTitle = styled.h5`
   width: 100%;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;

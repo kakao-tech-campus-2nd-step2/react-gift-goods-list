@@ -44,10 +44,7 @@ export function useGoodsSectionControl(themeKey: string) {
 
     if (loaderRef.current) {
       observerRef.current = new IntersectionObserver((entries) => {
-        if (
-          entries[0].isIntersecting &&
-          (pageInfo?.totalResults ?? 0) > (pageInfo?.resultsPerPage ?? 0)
-        ) {
+        if (entries[0].isIntersecting && pageToken) {
           setIsLoading(true);
           getThemeProducts({ themeKey, pageToken, maxResults: 20 } as GetThemeProductsType)
             .then((data: ThemeProductsResponse) => handleThemeProductsResponse(data))

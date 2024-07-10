@@ -19,7 +19,7 @@ export const fetchThemeHeaderData = async (
     if (!theme)
       return {
         themeHeaderContents: undefined,
-        error: ERROR_MESSAGES.NOT_FOUND,
+        error: ERROR_MESSAGES.DATA_NOT_FOUND,
       };
 
     return {

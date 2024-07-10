@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/auth/AuthProvider';
 import { HomePage } from '@/pages/HomePage';
 import { LoginPage } from '@/pages/LoginPage';
 import { MyAccountPage } from '@/pages/MyAccountPage';
+import NotFound from '@/pages/NotFound';
 import { ThemePage } from '@/pages/ThemePage';
 
 import { AuthRoute } from './AuthRoute';
@@ -23,6 +24,7 @@ export const Router = () => {
           <Route path={ROUTES.MY_ACCOUNT} element={<ProtectedRoute />}>
             <Route index element={<MyAccountPage />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

@@ -29,6 +29,7 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
+  if (!themeHeader) return <OneTextContainer>{error}</OneTextContainer>;
 
   const { backgroundColor, label, title, description } =
     themeHeader as ThemeHeaderData;

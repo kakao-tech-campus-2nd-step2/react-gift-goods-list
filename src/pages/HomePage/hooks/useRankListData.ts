@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useFetchData } from '@/hooks/useFetchData';
-import { fetchRankingProductList } from '@/services/rankingProductList';
+import { fetchRankingProductData } from '@/services/rankingProductData';
 import { ProductData, RankingFilter } from '@/types/productType';
 
 export const useRankListData = (filter: RankingFilter) => {
@@ -18,7 +18,7 @@ export const useRankListData = (filter: RankingFilter) => {
     const fetchData = async () => {
       setError('');
       setLoading(true);
-      const response = await fetchRankingProductList(filter);
+      const response = await fetchRankingProductData(filter);
 
       if (response.products) setData(response.products);
 

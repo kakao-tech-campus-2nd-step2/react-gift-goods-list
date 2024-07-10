@@ -9,7 +9,7 @@ interface FetchRankingProductListResponse {
   error?: string;
 }
 
-export const fetchRankingProductList = async (
+export const fetchRankingProductData = async (
   filter: RankingFilter
 ): Promise<FetchRankingProductListResponse> => {
   try {

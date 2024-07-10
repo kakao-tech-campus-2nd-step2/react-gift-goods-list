@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 import { useCurrentTheme } from '@/api/hooks/useCurrentTheme';
 import { Container } from '@/components/common/layouts/Container';
@@ -11,7 +12,14 @@ type Props = {
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const { isLoading, currentTheme } = useCurrentTheme({ themeKey });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ClipLoader color="#36d7b7" loading={isLoading} size={50} />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingContainer>
+    );
+  }
 
   if (!currentTheme) {
     return null;
@@ -82,4 +90,19 @@ const Description = styled.p`
     font-size: 24px;
     line-height: 32px;
   }
+`;
+
+const LoadingContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+`;
+
+const LoadingText = styled.p`
+  margin-top: 10px;
+  font-size: 16px;
+  color: #36d7b7;
 `;

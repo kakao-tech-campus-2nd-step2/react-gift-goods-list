@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { Oval } from 'react-loader-spinner';
+import Spinner from 'react-bootstrap/Spinner';
 
 import { useGetRankingProductQuery } from '@/apis/tanstackQuery/ranking/query';
 import { Container } from '@/components/common/layouts/Container';
@@ -26,15 +26,9 @@ export const GoodsRankingSection = () => {
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {isLoading ? (
           <LoadingStatus>
-            <Oval
-              visible={true}
-              height="30"
-              width="30"
-              color="#000"
-              ariaLabel="oval-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-            />
+            <Spinner animation="border" role="status" variant="secondary">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
           </LoadingStatus>
         ) : isError ? (
           <LoadingStatus>Something Goes Run!</LoadingStatus>

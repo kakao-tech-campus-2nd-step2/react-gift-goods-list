@@ -2,7 +2,7 @@
 ## 📄 1단계 - API 적용하기
 ### ✅ 기능 목록
 - [] `oas.yaml` 파일을 토대로 Request, Response Type을 정의
-- [] axios 설치
+- [x] axios 설치
 - [] `oas.yaml` 파일과 목 API URL을 사용하여 API를 구현
   - 메인 페이지 - Theme 카테고리 섹션
     - [] `/api/v1/themes` API를 사용하여 Section을 구현

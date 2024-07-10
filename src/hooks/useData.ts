@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect,useState } from "react";
 
-const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | null => {
+const useData = <T>(url: string): { data: T | null, isLoading: boolean } | null => {
     const [data, setData] = useState<T | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -21,4 +21,4 @@ const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | nu
     return { data, isLoading };
 }
 
-export default useGetData; 
+export default useData; 

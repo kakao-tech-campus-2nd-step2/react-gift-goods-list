@@ -5,26 +5,26 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/features/Header';
 import type { Products } from '@/entities/Product';
 import type { ThemeData, Themes } from '@/entities/Theme';
-import useGetData from '@/hooks/useGetData';
+import useData from '@/hooks/useData';
 
 import DefaultList from './DefaultList';
 import ThemeHeader from './ThemeHeader';
 
 export default () => {
     const themeKey = useParams().themeKey ?? '';
-    const products = useGetData<Products>(`/themes/${themeKey}/products?maxResults=20`);
-    const themes = useGetData<Themes>('/themes');
+    const products = useData<Products>(`/themes/${themeKey}/products?maxResults=20`);
+    const themes = useData<Themes>('/themes');
     const [theme, setTheme] = useState<ThemeData>();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(themes?.isLoading){
+        if (themes?.isLoading) {
             const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
-            if(index === -1){
+            if (index === -1) {
                 navigate('/error/404');
             } else {
                 setTheme(themes?.data?.themes[index]);
-            }  
+            }
         }
     }, [navigate, themes, themeKey]);
 

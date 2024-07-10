@@ -1,5 +1,6 @@
 import { css } from '@emotion/css';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Image } from '@/components/common/Image';
 import { Container } from '@/components/common/layouts/Container';
@@ -10,6 +11,11 @@ import useGetData from '@/hooks/useGetData';
 
 export default () => {
     const themes = useGetData<Themes>('/themes');
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (themes?.httpStatusCode !== 200)
+            navigate('/error/' + themes?.httpStatusCode + '/main_themeList', { replace: true });
+    }, [themes?.httpStatusCode, navigate]);
 
     return (
         <Grid columns={{ initial: 2, xs: 4, sm: 4, md: 6 }}>

@@ -21,9 +21,9 @@ const ThemeCategorySection: React.FC = () => {
       try {
         const response = await getThemes();
         setThemes(response.themes);
-        setLoading(false);
       } catch (err) {
         setError('Failed to fetch themes');
+      } finally {
         setLoading(false);
       }
     };

@@ -14,9 +14,9 @@
 
 ### 📝Requirements
 
-- [ ] 각 API에서 Loading 상태에 대한 UI 대응
-- [ ] 데이터가 없는 경우에 대한 UI 대응
-- [ ] Http Status에 따라 Error를 다르게 처리
+- [x] 각 API에서 Loading 상태에 대한 UI 대응
+- [x] 데이터가 없는 경우에 대한 UI 대응
+- [x] Http Status에 따라 Error를 다르게 처리
 
 ## Week 3. 3단계 - 테마 별 선물 추천 API에 페이지네이션 구현하기 & React Query 사용해보기
 

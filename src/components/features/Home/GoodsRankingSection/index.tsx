@@ -5,6 +5,7 @@ import { fetchRankingProducts } from '@/api/ranking';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+// import { Loading } from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 import type { ProductData } from '@/types/api';
@@ -18,11 +19,22 @@ export const GoodsRankingSection = () => {
   });
 
   const [products, setProducts] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const getRankingProducts = async () => {
-      const productsData = await fetchRankingProducts(filterOption);
-      setProducts(productsData);
+      setLoading(true);
+      setIsError(false);
+
+      try {
+        const productsData = await fetchRankingProducts(filterOption);
+        setProducts(productsData);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getRankingProducts();
@@ -33,6 +45,9 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
+        {loading && <Message>로딩중</Message>}
+        {!loading && isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
+        {!loading && !isError && products.length === 0 && <Container><Message>보여줄 상품이 없어요!</Message></Container>}
         <Grid
           columns={{
             initial: 3,
@@ -41,7 +56,7 @@ export const GoodsRankingSection = () => {
           }}
           gap={16}
         >
-          {products.map((product, index) => (
+          {!loading && !isError && products.map((product, index) => (
             <RankingGoodsItems
               key={product.id}
               rankingIndex={index + 1}
@@ -78,4 +93,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Message = styled.div`
+  width: 100%;
+  padding: 60px 0;
+  text-align: center;
+  font-size: 20px;
 `;

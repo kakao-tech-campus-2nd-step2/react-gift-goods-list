@@ -1,16 +1,27 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [products, setProducts] = useState<GoodsData[]>([]);
+
+  const url = `https://react-gift-mock-api-two.vercel.app/api/v1/themes/${themeKey}/products`;
+  useEffect(() => {
+    axios.get(url).then((res) => {
+      setProducts(res.data.products.slice(0, 20));
+    });
+  }, [url]);
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +32,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

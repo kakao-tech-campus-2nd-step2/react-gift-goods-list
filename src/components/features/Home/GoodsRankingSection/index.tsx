@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import { type GoodsData, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,15 +14,25 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
+  const [goods, setGoods] = useState<GoodsData[]>([]);
 
-  // GoodsMockData를 21번 반복 생성
+  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/ranking/products';
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: url,
+      params: filterOption,
+    }).then((res) => {
+      setGoods(res.data.products);
+    });
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={goods} />
       </Container>
     </Wrapper>
   );

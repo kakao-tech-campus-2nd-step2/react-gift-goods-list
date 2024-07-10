@@ -13,12 +13,12 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
 
-  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const [themeCategory, setThemeCategory] = useState<ThemeData[]>([]);
   useEffect(() => {
     const fetchThemes = async () => {
       try {
         const response = await apiClient.get<GetThemesResponse>('/api/v1/themes');
-        setThemes(response.data.themes);
+        setThemeCategory(response.data.themes);
       } catch (error) {
         console.error(error);
       }
@@ -34,7 +34,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => {
+          {themeCategory.map((theme) => {
             return (
               <Link
                 key={theme.id}

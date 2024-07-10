@@ -1,29 +1,27 @@
 import styled from '@emotion/styled';
 
+import type { ThemeData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
+  themes: ThemeData[];
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const ThemeHeroSection = ({ themes, themeKey }: Props) => {
 
+  const currentTheme = getCurrentTheme(themeKey, themes);
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -84,5 +82,6 @@ const Description = styled.p`
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+  console.log(themeList);
   return themeList.find((theme) => theme.key === themeKey);
 };

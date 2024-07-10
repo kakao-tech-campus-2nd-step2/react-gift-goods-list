@@ -21,11 +21,12 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!themeKey) {
+      navigate('/');
+      return;
+    }
+
     const fetchThemeProducts = async () => {
-      if (!themeKey) {
-        navigate('/');
-        return;
-      }
       try {
         const response = await getThemeProducts(themeKey);
         setGoodsList(response.products);

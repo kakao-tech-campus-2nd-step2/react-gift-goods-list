@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 import { fetchThemeProducts } from '@/api/themeProducts';
@@ -18,17 +19,32 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    setIsError(false);
-
     const getProducts = async () => {
+      setLoading(true);
+      setIsError(false);
+
       try {
         const productsData = await fetchThemeProducts(themeKey);
         setProducts(productsData);
       } catch (error) {
         setIsError(true);
+
+        const response = (error as AxiosError).response;
+        
+        switch (response?.status) {
+          case 400:
+            setErrorMessage('잘못된 요청입니다.');
+            break;
+          case 404:
+            setErrorMessage('해당 테마의 상품을 찾을 수 없습니다.');
+            break;
+          default:
+            setErrorMessage('에러가 발생했습니다.');
+        }
+
       } finally {
         setLoading(false);
       }
@@ -41,8 +57,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     <Wrapper>
       <Container>
       {loading && <LoadingContainer><Loading /></LoadingContainer>}
-        {!loading && isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
-        {!loading && !isError && products.length === 0 && <Container><Message>보여줄 상품이 없어요!</Message></Container>}
+        {!loading && isError && <Message>{errorMessage}</Message>}
+        {!loading && !isError && products.length === 0 && <Container><Message>상품이 없어요.</Message></Container>}
         <Grid
           columns={{
             initial: 2,
@@ -86,7 +102,7 @@ const Loading = styled.div`
   height: 36px;
   border-radius: 50%;
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: rgb(255, 255, 255);
+  border-left-color: rgba(255, 255, 255);
   animation: spin 1s linear infinite;
 
   @keyframes spin {

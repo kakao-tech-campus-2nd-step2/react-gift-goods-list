@@ -17,6 +17,6 @@ FE 카카오 선물하기 3주차 과제
 		- [X] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록 구현
 		- [X] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 구현
 ### 🌿 2단계 - Error, Loading Status 핸들링
-- [ ] 각 API에서 Loading 상태에 대한 UI 대응
-- [ ] 데이터가 없는 경우에 대한 UI 대응
-- [ ] HTTP Status에 따라 Error를 다르게 처리
+- [X] 각 API에서 Loading 상태에 대한 UI 대응
+- [X] 데이터가 없는 경우에 대한 UI 대응
+- [X] HTTP Status에 따라 Error를 다르게 처리

@@ -12,11 +12,11 @@ import type { ThemeData } from '@/types/index';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const { data, isLoading, isError } = useGetThemeCategoryQuery();
+  const { data, isLoading, isError, error } = useGetThemeCategoryQuery();
 
   const themes = data?.themes;
 
-  console.log(themes);
+  // console.log(themes);
 
   return (
     <Wrapper>
@@ -28,7 +28,7 @@ export const ThemeCategorySection = () => {
             </Spinner>
           </LoadingStatus>
         ) : isError ? (
-          <LoadingStatus>Something Goes Run!</LoadingStatus>
+          <LoadingStatus>{error?.message}</LoadingStatus>
         ) : (
           <Grid
             columns={{

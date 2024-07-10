@@ -1,5 +1,5 @@
-export const ErrorMessage = () => {
-  return <div>에러가 발생했습니다 !!</div>;
+export const ErrorMessage = (message: { message: string }) => {
+  return <div>{message.message}</div>;
 };
 
 export const EmptyMessage = () => {

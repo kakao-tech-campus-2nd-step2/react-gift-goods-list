@@ -19,26 +19,23 @@ export const GoodsRankingSection = () => {
 
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [isEmpty, setIsEmpty] = useState(false);
 
   const fetchRankingProducts = useCallback(async (filter: RankingFilterOption) => {
-    try {
-      setLoading(true);
-      const data = await getRankingProducts({
-        targetType: filter.targetType,
-        rankType: filter.rankType,
-      });
+    setLoading(true);
+    setError('');
+    const data = await getRankingProducts({
+      targetType: filter.targetType,
+      rankType: filter.rankType,
+    });
+    if (typeof data === 'string') {
+      setError(data);
+    } else {
       setGoodsList(data.products);
       setIsEmpty(data.products.length === 0);
-      setLoading(false);
-      setError(false); // Reset error state on successful fetch
-      console.log(data);
-    } catch (err) {
-      console.error('Failed to fetch ranking products:', err);
-      setError(true);
-      setLoading(false);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -59,9 +56,9 @@ export const GoodsRankingSection = () => {
             <CenteredContent>
               <EmptyMessage />
             </CenteredContent>
-          ) : error ? (
+          ) : error != '' ? (
             <CenteredContent>
-              <ErrorMessage />
+              <ErrorMessage message={error} />
             </CenteredContent>
           ) : (
             <GoodsRankingList goodsList={goodsList} />

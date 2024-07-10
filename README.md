@@ -14,7 +14,7 @@
 
   - [x] Header : url의 pathParams와 `/api/v1/themes` API를 사용하여 Section을 구현
 
-  - [ ] 상품 목록 섹션 : `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현. API 요청 시 한번에 <b>20개의 상품 목록</b>이 내려오도록 한다.
+  - [x] 상품 목록 섹션 : `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현. API 요청 시 한번에 <b>20개의 상품 목록</b>이 내려오도록 한다.
 
 <br>
 

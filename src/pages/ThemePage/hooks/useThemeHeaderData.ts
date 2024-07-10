@@ -9,24 +9,15 @@ export const useThemeHeaderData = (themeKey: string) => {
     data: themeHeader,
     loading,
     error,
-    setData,
-    setLoading,
-    setError,
+    fetchData,
   } = useFetchData<ThemeHeaderData>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetchThemeHeaderData(themeKey);
-
-      if (response.themeHeaderContents) setData(response.themeHeaderContents);
-
-      if (response.error) setError(response.error);
-
-      setLoading(false);
-    };
-    fetchData();
-  }, [themeKey, setData, setLoading, setError]);
+    (async () => {
+      await fetchData(() => fetchThemeHeaderData(themeKey));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { themeHeader, loading, error };
 };

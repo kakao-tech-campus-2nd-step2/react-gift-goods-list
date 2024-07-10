@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useFetchData } from '@/hooks/useFetchData';
 import { fetchRankingProductData } from '@/services/rankingProductData';
@@ -9,26 +9,17 @@ export const useRankListData = (filter: RankingFilter) => {
     data: rankProducts,
     loading,
     error,
-    setData,
-    setLoading,
-    setError,
+    fetchData,
   } = useFetchData<ProductData[]>();
 
+  const refetchRankingProductData = useCallback(async () => {
+    await fetchData(() => fetchRankingProductData(filter));
+  }, [fetchData, filter]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      setError('');
-      setLoading(true);
-      const response = await fetchRankingProductData(filter);
-
-      if (response.products) setData(response.products);
-
-      if (response.error) setError(response.error);
-
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [setData, setLoading, setError, filter]);
+    refetchRankingProductData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
 
   return { rankProducts, loading, error };
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useFetchData } from '@/hooks/useFetchData';
 import { fetchThemeProductData } from '@/services/themeProductData';
@@ -9,24 +9,17 @@ export const useThemeProductData = (themeKey: string) => {
     data: themeProducts,
     loading,
     error,
-    setData,
-    setLoading,
-    setError,
+    fetchData,
   } = useFetchData<ProductData[]>();
 
+  const refetchThemeProductData = useCallback(async () => {
+    await fetchData(() => fetchThemeProductData(themeKey));
+  }, [fetchData, themeKey]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetchThemeProductData(themeKey);
-
-      if (response.products) setData(response.products);
-
-      if (response.error) setError(response.error);
-
-      setLoading(false);
-    };
-    fetchData();
-  }, [themeKey, setData, setLoading, setError]);
+    refetchThemeProductData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeKey]);
 
   return { themeProducts, loading, error };
 };

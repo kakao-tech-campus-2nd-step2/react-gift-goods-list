@@ -4,14 +4,7 @@ import { ProductData } from '@/types/productType';
 
 import { GetProductsRequest, GetProductsResponse } from './types';
 
-interface FetchThemeProductDataResponse {
-  products: ProductData[];
-  error?: string;
-}
-
-export const fetchThemeProductData = async (
-  themeKey: string
-): Promise<FetchThemeProductDataResponse> => {
+export const fetchThemeProductData = async (themeKey: string) => {
   try {
     const params: GetProductsRequest = {
       maxResults: 20,
@@ -22,15 +15,12 @@ export const fetchThemeProductData = async (
       { params }
     );
 
-    return {
-      products: response.data.products,
-      error: undefined,
-    };
+    return response.data.products as ProductData[];
   } catch (error) {
     if (error instanceof Error) {
-      return { products: [], error: error.message };
+      throw error;
     }
 
-    return { products: [], error: ERROR_MESSAGES.UNKNOWN_ERROR };
+    throw new Error(ERROR_MESSAGES.UNKNOWN_ERROR);
   }
 };

@@ -9,25 +9,15 @@ export const useThemeListData = () => {
     data: themeList,
     loading,
     error,
-    setData,
-    setLoading,
-    setError,
+    fetchData,
   } = useFetchData<ThemeListData[]>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetchThemeData();
-
-      if (response.themes) setData(response.themes);
-
-      if (response.error) setError(response.error);
-
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [setData, setLoading, setError]);
+    (async () => {
+      await fetchData(() => fetchThemeData());
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { themeList, loading, error };
 };

@@ -11,7 +11,7 @@ function getErrorMessage(error: AxiosError): string {
   if (error.response) {
     switch (error.response.status) {
       case 404:
-        return ERROR_MESSAGES.NOT_FOUND;
+        return ERROR_MESSAGES.DATA_NOT_FOUND;
       default:
         return ERROR_MESSAGES.FETCH_ERROR;
     }

@@ -1,16 +1,32 @@
+// src/components/features/Theme/ThemeHeroSection.tsx
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { fetchTheme } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+
+  useEffect(() => {
+    const getThemeData = async () => {
+      try {
+        const themes = await fetchTheme();
+        const foundTheme = themes.find((theme) => theme.key === themeKey);
+        setCurrentTheme(foundTheme || null);
+      } catch (error) {
+        console.error('Failed to fetch themes:', error);
+      }
+    };
+
+    getThemeData();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return null;
@@ -82,7 +98,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

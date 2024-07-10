@@ -1,13 +1,31 @@
+// src/api/index.ts
 import axios from 'axios';
 
-import type { GoodsData, RankingFilterOption,ThemeData } from '@/types';
+import type { GoodsData, RankingFilterOption, ThemeData } from '@/types';
 
 const api = axios.create({
-  baseURL: 'https://react-gift-mock-api-eunjin.vercel.app/',});
+  baseURL: 'https://kakao-tech-campus-mock-server.vercel.app',
+});
 
-export const getTheme = async (): Promise<ThemeData[]> => {
+export const fetchTheme = async (): Promise<ThemeData[]> => {
   const response = await api.get<{ themes: ThemeData[] }>('/api/v1/themes');
   return response.data.themes;
+};
+
+export const fetchThemes = async (themeKey: string): Promise<ThemeData> => {
+  console.log('Fetching theme with key:', themeKey); // 콘솔 로그 추가
+  const response = await api.get<ThemeData>(`/api/v1/themes/${themeKey}`);
+  console.log('Fetched theme data:', response.data);
+  return response.data;
+};
+
+export const getThemeProducts = async (themeKey: string): Promise<GoodsData[]> => {
+  const response = await api.get<{ products: GoodsData[] }>(`/api/v1/themes/${themeKey}/products`, {
+    params: {
+      maxResults: 20,
+    },
+  });
+  return response.data.products;
 };
 
 export const getRankingGoods = async (filterOption: RankingFilterOption): Promise<GoodsData[]> => {
@@ -17,7 +35,4 @@ export const getRankingGoods = async (filterOption: RankingFilterOption): Promis
   return response.data.products;
 };
 
-
-
 export default api;
-

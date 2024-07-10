@@ -19,12 +19,12 @@ export const GoodsRankingSection: React.FC = () => {
 
   useEffect(() => {
     const fetchGoods = async () => {
+      setErrorMessage(null);
       try {
         const data = await getRankingGoods(filterOption);
         setGoodsList(data);
       } catch (err) { 
         setErrorMessage('데이터를 불러오는데 실패하였습니다.');
-        
       }
     };
 

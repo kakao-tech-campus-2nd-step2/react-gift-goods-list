@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getTheme } from '@/api';
+import { fetchTheme } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
@@ -15,18 +15,19 @@ export const ThemeCategorySection: React.FC = () => {
   const [themes, setThemes] = useState<ThemeData[]>([]);
 
   useEffect(() => {
-    const fetchThemes = async () => {
+    const fetchThemesData = async () => {
       try {
-        const data = await getTheme();
+        const data = await fetchTheme(); 
         setThemes(data);
       } catch (error) {
         console.error('Failed to fetch themes:', error);
       }
     };
 
-    fetchThemes();
+    fetchThemesData();
   }, []);
-
+  
+  themes.map((theme)=> console.log(theme.key));
   return (
     <Wrapper>
       <Container>

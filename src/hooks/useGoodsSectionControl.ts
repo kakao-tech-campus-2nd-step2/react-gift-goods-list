@@ -49,7 +49,7 @@ export function useGoodsSectionControl(themeKey: string) {
           getThemeProducts({ themeKey, pageToken, maxResults: 20 } as GetThemeProductsType)
             .then((data: ThemeProductsResponse) => handleThemeProductsResponse(data))
             .catch((err) => {
-              console.error(err);
+              console.error(err, pageInfo);
               setIsError(true);
             });
           setIsLoading(false);

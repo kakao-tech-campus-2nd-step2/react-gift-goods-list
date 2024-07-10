@@ -21,18 +21,22 @@ const spin = keyframes`
 
 export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [errorCode, setErrorCode] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+
       try {
         const response = await getThemeProducts(themeKey);
         setProducts(response.products);
-        setError(false);
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      } catch (error) {
-        setError(true);
+        setHasError(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        setHasError(true);
+        setErrorCode(error.response?.status || 500);
       } finally {
         setLoading(false);
       }
@@ -45,11 +49,14 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     return <LoadingWrapper><LoadingSpinner /></LoadingWrapper>;
   }
 
-  if (error) {
-    return <ErrorWrapper>에러가 발생했어요.</ErrorWrapper>;
+  if (hasError) {
+    if (errorCode === 404) {
+      return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
+    } else {
+      return <ErrorWrapper>에러가 발생했습니다.</ErrorWrapper>;
+    }
   }
 
-  //데이터가 없는 경우 아래 상품이 없어요. 출력
   if (products.length === 0) {
     return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
   }

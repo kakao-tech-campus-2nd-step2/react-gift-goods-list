@@ -38,6 +38,17 @@
 
 ### 2단계
 
+- 각 API에서 Loading에 대한 UI 대응하기
+- 데이터가 없는 경우 UI 대응
+- Http Status에 따라 Error 처리
+
+---
+
+- [ ] Loading 컴포넌트 추가
+- [ ] isLoading 결과에 따라 Loading 컴포넌트 랜더링
+- [ ] useGetAPI 함수 리턴값에 에러 상태 추가
+- [ ] 에러 처리
+
 ## page
 
 ## 과제 3단계

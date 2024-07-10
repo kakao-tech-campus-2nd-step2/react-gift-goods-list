@@ -29,7 +29,7 @@ export type ProductData = {
   };
 }
 
-interface ThemeData {
+export interface ThemeData {
   imageURL: string;
   id: number;
   key: string;

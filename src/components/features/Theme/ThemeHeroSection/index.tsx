@@ -1,32 +1,55 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
+  const [loading, setLoading] = useState(true);
 
-  if (!currentTheme) {
-    return null;
+  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
+  useEffect(() => {
+    axios.get(url).then((res) => {
+      setThemes(res.data.themes);
+    });
+  }, []);
+
+  useEffect(() => {
+    setCurrentTheme(getCurrentTheme(themeKey, themes));
+  }, [themeKey, themes]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [currentTheme]);
+
+  if (!loading) {
+    if (!currentTheme) return <Link to={RouterPath.notFound} />;
+    else {
+      const { backgroundColor, label, title, description } = currentTheme;
+
+      return (
+        <Wrapper backgroundColor={backgroundColor}>
+          <Container>
+            <Label>{label}</Label>
+            <Title>{title}</Title>
+            {description && <Description>{description}</Description>}
+          </Container>
+        </Wrapper>
+      );
+    }
+  } else {
+    return <div>Loading..</div>;
   }
-
-  const { backgroundColor, label, title, description } = currentTheme;
-
-  return (
-    <Wrapper backgroundColor={backgroundColor}>
-      <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
-      </Container>
-    </Wrapper>
-  );
 };
 
 const Wrapper = styled.section<{ backgroundColor: string }>`

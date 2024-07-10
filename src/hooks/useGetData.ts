@@ -2,9 +2,15 @@
 import axios from "axios";
 import { useEffect,useState } from "react";
 
-const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | null => {
+type Returns<T> = {
+        data: T | null;
+        isLoading: boolean;
+        httpStatusCode: number;
+    } | null
+const useGetData = <T>(url: string): Returns<T> => {
     const [data, setData] = useState<T | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [httpStatusCode, setHttpStatusCode] = useState<number>(200);
 
     useEffect(() => {
         axios.get(url)
@@ -12,13 +18,13 @@ const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | nu
                 setData(response.data);
                 setIsLoading(false);
             })
-            .catch((error) => {
-                console.error(error);
+            .catch((err) => {
                 setIsLoading(true);
+                setHttpStatusCode(err.response.status);
             });
     }, [url]);
 
-    return { data, isLoading };
+    return { data, isLoading, httpStatusCode };
 }
 
 export default useGetData; 

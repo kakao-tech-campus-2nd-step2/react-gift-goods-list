@@ -7,30 +7,20 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
+import { type ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
-type ThemeProps = {
-  id: number;
-  key: string;
-  label: string;
-  title: string;
-  description: string;
-  backgroundColor: string;
-  imageURL: string;
-};
-
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeProps[]>();
-  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
+  const [themes, setThemes] = useState<ThemeData[]>();
 
+  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
   useEffect(() => {
-    axios.get(url).then((response) => {
-      setThemes(response.data.themes);
-      console.log(response.data.themes);
+    axios.get(url).then((res) => {
+      setThemes(res.data.themes);
     });
   }, []);
-
+  // console.log(themes);
   return (
     <Wrapper>
       <Container>

@@ -9,7 +9,7 @@ const api = axios.create({
   },
 });
 
-interface ProductData {
+export type ProductData = {
   id: number;
   name: string;
   imageURL: string;

@@ -7,7 +7,7 @@ type Props = {
   label: string;
   value: RankingFilterOption['rankType'];
   selected: boolean;
-  onClick: (value: RankingFilterOption['rankType']) => void;
+  onClick: (key: keyof RankingFilterOption, value: RankingFilterOption[keyof RankingFilterOption]) => void;
 };
 
 export const RankTypeButton = ({ value, selected, label, onClick }: Props) => {
@@ -15,7 +15,7 @@ export const RankTypeButton = ({ value, selected, label, onClick }: Props) => {
     <Wrapper
       selected={selected}
       onClick={() => {
-        onClick(value);
+        onClick('rankType', value);
       }}
     >
       {label}

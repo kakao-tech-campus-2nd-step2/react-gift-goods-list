@@ -5,7 +5,7 @@ import { fetchRankingProducts } from '@/api/ranking';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-// import { Loading } from '@/components/common/Loading';
+import { Message } from '@/components/common/Message';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 import type { ProductData } from '@/types/api';
@@ -93,11 +93,4 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
-`;
-
-const Message = styled.div`
-  width: 100%;
-  padding: 60px 0;
-  text-align: center;
-  font-size: 20px;
 `;

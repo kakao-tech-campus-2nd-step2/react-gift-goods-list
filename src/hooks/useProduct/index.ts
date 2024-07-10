@@ -26,7 +26,8 @@ export default function useProduct(params: Omit<GetThemesParams, 'pageToken'>) {
         setPageToken(response.nextPageToken);
         setData(response);
       } catch (e) {
-        setError(e);
+        console.log(e);
+        setError(e as Error);
       } finally {
         setIsLoading(false);
       }

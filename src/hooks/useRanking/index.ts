@@ -21,7 +21,7 @@ export default function useRanking({ targetType, rankType }: RankingFilterOption
         });
         setData(response);
       } catch (e) {
-        setError(e);
+        setError(e as Error);
       } finally {
         setIsLoading(false);
       }

@@ -15,7 +15,7 @@ export default function useTheme() {
         const response = await mock.getThemes();
         setData(response);
       } catch (e) {
-        setError(e);
+        setError(e as Error);
       } finally {
         setIsLoading(false);
       }

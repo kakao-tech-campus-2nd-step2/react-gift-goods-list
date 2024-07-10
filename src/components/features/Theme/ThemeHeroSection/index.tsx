@@ -16,12 +16,19 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [themes, setThemes] = useState<ThemeData[]>([]);
   const [currentTheme, setCurrentTheme] = useState<ThemeData>();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>();
 
   const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
   useEffect(() => {
-    axios.get(url).then((res) => {
-      setThemes(res.data.themes);
-    });
+    axios
+      .get(url)
+      .then((res) => {
+        setThemes(res.data.themes);
+      })
+      .catch((err) => {
+        console.error('Error fetching themes:', err);
+        setError(err); // 에러 메시지 설정
+      });
   }, []);
 
   useEffect(() => {
@@ -31,24 +38,31 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     setLoading(false);
   }, [currentTheme]);
+  if (loading)
+    return (
+      <Container>
+        <div>데이터를 로딩중입니다.</div>
+      </Container>
+    );
+  if (error)
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
+  if (!currentTheme) return <Link to={RouterPath.notFound} />;
+  else {
+    const { backgroundColor, label, title, description } = currentTheme;
 
-  if (!loading) {
-    if (!currentTheme) return <Link to={RouterPath.notFound} />;
-    else {
-      const { backgroundColor, label, title, description } = currentTheme;
-
-      return (
-        <Wrapper backgroundColor={backgroundColor}>
-          <Container>
-            <Label>{label}</Label>
-            <Title>{title}</Title>
-            {description && <Description>{description}</Description>}
-          </Container>
-        </Wrapper>
-      );
-    }
-  } else {
-    return <div>Loading..</div>;
+    return (
+      <Wrapper backgroundColor={backgroundColor}>
+        <Container>
+          <Label>{label}</Label>
+          <Title>{title}</Title>
+          {description && <Description>{description}</Description>}
+        </Container>
+      </Wrapper>
+    );
   }
 };
 

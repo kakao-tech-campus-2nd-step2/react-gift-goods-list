@@ -12,9 +12,9 @@
 
 
 ### 프로젝트 요구사항
-- [ ] axios를 사용하여 API path 구현
-  - [ ] axios 설치
-  - [ ] Base URL 설정
+- [X] axios를 사용하여 API path 구현
+  - [X] axios 설치
+  - [X] Base URL 설정
 - [ ] 메인 페이지 
   - [ ] Theme 카테고리 섹션(/api/v1/themes)
   - [ ] Trending 선물랭킹 섹션(/api/v1/ranking/products)
@@ -24,6 +24,7 @@
   - [ ] Products 섹션 (api/themes/{themeKey}/products)
   - [ ] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 한다.
 - [ ] Error, Loading Status 핸들링하기
+  - [X] Loading 스피너 고르기
   - [ ] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!)
   - [ ] 데이터가 없는 경우에 대한 UI 대응
   - [ ] Http Status에 따라 Error 다르게 처리

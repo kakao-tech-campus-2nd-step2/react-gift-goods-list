@@ -7,7 +7,7 @@ import type { GetThemeProductsType } from '@/apis/themes/type';
 
 export function useGoodsSectionControl(themeKey: string) {
   const [goodsList, setGoodsList] = useState<ProductData[]>([]);
-  const [pageInfo, setPageinfo] = useState<PageInfo>();
+  const [pageInfo, setPageinfo] = useState<PageInfo>(); // windowing 하는 용도?
   const [pageToken, setPageToken] = useState<string | null>();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -33,7 +33,7 @@ export function useGoodsSectionControl(themeKey: string) {
     getThemeProducts({ themeKey, maxResults: 20 })
       .then((data: ThemeProductsResponse) => handleThemeProductsResponse(data))
       .catch((err) => {
-        console.log(err);
+        console.log(err, pageInfo);
         setIsError(true);
       });
     setIsLoading(false);
@@ -61,7 +61,7 @@ export function useGoodsSectionControl(themeKey: string) {
     return () => {
       if (observerRef.current) observerRef.current.disconnect();
     };
-  }, [themeKey, pageInfo, pageToken]);
+  }, [themeKey, pageToken]);
 
   return { goodsList, loaderRef, isError, isLoading };
 }

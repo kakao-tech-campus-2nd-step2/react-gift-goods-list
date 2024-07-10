@@ -4,6 +4,7 @@ import { useThemeListData } from '@/pages/HomePage/hooks/useThemeListData';
 import { ThemeListData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
+import { LoadingDots } from '@/components/LoadingDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { Grid } from '@/components/ui/Layout/Grid';
 
@@ -14,7 +15,7 @@ export const ThemeSection = () => {
   const { themeList, loading, error } = useThemeListData();
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <OneTextContainer>loading...</OneTextContainer>;
+  if (loading) return <LoadingDots />;
 
   return (
     <Content height="fit-content" justifyContent="center">

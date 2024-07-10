@@ -2,6 +2,7 @@ import { useThemeProductData } from '@/pages/ThemePage/hooks/useThemeProductData
 import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
+import { LoadingDots } from '@/components/LoadingDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { GoodsItem } from '@/components/ui/GoodsItem/Default';
 import { Grid } from '@/components/ui/Layout/Grid';
@@ -16,7 +17,7 @@ export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
   const { themeProducts, loading, error } = useThemeProductData(themeKey);
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <OneTextContainer>loading...</OneTextContainer>;
+  if (loading) return <LoadingDots />;
   if (!themeProducts?.length)
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 

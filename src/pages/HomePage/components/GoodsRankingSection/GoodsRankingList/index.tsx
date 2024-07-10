@@ -3,6 +3,7 @@ import { useRankListData } from '@/pages/HomePage/hooks/useRankListData';
 import { useVisibleList } from '@/pages/HomePage/hooks/useVisibleList';
 import { RankingFilter } from '@/types/productType';
 
+import { LoadingDots } from '@/components/LoadingDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { Container } from '@/components/ui/Layout/Container';
 
@@ -29,7 +30,7 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
   const onClick = isExpanded ? handleShowLess : handleShowMore;
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <OneTextContainer>loading...</OneTextContainer>;
+  if (loading) return <LoadingDots />;
   if (!rankProducts?.length)
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 

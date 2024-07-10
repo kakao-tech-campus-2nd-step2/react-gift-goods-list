@@ -7,6 +7,7 @@ import { useThemeHeaderData } from '@/pages/ThemePage/hooks/useThemeHeaderData';
 import { ThemeHeaderData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
+import { LoadingDots } from '@/components/LoadingDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 
 import { headerStyle, textStyle } from './styles';
@@ -28,7 +29,7 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
 
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <OneTextContainer>loading...</OneTextContainer>;
+  if (loading) return <LoadingDots />;
   if (!themeHeader) return <OneTextContainer>{error}</OneTextContainer>;
 
   const { backgroundColor, label, title, description } =

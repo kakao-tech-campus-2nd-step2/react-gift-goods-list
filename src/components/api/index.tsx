@@ -2,9 +2,23 @@ import axios from 'axios';
 
 const BASE_URL = 'https://react-gift-mock-api-harugi7.vercel.app';
 
-export const fetchData = async (endpoint: string) => {
+type QueryParams = Record<string, string | number | boolean>;
+
+const objectToQueryParams = (params: QueryParams): string => {
+  const queryParams = Object.entries(params)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value.toString())}`)
+    .join('&');
+
+  return queryParams;
+};
+
+export const fetchData = async (endpoint: string, queryParams?: QueryParams) => {
   try {
-    const response = await axios.get(`${BASE_URL}${endpoint}`);
+    const url = queryParams
+      ? `${BASE_URL}${endpoint}?${objectToQueryParams(queryParams)}`
+      : `${BASE_URL}${endpoint}`;
+
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

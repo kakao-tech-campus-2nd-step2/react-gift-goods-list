@@ -21,9 +21,8 @@ export const GoodsRankingSection = () => {
     const fetchRankingProducts = async () => {
       try {
         const { targetType, rankType } = filterOption;
-        const data = await fetchData(
-          `/api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
-        );
+        const queryParams = { targetType, rankType };
+        const data = await fetchData(`/api/v1/ranking/products`, queryParams);
         setRankingProducts(data.products);
       } catch (error) {
         console.error('Error fetching ranking products:', error);

@@ -21,9 +21,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     const fetchThemeData = async () => {
       try {
         const maxResults = 20;
-        const queryParams = `?maxResults=${maxResults}`;
+        const queryParams = { maxResults };
 
-        const data = await fetchData(`/api/v1/themes/${themeKey}/products${queryParams}`);
+        const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
         setCurrentGoods(data.products);
       } catch (error: unknown) {
         if (error instanceof Error) {

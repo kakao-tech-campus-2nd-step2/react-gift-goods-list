@@ -1,16 +1,36 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { axiosInstance } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
+
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const response = await axiosInstance.get(`api/v1/themes`);
+        const theme = getCurrentTheme(themeKey, response.data.themes);
+        if (theme) {
+          setCurrentTheme(theme);
+        } else {
+          window.location.replace(RouterPath.home);
+        }
+      } catch (error) {
+        console.error('Error fetching theme data:', error);
+      }
+    };
+
+    fetchThemeData();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return null;

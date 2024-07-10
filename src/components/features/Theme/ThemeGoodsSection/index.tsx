@@ -1,16 +1,39 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { axiosInstance } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+
+  useEffect(() => {
+    const fetchThemeGoods = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/v1/themes/${themeKey}/products`, {
+          params: {
+            maxResults: 20,
+          },
+        });
+        if (response.data.products) {
+          setGoodsList(response.data.products);
+        }
+      } catch (error) {
+        console.error('Error fetching theme goods:', error);
+      }
+    };
+
+    fetchThemeGoods();
+  }, [themeKey]);
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +44,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

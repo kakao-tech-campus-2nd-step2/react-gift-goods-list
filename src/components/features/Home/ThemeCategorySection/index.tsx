@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Message } from '@/components/common/Message';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types/api';
@@ -14,10 +15,22 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 export const ThemeCategorySection = () => {
   const [themes, setThemes] = useState<ThemeData[]>([]);
 
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
   useEffect(() => {
     const getThemes = async () => {
-      const themesData = await fetchThemes();
-      setThemes(themesData);
+      setLoading(true);
+      setIsError(false);
+
+      try {
+        const themesData = await fetchThemes();
+        setThemes(themesData);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getThemes();
@@ -26,6 +39,9 @@ export const ThemeCategorySection = () => {
   return (
     <Wrapper>
       <Container>
+      {loading && <Message>로딩중</Message>}
+        {!loading && isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
+        {!loading && !isError && themes.length === 0 && <Container><Message>보여줄 상품이 없어요!</Message></Container>}
         <Grid
           columns={{
             initial: 4,

@@ -25,8 +25,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
         const data = await fetchData(`/api/v1/themes/${themeKey}/products${queryParams}`);
         setCurrentGoods(data.products);
-      } catch (error) {
-        console.error('Error fetching theme data:', error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Error fetching theme data:', error.message);
+        } else {
+          console.error('An unknown error occurred while fetching theme data.');
+        }
       } finally {
         setLoading(false);
       }

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = 'https://react-gift-mock-api-harugi7.vercel.app';
 
+
 type QueryParams = Record<string, string | number | boolean>;
 
 const objectToQueryParams = (params: QueryParams): string => {

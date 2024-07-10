@@ -26,9 +26,10 @@ export const GoodsRankingSection = () => {
           `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         )
         setRankingProducts(data.products)
+        console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)
       }
       catch (error) {
-        console.error('Fetch Goods Ranking Data Fail: ', error)
+        console.error('[GoodsRankingSection] Fetch Goods Ranking Data Fail: ', error)
       }
     }
     fetchRankingProductData()

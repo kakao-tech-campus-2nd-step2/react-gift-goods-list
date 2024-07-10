@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 import type { ThemeData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
@@ -10,9 +11,10 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themes, themeKey }: Props) => {
-
+  const navigate = useNavigate();
   const currentTheme = getCurrentTheme(themeKey, themes);
   if (!currentTheme) {
+    navigate('/home', { replace: true });
     return null;
   }
 
@@ -82,6 +84,5 @@ const Description = styled.p`
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  console.log(themeList);
   return themeList.find((theme) => theme.key === themeKey);
 };

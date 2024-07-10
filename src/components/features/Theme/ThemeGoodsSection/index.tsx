@@ -49,6 +49,7 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     return <ErrorWrapper>에러가 발생했어요.</ErrorWrapper>;
   }
 
+  //데이터가 없는 경우 아래 상품이 없어요. 출력
   if (products.length === 0) {
     return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
   }

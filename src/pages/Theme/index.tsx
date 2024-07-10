@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import LoadingUI from '@/components/common/LoadingUI';
 import Header from '@/components/features/Header';
 import type { Products } from '@/entities/Product';
 import type { ThemeData, Themes } from '@/entities/Theme';
@@ -18,8 +19,7 @@ export default () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (themes?.isLoading) {
-        } else {
+        if (!themes?.isLoading) {
             const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
             if (index === -1) {
                 navigate('/error/404');
@@ -34,12 +34,21 @@ export default () => {
             <Header />
             {/* theme header section */}
             <section>
-                <ThemeHeader
-                    label={theme?.label ?? ''}
-                    title={theme?.title ?? ''}
-                    description={theme?.description ?? ''}
-                    backgroundColor={theme?.backgroundColor ?? '#000000'}
-                />
+                {themes?.isLoading ? (
+                    <ThemeHeader
+                        label="로딩 중..."
+                        title="로딩 중..."
+                        description="로딩 중..."
+                        backgroundColor="#000000"
+                    />
+                ) : (
+                    <ThemeHeader
+                        label={theme?.label ?? ''}
+                        title={theme?.title ?? ''}
+                        description={theme?.description ?? ''}
+                        backgroundColor={theme?.backgroundColor ?? '#000000'}
+                    />
+                )}
             </section>
             {/* goods list */}
             <section
@@ -48,7 +57,11 @@ export default () => {
                     margin-bottom: 100px;
                 `}
             >
-                <DefaultList items={products?.data?.products ?? []} />
+                {products?.isLoading ? (
+                    <LoadingUI />
+                ) : (
+                    <DefaultList items={products?.data?.products ?? []} />
+                )}
             </section>
         </div>
     );

@@ -14,7 +14,7 @@ const Spinner = styled.div`
     border-radius: 50%;
     border-left-color: #fee500;
     animation: spin 1s linear infinite;
-    margin: 50px auto;
+    margin: 100px auto;
 
     @keyframes spin {
         70% {

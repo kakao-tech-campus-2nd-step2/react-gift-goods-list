@@ -13,15 +13,7 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data, error, isLoading } = useProduct({ themeKey, maxResults: 20 });
 
-  if (isLoading || !data) {
-    return <p>Loading...</p>;
-  }
-  console.log(data);
-
-  if (error) {
-    return <p>Error...</p>;
-  }
-
+  console.log(error);
   return (
     <Wrapper>
       <Container>
@@ -32,15 +24,18 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {data.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {isLoading && <div>Loading...</div>}
+          {Boolean(error) && <div>{(error as Error).toString()}</div>}
+          {data &&
+            data.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
         </Grid>
       </Container>
     </Wrapper>

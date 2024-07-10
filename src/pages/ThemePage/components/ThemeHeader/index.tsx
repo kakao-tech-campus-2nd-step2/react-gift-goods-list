@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
@@ -18,15 +19,17 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
 
   const { data, loading, error } = useThemeHeaderData(themeKey);
 
+  useEffect(() => {
+    if (error === ERROR_MESSAGES.PATH_NOT_FOUND) {
+      navigate(ROUTES.HOME);
+    }
+  }, [error, data, navigate]);
+
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (error === ERROR_MESSAGES.PATH_NOT_FOUND || !data) {
-    navigate(ROUTES.HOME);
-    return null;
-  }
 
-  const { backgroundColor, label, title, description } = data;
+  const { backgroundColor, label, title, description } = data || {};
 
   return (
     <Content

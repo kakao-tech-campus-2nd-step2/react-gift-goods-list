@@ -6,7 +6,7 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsData } from '@/types';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -18,7 +18,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const url = `https://react-gift-mock-api-two.vercel.app/api/v1/themes/${themeKey}/products`;
   useEffect(() => {
     axios.get(url).then((res) => {
-      setProducts(res.data.products);
+      setProducts(res.data.products.slice(0, 20));
     });
   }, [url]);
 

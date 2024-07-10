@@ -1,18 +1,10 @@
 import { useParams } from 'react-router-dom';
 
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-// getCurrentTheme, 
-// import { RouterPath } from '@/routes/path';
-// import { ThemeMockList } from '@/types/mock';
+import {ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  // const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
-
-  // if (!currentTheme) {
-  //   return <Navigate to={RouterPath.notFound} />;
-  // }
 
   return (
     <>

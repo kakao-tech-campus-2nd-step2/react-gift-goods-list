@@ -1,9 +1,11 @@
 // src/components/features/Theme/ThemeHeroSection.tsx
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { Navigate} from 'react-router-dom';
 
 import { fetchTheme } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 
@@ -13,6 +15,7 @@ type Props = {
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const getThemeData = async () => {
@@ -21,13 +24,16 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         const foundTheme = themes.find((theme) => theme.key === themeKey);
         setCurrentTheme(foundTheme || null);
       } catch (error) {
-        console.error('Failed to fetch themes:', error);
+        setErrorMessage('error');
       }
     };
 
     getThemeData();
   }, [themeKey]);
 
+  if (errorMessage) {
+    return <Navigate to={RouterPath.home} />;
+  }
   if (!currentTheme) {
     return null;
   }

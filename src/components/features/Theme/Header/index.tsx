@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate,useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/themes';

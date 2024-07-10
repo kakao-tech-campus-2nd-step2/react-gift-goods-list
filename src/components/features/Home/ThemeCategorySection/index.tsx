@@ -28,10 +28,10 @@ export const ThemeCategorySection = () => {
       try {
         const data = await fetchData('api/v1/themes')
         setThemeFromAPI(data.themes)
-        console.log('Fetch Theme Data Success: ', data.themes)
+        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
       }
       catch (error) {
-        console.error('Fetch Theme Data Fail: ', error)
+        console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error)
       }
     }
     fetchThemeData()

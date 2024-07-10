@@ -1,4 +1,8 @@
 export const ERROR_MESSAGES = {
-  FETCH_ERROR: '데이터를 불러올 수 없습니다.',
-  PATH_NOT_FOUND: '해당 경로에 대한 정보가 존재하지 않습니다.',
+  FETCH_ERROR:
+    '데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+  NOT_FOUND: '요청하신 데이터를 찾을 수 없습니다.',
+  NETWORK_ERROR:
+    '네트워크 연결에 문제가 발생했습니다. 네트워크 상태를 확인하고 다시 시도해주세요.',
+  UNKNOWN_ERROR: '예기치 않은 오류가 발생했습니다. 관리자에게 문의해주세요.',
 };

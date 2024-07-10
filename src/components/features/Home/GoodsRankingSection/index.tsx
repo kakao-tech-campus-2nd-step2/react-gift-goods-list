@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 
+import { fetchRankingProducts } from '@/api/rankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData,RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +15,38 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getRankingProducts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetchRankingProducts(filterOption);
+        setGoodsList(response.products);
+      } catch (err) {
+        setError('Failed to fetch ranking products');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading ? (
+          <Loading>Loading...</Loading>
+        ) : error ? (
+          <Error>{error}</Error>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -49,4 +73,15 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Loading = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const Error = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 18px;
 `;

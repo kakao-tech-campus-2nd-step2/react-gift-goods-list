@@ -17,17 +17,16 @@ export const GoodsRankingSection = () => {
 
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchRankingProducts = async () => {
       setIsLoading(true);
-      setIsError(null);
       try {
         const response = await getRankingProducts(filterOption.targetType, filterOption.rankType);
         setGoodsList(response.products);
-      } catch (error) {
-        setIsError('Failed to fetch products');
+      } catch (error: unknown) {
+        setErrorMessage('Failed to fetch products');
       } finally {
         setIsLoading(false);
       }
@@ -43,8 +42,8 @@ export const GoodsRankingSection = () => {
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {isLoading ? (
           <TextView>로딩중</TextView>
-        ) : isError ? (
-          <TextView>{isError}</TextView>
+        ) : errorMessage ? (
+          <TextView>{errorMessage}</TextView>
         ) : (
           <GoodsRankingList goodsList={goodsList} />
         )}
@@ -52,6 +51,7 @@ export const GoodsRankingSection = () => {
     </Wrapper>
   );
 };
+
 const Wrapper = styled.section`
   padding: 0 16px 32px;
 

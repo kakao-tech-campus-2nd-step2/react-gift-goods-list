@@ -4,17 +4,17 @@ import { useEffect,useState } from "react";
 
 const useGetData = <T>(url: string): { data: T | null, isLoading: boolean } | null => {
     const [data, setData] = useState<T | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         axios.get(url)
             .then((response) => {
                 setData(response.data);
-                setIsLoading(true);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error(error);
-                setIsLoading(false);
+                setIsLoading(true);
             });
     }, [url]);
 

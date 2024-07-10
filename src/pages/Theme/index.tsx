@@ -18,13 +18,14 @@ export default () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(themes?.isLoading){
+        if (themes?.isLoading) {
+        } else {
             const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
-            if(index === -1){
+            if (index === -1) {
                 navigate('/error/404');
             } else {
                 setTheme(themes?.data?.themes[index]);
-            }  
+            }
         }
     }, [navigate, themes, themeKey]);
 

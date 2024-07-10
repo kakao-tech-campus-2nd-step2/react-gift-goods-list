@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
@@ -11,6 +12,12 @@ import { breakpoints } from '@/styles/variants';
 type Props = {
   themeKey: string;
 };
+
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const [products, setProducts] = useState<ProductData[]>([]);
@@ -35,15 +42,15 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   }, [themeKey]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingWrapper><LoadingSpinner /></LoadingWrapper>;
   }
 
   if (error) {
-    return <div>에러가 발생했어요.</div>;
+    return <ErrorWrapper>에러가 발생했어요.</ErrorWrapper>;
   }
 
   if (products.length === 0) {
-    return <div>상품이 없어요.</div>;
+    return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
   }
 
   return (
@@ -78,4 +85,36 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 5px solid #aaa;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+`;
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-size: 20px;
+`;
+
+const NoProductsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-size: 18px;
 `;

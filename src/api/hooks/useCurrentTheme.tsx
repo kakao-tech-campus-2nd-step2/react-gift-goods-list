@@ -8,19 +8,25 @@ type UseCurrentThemeProps = {
 };
 
 export const useCurrentTheme = ({ themeKey }: UseCurrentThemeProps) => {
-  const [isRender, setIsRender] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchThemes = async () => {
-      const themes = await getThemes();
-      const foundTheme = themes.themes.find((theme) => theme.key === themeKey);
-      setCurrentTheme(foundTheme || null);
-      setIsRender(true);
+      try {
+        const themes = await getThemes();
+        const foundTheme = themes.themes.find((theme) => theme.key === themeKey);
+        setCurrentTheme(foundTheme || null);
+      } catch (error) {
+        console.error('Failed to fetch themes', error);
+        setCurrentTheme(null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchThemes();
   }, [themeKey]);
 
-  return { isRender, currentTheme };
+  return { isLoading, currentTheme };
 };

@@ -3,16 +3,15 @@ import styled from '@emotion/styled';
 import { useCurrentTheme } from '@/api/hooks/useCurrentTheme';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const { isRender, currentTheme } = useCurrentTheme({ themeKey });
+  const { isLoading, currentTheme } = useCurrentTheme({ themeKey });
 
-  if (!isRender) return null;
+  if (isLoading) return <p>Loading...</p>;
 
   if (!currentTheme) {
     return null;
@@ -84,7 +83,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

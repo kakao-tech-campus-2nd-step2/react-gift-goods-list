@@ -7,9 +7,9 @@ import { RouterPath } from '@/routes/path';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const { isRender, currentTheme } = useCurrentTheme({ themeKey });
+  const { isLoading, currentTheme } = useCurrentTheme({ themeKey });
 
-  if (!isRender) return null;
+  if (isLoading) return <p>Loading...</p>;
 
   if (!currentTheme) {
     return <Navigate to={RouterPath.notFound} />;

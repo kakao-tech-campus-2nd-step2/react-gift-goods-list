@@ -1,29 +1,21 @@
 import styled from '@emotion/styled';
 
-import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-
 type Props = {
   label: string;
-  value: RankingFilterOption['rankType'];
+  value?: 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED';
   selected: boolean;
-  onClick: (value: RankingFilterOption['rankType']) => void;
+  onClick: (value?: 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED') => void;
 };
 
-export const RankTypeButton = ({ value, selected, label, onClick }: Props) => {
+export const RankTypeButton = ({ label, value, selected, onClick }: Props) => {
   return (
-    <Wrapper
-      selected={selected}
-      onClick={() => {
-        onClick(value);
-      }}
-    >
+    <StyledRankTypeButton value={value} selected={selected} onClick={() => onClick(value)}>
       {label}
-    </Wrapper>
+    </StyledRankTypeButton>
   );
 };
 
-const Wrapper = styled.button<Pick<Props, 'selected'>>`
+const StyledRankTypeButton = styled.button<Pick<Props, 'selected'>>`
   padding: 13px 20px;
   font-size: 16px;
   line-height: 16px;
@@ -35,11 +27,5 @@ const Wrapper = styled.button<Pick<Props, 'selected'>>`
 
   &:focus {
     outline: none;
-  }
-
-  @media screen and (min-width: ${breakpoints.sm}) {
-    padding: 20px 30px;
-    font-size: 22px;
-    line-height: 22px;
   }
 `;

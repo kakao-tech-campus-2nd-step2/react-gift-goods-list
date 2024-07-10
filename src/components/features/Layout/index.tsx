@@ -1,28 +1,28 @@
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 
-import { Footer } from './Footer';
-import { Header, HEADER_HEIGHT } from './Header';
+import { Header } from '@/components/features/Header';
+import { Footer } from '@/components/features/Footer';
 
 export const Layout = () => (
-  <Wrapper>
+  <StyledLayout>
     <Header />
-    <InnerWrapper>
+    <FooterContainer>
       <Outlet />
       <Footer />
-    </InnerWrapper>
-  </Wrapper>
+    </FooterContainer>
+  </StyledLayout>
 );
 
-const Wrapper = styled.div`
+const StyledLayout = styled.div`
   width: 100%;
   position: relative;
 `;
 
-const InnerWrapper = styled.div`
+const FooterContainer = styled.div`
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  margin-top: ${HEADER_HEIGHT};
+  margin-top: 54px;
 `;

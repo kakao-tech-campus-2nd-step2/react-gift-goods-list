@@ -5,11 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
-import { Spacing } from '@/components/common/layouts/Spacing';
-import { breakpoints } from '@/styles/variants';
-import { authSessionStorage } from '@/utils/storage';
 
-export const LoginPage = () => {
+export const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [queryParams] = useSearchParams();
@@ -20,34 +17,33 @@ export const LoginPage = () => {
       return;
     }
 
-    // TODO: API 연동
+    // id를 세션 스토리지에 저장
+    sessionStorage.setItem('authToken', id);
 
-    // TODO: API 연동 전까지 임시 로그인 처리
-    authSessionStorage.set(id);
-
+    // origin URL(홈)로 리다이렉트
     const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
     return window.location.replace(redirectUrl);
   };
 
   return (
     <Wrapper>
-      <Logo src={KAKAO_LOGO} alt="카카고 CI" />
+      <Logo src={KAKAO_LOGO} alt="Kakao Logo" />
       <FormWrapper>
         <UnderlineTextField placeholder="이름" value={id} onChange={(e) => setId(e.target.value)} />
-        <Spacing />
+        <div
+          style={{
+            width: '100%',
+            backgroundColor: 'inherit',
+            height: '16px',
+          }}
+        />
         <UnderlineTextField
           type="password"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        <Spacing
-          height={{
-            initial: 40,
-            sm: 60,
-          }}
-        />
+        <div style={{ height: '40px', width: '100%', backgroundColor: 'inherit' }} />
         <Button onClick={handleConfirm}>로그인</Button>
       </FormWrapper>
     </Wrapper>
@@ -72,9 +68,4 @@ const FormWrapper = styled.article`
   width: 100%;
   max-width: 580px;
   padding: 16px;
-
-  @media screen and (min-width: ${breakpoints.sm}) {
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    padding: 60px 52px;
-  }
 `;

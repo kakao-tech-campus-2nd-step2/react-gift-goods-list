@@ -4,7 +4,7 @@ export type ThemeData = { // /api/v1/themes
   id: number;
   key: string;
   label: string;
-  imageUrl: string;
+  imageURL: string;
   title: string;
   description?: string;
   backgroundColor: string;
@@ -34,8 +34,3 @@ export type GoodsData = { // /api/v1/ranking/products && /api/v1/themes/{themeKe
     imageURL: string;
   };
 };
-
-
-export type ProductsData = {
-
-}

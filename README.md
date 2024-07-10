@@ -8,7 +8,7 @@
 
   - [x] Theme 카테고리 섹션: `/api/v1/themes` API를 사용하여 Section 구현
 
-  - [ ] 실시간 급상승 선물랭킹 섹션: `api/v1/ranking/products` API를 사용하여 Section 구현
+  - [x] 실시간 급상승 선물랭킹 섹션: `api/v1/ranking/products` API를 사용하여 Section 구현
  
 - Theme Page → 
 

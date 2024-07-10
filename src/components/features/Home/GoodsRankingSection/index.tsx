@@ -2,9 +2,12 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import { Error } from '@/components/common/Error';
 import { Container } from '@/components/common/layouts/Container';
+import { LoadingIcon } from '@/components/common/LoadingIcon';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData, RankingFilterOption } from '@/types';
+import type { FetchState } from '@/types';
+import { type GoodsData, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,7 +17,11 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [goodsList, setGoodsList] = useState<GoodsData[]>();
+  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
   useEffect(() => {
     const fetchGoodsRanking = async () => {
       try {
@@ -22,21 +29,42 @@ export const GoodsRankingSection = () => {
           process.env.REACT_APP_API_KEY +
             `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
         );
-        setGoodsList(response.data.products);
-      } catch (err) {
-        console.log(err);
+        setFetchState({
+          isLoading: false,
+          isError: false,
+          data: response.data.products,
+        });
+      } catch {
+        setFetchState({
+          isLoading: false,
+          isError: true,
+          data: null,
+        });
       }
     };
     fetchGoodsRanking();
   }, [filterOption]);
-  // GoodsMockData를 21번 반복 생성
+
+  const GoodsRanking = () => {
+    if (fetchState.data) {
+      if (fetchState.data.length > 0) {
+        return <GoodsRankingList goodsList={fetchState.data} />;
+      } else {
+        return <Error>보여줄 페이지가 없습니다!</Error>;
+      }
+    } else if (fetchState.isError) {
+      return <Error>에러가 발생했습니다.</Error>;
+    } else {
+      return <LoadingIcon />;
+    }
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {goodsList && <GoodsRankingList goodsList={goodsList} />}
+        {GoodsRanking()}
       </Container>
     </Wrapper>
   );

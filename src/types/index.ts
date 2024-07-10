@@ -32,3 +32,9 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+export interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}

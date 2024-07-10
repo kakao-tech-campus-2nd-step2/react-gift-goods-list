@@ -1,5 +1,5 @@
-import { BACKEND_API } from '@/constants/api';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { BACKEND_API } from '@/services/api';
 import { ThemeHeaderData, ThemeListData } from '@/types/themeType';
 
 import { GetThemesResponse } from './types';
@@ -19,7 +19,7 @@ export const fetchThemeHeaderData = async (
     if (!theme)
       return {
         themeHeaderContents: undefined,
-        error: ERROR_MESSAGES.PATH_NOT_FOUND,
+        error: ERROR_MESSAGES.NOT_FOUND,
       };
 
     return {
@@ -27,9 +27,13 @@ export const fetchThemeHeaderData = async (
       error: undefined,
     };
   } catch (error) {
+    if (error instanceof Error) {
+      return { themeHeaderContents: undefined, error: error.message };
+    }
+
     return {
       themeHeaderContents: undefined,
-      error: ERROR_MESSAGES.FETCH_ERROR,
+      error: ERROR_MESSAGES.UNKNOWN_ERROR,
     };
   }
 };
@@ -45,6 +49,10 @@ export const fetchThemeData = async (): Promise<FetchThemeDataResponse> => {
 
     return { themes: response.data.themes, error: undefined };
   } catch (error) {
-    return { themes: [], error: ERROR_MESSAGES.FETCH_ERROR };
+    if (error instanceof Error) {
+      return { themes: [], error: error.message };
+    }
+
+    return { themes: [], error: ERROR_MESSAGES.UNKNOWN_ERROR };
   }
 };

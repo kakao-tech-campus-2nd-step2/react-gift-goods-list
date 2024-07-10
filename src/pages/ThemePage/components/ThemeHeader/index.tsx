@@ -22,7 +22,7 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
   const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
 
   useEffect(() => {
-    if (error === ERROR_MESSAGES.PATH_NOT_FOUND) {
+    if (error === ERROR_MESSAGES.NOT_FOUND) {
       navigate(ROUTES.HOME);
     }
   }, [error, navigate]);

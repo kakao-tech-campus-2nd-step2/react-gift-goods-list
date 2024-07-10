@@ -1,5 +1,5 @@
-import { BACKEND_API } from '@/constants/api';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { BACKEND_API } from '@/services/api';
 import { ProductData } from '@/types/productType';
 
 import { GetProductsRequest, GetProductsResponse } from './types';
@@ -27,6 +27,10 @@ export const fetchThemeProductData = async (
       error: undefined,
     };
   } catch (error) {
-    return { products: [], error: ERROR_MESSAGES.FETCH_ERROR };
+    if (error instanceof Error) {
+      return { products: [], error: error.message };
+    }
+
+    return { products: [], error: ERROR_MESSAGES.UNKNOWN_ERROR };
   }
 };

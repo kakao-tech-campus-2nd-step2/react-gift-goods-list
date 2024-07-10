@@ -1,5 +1,5 @@
-import { BACKEND_API } from '@/constants/api';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { BACKEND_API } from '@/services/api';
 import { ProductData, RankingFilter } from '@/types/productType';
 
 import { GetProductRankingRequest, GetProductRankingResponse } from './types';
@@ -25,6 +25,10 @@ export const fetchRankingProductData = async (
 
     return { products: response.data.products, error: undefined };
   } catch (error) {
-    return { products: [], error: ERROR_MESSAGES.FETCH_ERROR };
+    if (error instanceof Error) {
+      return { products: [], error: error.message };
+    }
+
+    return { products: [], error: ERROR_MESSAGES.UNKNOWN_ERROR };
   }
 };

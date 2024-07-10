@@ -1,6 +1,4 @@
-import { fetchThemesFromAPI } from '@/api/api';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
@@ -8,33 +6,15 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
-import { ThemeData } from '@/types/index';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
+import { useFetchThemes } from '@/api/customHook';
+
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const fetchedThemes = await fetchThemesFromAPI();
-        console.log('API response:', fetchedThemes);
-        setThemes(fetchedThemes);
-      } catch (error) {
-        console.error('Error fetching themes:', error);
-        setFetchError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, []);
+  const { data: themes, loading, error } = useFetchThemes();
 
   if (loading) return <div>Loading...</div>;
-  if (fetchError) return <div>Error loading themes</div>;
+  if (error) return <div>Error</div>;
 
   return (
     <Wrapper>
@@ -45,11 +25,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>
-          ))}
+          {themes &&
+            themes.map((theme) => (
+              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+              </Link>
+            ))}
         </Grid>
       </Container>
     </Wrapper>

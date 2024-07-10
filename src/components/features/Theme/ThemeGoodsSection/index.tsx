@@ -1,39 +1,21 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { fetchProductsByTheme } from '@/api/api';
-import { ProductData } from '@/types/index';
+
+import { useFetchProductsByTheme } from '@/api/customHook';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const fetchedProducts = await fetchProductsByTheme(themeKey);
-        setProducts(fetchedProducts);
-      } catch (error) {
-        setFetchError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [themeKey]);
+  const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
 
   if (loading) return <div>Loading...</div>;
-  if (fetchError) return <div>Error</div>;
+  if (error) return <div>Error</div>;
 
   return (
     <Wrapper>
@@ -45,15 +27,16 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {products &&
+            products.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
         </Grid>
       </Container>
     </Wrapper>

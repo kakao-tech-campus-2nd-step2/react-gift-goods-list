@@ -1,38 +1,23 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { fetchThemesFromAPI } from '@/api/api';
+
+import { useFetchThemes } from '@/api/customHook';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchTheme = async () => {
-      try {
-        const themes = await fetchThemesFromAPI();
-        const theme = themes.find((t) => t.key === themeKey);
-        setCurrentTheme(theme || null);
-      } catch (error) {
-        setFetchError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTheme();
-  }, [themeKey]);
+  const { data: themes, loading, error } = useFetchThemes();
 
   if (loading) return <div>Loading...</div>;
-  if (fetchError || !currentTheme) return null;
+  if (error) return <div>Error</div>;
+
+  const currentTheme = themes?.find((t) => t.key === themeKey);
+  if (!currentTheme) return null;
 
   const { backgroundColor, label, title, description } = currentTheme;
 

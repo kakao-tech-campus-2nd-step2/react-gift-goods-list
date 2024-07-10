@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
+import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
 import { useThemeHeaderData } from '@/pages/ThemePage/hooks/useThemeHeaderData';
 
@@ -17,22 +18,26 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
 
   const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
 
+  if (error === ERROR_MESSAGES.FETCH_ERROR)
+    return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (error || !themeHeader) {
+  if (error === ERROR_MESSAGES.PATH_NOT_FOUND || !themeHeader) {
     navigate(ROUTES.HOME);
     return null;
   }
 
+  const { backgroundColor, label, title, description } = themeHeader;
+
   return (
     <Content
-      backgroundColor={themeHeader.backgroundColor}
+      backgroundColor={backgroundColor}
       flexDirection="column"
       gap="0.5rem"
       css={headerStyle}
     >
-      <p css={textStyle('label')}>{themeHeader.label}</p>
-      <h2 css={textStyle('title')}>{themeHeader.title}</h2>
-      <p css={textStyle('description')}>{themeHeader.description}</p>
+      <p css={textStyle('label')}>{label}</p>
+      <h2 css={textStyle('title')}>{title}</h2>
+      <p css={textStyle('description')}>{description}</p>
     </Content>
   );
 };

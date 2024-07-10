@@ -20,17 +20,19 @@ export const RankList = ({ filteredRankList }: RankListProps) => {
       }}
       placeItems="start"
     >
-      {filteredRankList.map((item, index) => (
-        <div key={item.id} css={itemContainerStyle}>
-          <RankingGoodsItem
-            imageSrc={item.imageURL}
-            rank={index}
-            title={item.name}
-            subtitle={item.brandInfo.name}
-            amount={item.price.sellingPrice}
-          />
-        </div>
-      ))}
+      {filteredRankList.map(
+        ({ id, imageURL, name, brandInfo, price }, index) => (
+          <div key={id} css={itemContainerStyle}>
+            <RankingGoodsItem
+              imageSrc={imageURL}
+              rank={index + 1}
+              title={name}
+              subtitle={brandInfo.name}
+              amount={price.sellingPrice}
+            />
+          </div>
+        )
+      )}
     </Grid>
   );
 };

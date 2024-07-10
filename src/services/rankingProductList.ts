@@ -1,4 +1,5 @@
 import { BACKEND_API } from '@/constants/api';
+import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import {
   GetProductRankingRequest,
   GetProductRankingResponse,
@@ -27,6 +28,6 @@ export const fetchRankingProductList = async (
 
     return { products: response.data.products, error: undefined };
   } catch (error) {
-    return { products: [], error: '데이터를 불러올 수 없습니다.' };
+    return { products: [], error: ERROR_MESSAGES.FETCH_ERROR };
   }
 };

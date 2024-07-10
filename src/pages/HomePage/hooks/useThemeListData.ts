@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchThemeData } from '@/pages/HomePage/services/themeList';
+import { fetchThemeData } from '@/services/themeList';
+
 import { ThemeListData } from '@/types/themeType';
 
 export const useThemeListData = () => {
@@ -12,8 +13,11 @@ export const useThemeListData = () => {
     const fetchData = async () => {
       setLoading(true);
       const response = await fetchThemeData();
+
       if (response.themes) setThemeList(response.themes);
+
       if (response.error) setError(response.error);
+
       setLoading(false);
     };
 

@@ -26,9 +26,9 @@ export const ThemeSection = () => {
         }}
         css={gridStyle}
       >
-        {themeList.map((theme) => (
-          <Link key={theme.id} to={`/theme/${theme.key}`}>
-            <ThemeItem label={theme.label} imageURL={theme.imageURL} />
+        {themeList.map(({ id, key, label, imageURL }) => (
+          <Link key={id} to={`/theme/${key}`}>
+            <ThemeItem label={label} imageURL={imageURL} />
           </Link>
         ))}
       </Grid>

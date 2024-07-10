@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchRankingProductList } from '@/pages/HomePage/services/rankingProductList';
+import { fetchRankingProductList } from '@/services/rankingProductList';
+
 import { ProductData, RankingFilter } from '@/types/productType';
 
 export const useRankListData = (filter: RankingFilter) => {
@@ -13,8 +14,11 @@ export const useRankListData = (filter: RankingFilter) => {
       setError('');
       setLoading(true);
       const response = await fetchRankingProductList(filter);
+
       if (response.products) setRankList(response.products);
+
       if (response.error) setError(response.error);
+
       setLoading(false);
     };
     fetchData();

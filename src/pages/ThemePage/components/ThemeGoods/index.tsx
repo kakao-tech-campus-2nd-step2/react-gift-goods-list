@@ -31,15 +31,17 @@ export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
         }}
         css={contentStyle}
       >
-        {themeProducts.map((product) => (
-          <GoodsItem
-            key={product.id}
-            imageSrc={product.imageURL}
-            subtitle={product.brandInfo.name}
-            title={product.name}
-            amount={product.price.sellingPrice}
-          />
-        ))}
+        {themeProducts.map(({ id, imageURL, brandInfo, name, price }) => {
+          return (
+            <GoodsItem
+              key={id}
+              imageSrc={imageURL}
+              subtitle={brandInfo.name}
+              title={name}
+              amount={price.sellingPrice}
+            />
+          );
+        })}
       </Grid>
     </Content>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchThemeProductData } from '@/pages/ThemePage/services/themeProductList';
+import { fetchThemeProductData } from '@/services/themeProductList';
+
 import { ProductData } from '@/types/productType';
 
 export const useThemeProductData = (themeKey: string) => {
@@ -9,14 +10,17 @@ export const useThemeProductData = (themeKey: string) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchProductData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const response = await fetchThemeProductData(themeKey);
+
       if (response.products) setThemeProducts(response.products);
+
       if (response.error) setError(response.error);
+
       setLoading(false);
     };
-    fetchProductData();
+    fetchData();
   }, [themeKey]);
 
   return { themeProducts, loading, error };

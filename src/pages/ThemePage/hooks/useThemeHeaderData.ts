@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchThemeHeaderData } from '@/pages/ThemePage/services/themeHeader';
+import { fetchThemeHeaderData } from '@/services/themeHeader';
+
 import { ThemeHeaderData } from '@/types/themeType';
 
 export const useThemeHeaderData = (themeKey: string) => {
@@ -9,15 +10,18 @@ export const useThemeHeaderData = (themeKey: string) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchThemeData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const response = await fetchThemeHeaderData(themeKey);
+
       if (response.themeHeaderContents)
         setThemeHeader(response.themeHeaderContents);
+
       if (response.error) setError(response.error);
+
       setLoading(false);
     };
-    fetchThemeData();
+    fetchData();
   }, [themeKey]);
 
   return { themeHeader, loading, error };

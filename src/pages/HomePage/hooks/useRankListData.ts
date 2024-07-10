@@ -5,8 +5,14 @@ import { fetchRankingProductList } from '@/services/rankingProductList';
 import { ProductData, RankingFilter } from '@/types/productType';
 
 export const useRankListData = (filter: RankingFilter) => {
-  const { data, loading, error, setData, setLoading, setError } =
-    useFetchData<ProductData[]>();
+  const {
+    data: rankProducts,
+    loading,
+    error,
+    setData,
+    setLoading,
+    setError,
+  } = useFetchData<ProductData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,5 +30,5 @@ export const useRankListData = (filter: RankingFilter) => {
     fetchData();
   }, [setData, setLoading, setError, filter]);
 
-  return { data, loading, error };
+  return { rankProducts, loading, error };
 };

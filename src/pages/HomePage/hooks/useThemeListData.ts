@@ -5,8 +5,14 @@ import { fetchThemeData } from '@/services/themeData';
 import { ThemeListData } from '@/types/themeType';
 
 export const useThemeListData = () => {
-  const { data, loading, error, setData, setLoading, setError } =
-    useFetchData<ThemeListData[]>();
+  const {
+    data: themeList,
+    loading,
+    error,
+    setData,
+    setLoading,
+    setError,
+  } = useFetchData<ThemeListData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,5 +29,5 @@ export const useThemeListData = () => {
     fetchData();
   }, [setData, setLoading, setError]);
 
-  return { data, loading, error };
+  return { themeList, loading, error };
 };

@@ -5,7 +5,7 @@ import { ProductData } from '@/types/productType';
 import { GetProductsRequest, GetProductsResponse } from './types';
 
 interface FetchThemeProductDataResponse {
-  products?: ProductData[];
+  products: ProductData[];
   error?: string;
 }
 

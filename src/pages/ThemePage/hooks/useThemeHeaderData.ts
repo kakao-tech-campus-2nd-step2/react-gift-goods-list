@@ -5,8 +5,14 @@ import { fetchThemeHeaderData } from '@/services/themeData';
 import { ThemeHeaderData } from '@/types/themeType';
 
 export const useThemeHeaderData = (themeKey: string) => {
-  const { data, loading, error, setData, setLoading, setError } =
-    useFetchData<ThemeHeaderData>();
+  const {
+    data: themeHeader,
+    loading,
+    error,
+    setData,
+    setLoading,
+    setError,
+  } = useFetchData<ThemeHeaderData>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,5 +28,5 @@ export const useThemeHeaderData = (themeKey: string) => {
     fetchData();
   }, [themeKey, setData, setLoading, setError]);
 
-  return { data, loading, error };
+  return { themeHeader, loading, error };
 };

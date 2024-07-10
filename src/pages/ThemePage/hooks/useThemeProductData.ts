@@ -5,8 +5,14 @@ import { fetchThemeProductData } from '@/services/themeProductList';
 import { ProductData } from '@/types/productType';
 
 export const useThemeProductData = (themeKey: string) => {
-  const { data, loading, error, setData, setLoading, setError } =
-    useFetchData<ProductData[]>();
+  const {
+    data: themeProducts,
+    loading,
+    error,
+    setData,
+    setLoading,
+    setError,
+  } = useFetchData<ProductData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,5 +28,5 @@ export const useThemeProductData = (themeKey: string) => {
     fetchData();
   }, [themeKey, setData, setLoading, setError]);
 
-  return { data, loading, error };
+  return { themeProducts, loading, error };
 };

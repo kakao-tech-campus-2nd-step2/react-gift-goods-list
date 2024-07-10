@@ -21,7 +21,7 @@ export const RankList = ({ filteredRankList }: RankListProps) => {
       placeItems="start"
     >
       {filteredRankList.map(
-        ({ id, imageURL, name, brandInfo, price }, index) => (
+        ({ id, imageURL, name, brandInfo, price }: ProductData, index) => (
           <div key={id} css={itemContainerStyle}>
             <RankingGoodsItem
               imageSrc={imageURL}

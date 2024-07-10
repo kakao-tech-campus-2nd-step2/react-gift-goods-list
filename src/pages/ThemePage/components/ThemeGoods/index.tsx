@@ -1,4 +1,5 @@
 import { useThemeProductData } from '@/pages/ThemePage/hooks/useThemeProductData';
+import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
 import { OneTextContainer } from '@/components/OneTextContainer';
@@ -12,11 +13,11 @@ type ThemeGoodsProps = {
 };
 
 export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
-  const { data, loading, error } = useThemeProductData(themeKey);
+  const { themeProducts, loading, error } = useThemeProductData(themeKey);
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (!data?.length)
+  if (!themeProducts?.length)
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 
   return (
@@ -31,17 +32,19 @@ export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
         }}
         css={contentStyle}
       >
-        {data?.map(({ id, imageURL, brandInfo, name, price }) => {
-          return (
-            <GoodsItem
-              key={id}
-              imageSrc={imageURL}
-              subtitle={brandInfo.name}
-              title={name}
-              amount={price.sellingPrice}
-            />
-          );
-        })}
+        {themeProducts?.map(
+          ({ id, imageURL, brandInfo, name, price }: ProductData) => {
+            return (
+              <GoodsItem
+                key={id}
+                imageSrc={imageURL}
+                subtitle={brandInfo.name}
+                title={name}
+                amount={price.sellingPrice}
+              />
+            );
+          }
+        )}
       </Grid>
     </Content>
   );

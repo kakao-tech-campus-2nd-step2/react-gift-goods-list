@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
 import { useThemeHeaderData } from '@/pages/ThemePage/hooks/useThemeHeaderData';
+import { ThemeHeaderData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
 import { OneTextContainer } from '@/components/OneTextContainer';
@@ -17,19 +18,20 @@ type ThemeHeaderProps = {
 export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
   const navigate = useNavigate();
 
-  const { data, loading, error } = useThemeHeaderData(themeKey);
+  const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
 
   useEffect(() => {
     if (error === ERROR_MESSAGES.PATH_NOT_FOUND) {
       navigate(ROUTES.HOME);
     }
-  }, [error, data, navigate]);
+  }, [error, navigate]);
 
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
 
-  const { backgroundColor, label, title, description } = data || {};
+  const { backgroundColor, label, title, description } =
+    themeHeader as ThemeHeaderData;
 
   return (
     <Content

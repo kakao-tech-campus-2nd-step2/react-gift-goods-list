@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useFetchData } from '@/hooks/useFetchData';
-import { fetchThemeData } from '@/services/themeList';
+import { fetchThemeData } from '@/services/themeData';
 import { ThemeListData } from '@/types/themeType';
 
 export const useThemeListData = () => {

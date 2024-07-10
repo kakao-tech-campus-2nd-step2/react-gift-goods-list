@@ -1,10 +1,8 @@
 import { BACKEND_API } from '@/constants/api';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
-import {
-  GetProductsRequest,
-  GetProductsResponse,
-  ProductData,
-} from '@/types/productType';
+import { ProductData } from '@/types/productType';
+
+import { GetProductsRequest, GetProductsResponse } from './types';
 
 interface FetchThemeProductDataResponse {
   products?: ProductData[];

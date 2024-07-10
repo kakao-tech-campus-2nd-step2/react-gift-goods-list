@@ -1,11 +1,8 @@
 import { BACKEND_API } from '@/constants/api';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
-import {
-  GetProductRankingRequest,
-  GetProductRankingResponse,
-  ProductData,
-  RankingFilter,
-} from '@/types/productType';
+import { ProductData, RankingFilter } from '@/types/productType';
+
+import { GetProductRankingRequest, GetProductRankingResponse } from './types';
 
 interface FetchRankingProductListResponse {
   products: ProductData[];

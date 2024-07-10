@@ -17,7 +17,3 @@ export type ThemeHeaderData = Pick<
   ThemeData,
   'label' | 'title' | 'description' | 'backgroundColor'
 >;
-
-export type GetThemesResponse = {
-  themes: ThemeData[];
-};

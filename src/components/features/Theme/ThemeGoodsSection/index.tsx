@@ -17,7 +17,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [themeGoods, setThemeGoods] = useState<GoodsData[]>([]);
 
   useEffect(() => {
-    const fetchThemeData = async () => {
+    const getThemeData = async () => {
       try {
         const maxResults = 20;
         const queryParams = `?maxResults=${maxResults}`;
@@ -29,7 +29,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       }
     };
 
-    fetchThemeData();
+    getThemeData();
   }, [themeKey]);
 
 

@@ -10,7 +10,7 @@ import { ThemeItem } from './ThemeItem';
 import { gridStyle } from './styles';
 
 export const ThemeSection = () => {
-  const { themeList, loading, error } = useThemeListData();
+  const { data, loading, error } = useThemeListData();
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
@@ -26,7 +26,7 @@ export const ThemeSection = () => {
         }}
         css={gridStyle}
       >
-        {themeList.map(({ id, key, label, imageURL }) => (
+        {data?.map(({ id, key, label, imageURL }) => (
           <Link key={id} to={`/theme/${key}`}>
             <ThemeItem label={label} imageURL={imageURL} />
           </Link>

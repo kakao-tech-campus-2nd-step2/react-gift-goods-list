@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
+import { useFetchData } from '@/hooks/useFetchData';
 import { fetchRankingProductList } from '@/services/rankingProductList';
-
 import { ProductData, RankingFilter } from '@/types/productType';
 
 export const useRankListData = (filter: RankingFilter) => {
-  const [rankList, setRankList] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { data, loading, error, setData, setLoading, setError } =
+    useFetchData<ProductData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,14 +14,15 @@ export const useRankListData = (filter: RankingFilter) => {
       setLoading(true);
       const response = await fetchRankingProductList(filter);
 
-      if (response.products) setRankList(response.products);
+      if (response.products) setData(response.products);
 
       if (response.error) setError(response.error);
 
       setLoading(false);
     };
-    fetchData();
-  }, [filter]);
 
-  return { rankList, loading, error };
+    fetchData();
+  }, [setData, setLoading, setError, filter]);
+
+  return { data, loading, error };
 };

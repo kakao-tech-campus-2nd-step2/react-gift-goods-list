@@ -12,11 +12,11 @@ type ThemeGoodsProps = {
 };
 
 export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
-  const { themeProducts, loading, error } = useThemeProductData(themeKey);
+  const { data, loading, error } = useThemeProductData(themeKey);
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (!themeProducts?.length)
+  if (!data?.length)
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 
   return (
@@ -31,7 +31,7 @@ export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
         }}
         css={contentStyle}
       >
-        {themeProducts.map(({ id, imageURL, brandInfo, name, price }) => {
+        {data?.map(({ id, imageURL, brandInfo, name, price }) => {
           return (
             <GoodsItem
               key={id}

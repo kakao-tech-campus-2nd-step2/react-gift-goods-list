@@ -1,27 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
+import { useFetchData } from '@/hooks/useFetchData';
 import { fetchThemeProductData } from '@/services/themeProductList';
-
 import { ProductData } from '@/types/productType';
 
 export const useThemeProductData = (themeKey: string) => {
-  const [themeProducts, setThemeProducts] = useState<ProductData[]>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { data, loading, error, setData, setLoading, setError } =
+    useFetchData<ProductData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const response = await fetchThemeProductData(themeKey);
 
-      if (response.products) setThemeProducts(response.products);
+      if (response.products) setData(response.products);
 
       if (response.error) setError(response.error);
 
       setLoading(false);
     };
     fetchData();
-  }, [themeKey]);
+  }, [themeKey, setData, setLoading, setError]);
 
-  return { themeProducts, loading, error };
+  return { data, loading, error };
 };

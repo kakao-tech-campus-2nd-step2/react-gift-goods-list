@@ -14,13 +14,13 @@ type GoodsRankingListProps = {
 };
 
 export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
-  const { rankList, loading, error } = useRankListData(filter);
+  const { data, loading, error } = useRankListData(filter);
 
   const { visibleItems, visibleItemCount, setVisibleItemCount } =
-    useVisibleList(rankList, filter);
+    useVisibleList(data || [], filter);
 
   const { isExpanded, handleShowLess, handleShowMore } = useExpansionControl(
-    rankList.length,
+    data?.length || 0,
     visibleItemCount,
     setVisibleItemCount
   );
@@ -30,7 +30,7 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
 
   if (error) return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (!rankList.length)
+  if (!data?.length)
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
 
   return (

@@ -1,20 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
+import { useFetchData } from '@/hooks/useFetchData';
 import { fetchThemeData } from '@/services/themeList';
-
 import { ThemeListData } from '@/types/themeType';
 
 export const useThemeListData = () => {
-  const [themeList, setThemeList] = useState<ThemeListData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { data, loading, error, setData, setLoading, setError } =
+    useFetchData<ThemeListData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const response = await fetchThemeData();
 
-      if (response.themes) setThemeList(response.themes);
+      if (response.themes) setData(response.themes);
 
       if (response.error) setError(response.error);
 
@@ -22,7 +21,7 @@ export const useThemeListData = () => {
     };
 
     fetchData();
-  }, []);
+  }, [setData, setLoading, setError]);
 
-  return { themeList, loading, error };
+  return { data, loading, error };
 };

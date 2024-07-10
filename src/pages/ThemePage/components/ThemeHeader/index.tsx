@@ -16,17 +16,17 @@ type ThemeHeaderProps = {
 export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
   const navigate = useNavigate();
 
-  const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
+  const { data, loading, error } = useThemeHeaderData(themeKey);
 
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
   if (loading) return <OneTextContainer>loading...</OneTextContainer>;
-  if (error === ERROR_MESSAGES.PATH_NOT_FOUND || !themeHeader) {
+  if (error === ERROR_MESSAGES.PATH_NOT_FOUND || !data) {
     navigate(ROUTES.HOME);
     return null;
   }
 
-  const { backgroundColor, label, title, description } = themeHeader;
+  const { backgroundColor, label, title, description } = data;
 
   return (
     <Content

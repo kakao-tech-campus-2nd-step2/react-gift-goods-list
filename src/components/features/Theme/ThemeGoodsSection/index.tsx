@@ -15,24 +15,37 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [goods, setGoods] = useState<GoodsData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setisLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchGoods = async () => {
       try {
+        setisLoading(true);
         const data = await getThemeProducts(themeKey);
         setGoods(data);
+        setisLoading(false);
       } catch (err) {
+        setisLoading(true);
         setError('상품을 가져오는데 실패하였습니다.');
+        setisLoading(false);
       }
     };
 
     fetchGoods();
   }, [themeKey]);
 
-  if (error) {
-    return <div>{error}</div>;
+  if (isLoading) {
+    return (
+      <SpinnerWrapper>
+        <Spinner />
+      </SpinnerWrapper>
+    );
   }
 
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -64,5 +77,39 @@ const Wrapper = styled.section`
 
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
+  }
+`;
+
+
+const ErrorMessage = styled.div`
+  color: black;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+const Spinner = styled.div`
+  border: 4px solid white; 
+  border-left-color: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;

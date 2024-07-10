@@ -1,3 +1,5 @@
+# 🚀 1단계 - API 적용하기
+
 ## 🚀 Getting Started
 
 - ✔️ Frontend에서 비동기 데이터를 처리하는 방법에 대해 고민

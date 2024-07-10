@@ -3,14 +3,29 @@ import styled from '@emotion/styled';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { useState, useEffect } from 'react';
+import { getData } from '@/api';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const data = await getData(`/api/v1/themes`);
+        const theme = getCurrentTheme(themeKey, data.themes);
+        setCurrentTheme(theme);
+      } catch (error) {
+        console.error('Error fetching theme data:', error);
+      }
+    };
+
+    fetchThemeData();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return null;

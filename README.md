@@ -1,4 +1,5 @@
 # 요구사항
+
 - 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의
 - React Query를 사용하지 말고 axiou를 사용해서 구현 
 - 첨부된 oas.yaml 파일과 목 API URL을 사용하여 API를 구현

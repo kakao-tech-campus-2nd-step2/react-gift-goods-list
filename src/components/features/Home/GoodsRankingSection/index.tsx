@@ -15,6 +15,8 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
   const [goods, setGoods] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>();
 
   const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/ranking/products';
   useEffect(() => {
@@ -22,10 +24,37 @@ export const GoodsRankingSection = () => {
       method: 'get',
       url: url,
       params: filterOption,
-    }).then((res) => {
-      setGoods(res.data.products);
-    });
+    })
+      .then((res) => {
+        setGoods(res.data.products);
+      })
+      .catch((err) => {
+        console.error('Error fetching themes:', err);
+        setError(err); // 에러 메시지 설정
+      })
+      .finally(() => {
+        setLoading(false); // 로딩 상태 해제
+      });
   }, [filterOption]);
+
+  if (loading)
+    return (
+      <Container>
+        <div>데이터를 로딩중입니다.</div>
+      </Container>
+    );
+  if (error)
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
+  if (goods.length === 0)
+    return (
+      <Container>
+        <div>데이터가 존재하지 않습니다.</div>
+      </Container>
+    );
 
   return (
     <Wrapper>

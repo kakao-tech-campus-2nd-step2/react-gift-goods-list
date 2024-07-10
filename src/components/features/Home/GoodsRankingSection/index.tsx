@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 import type { ProductData } from '@/api/api';
@@ -29,9 +30,29 @@ export const GoodsRankingSection = () => {
     try {
       const response = await axiosInstance.get('/api/v1/ranking/products', { params: filters })
       setGoodsList(response.data.products)
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err)
-      setError('ranking products를 fetch하는데 실패함')
+      if (isAxiosError(err)) {
+        // 서버가 상태 코드를 응답한 경우
+        if (err.response) {
+          switch (err.response.status) {
+            case 404:
+              setError('Themes not found');
+              break;
+            case 500:
+              setError('Internal server error');
+              break;
+            default:
+              setError('An unexpected error occurred');
+          }
+        } else if (err.request) {
+          // 요청이 만들어졌지만 응답을 받지 못한 경우
+          setError('Network error');
+        }
+      } else {
+        // 다른 에러인 경우
+        setError('ranking products를 fetch하는데 실패함')
+      }
     } finally {
       setLoading(false)
     }
@@ -43,12 +64,17 @@ export const GoodsRankingSection = () => {
 
   if (loading)
     return (
-      <div>Loading...</div>
+      <LoadingWrapper>Loading...</LoadingWrapper>
     )
   
   if (error)
     return (
-      <div>{error}</div>
+      <ErrorWrapper>{error}</ErrorWrapper>
+  )
+
+  if (goodsList.length === 0)
+    return (
+      <NoDataWrapper>No ranking products available</NoDataWrapper>
   )
 
   return (
@@ -83,4 +109,20 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
+`;
+
+const NoDataWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
 `;

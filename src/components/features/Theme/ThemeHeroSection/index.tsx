@@ -5,6 +5,8 @@ import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 import { useState, useEffect } from 'react';
 import { getData } from '@/api';
+import { Navigate } from 'react-router-dom';
+import { RouterPath } from '@/routes/path';
 
 type Props = {
   themeKey: string;
@@ -12,20 +14,29 @@ type Props = {
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    const fetchThemeData = async () => {
+    const getThemeData = async () => {
       try {
         const data = await getData(`/api/v1/themes`);
         const theme = getCurrentTheme(themeKey, data.themes);
-        setCurrentTheme(theme);
+        if (!theme) {
+          setRedirect(true);
+        } else {
+          setCurrentTheme(theme);
+        }
       } catch (error) {
         console.error('Error fetching theme data:', error);
       }
     };
 
-    fetchThemeData();
+    getThemeData();
   }, [themeKey]);
+
+  if (redirect) {
+    return <Navigate to={RouterPath.home} />;
+  }
 
   if (!currentTheme) {
     return null;

@@ -18,7 +18,6 @@ export const useCurrentTheme = ({ themeKey }: UseCurrentThemeProps) => {
         const foundTheme = themes.themes.find((theme) => theme.key === themeKey);
         setCurrentTheme(foundTheme || null);
       } catch (error) {
-        console.error('Failed to fetch themes', error);
         setCurrentTheme(null);
       } finally {
         setIsLoading(false);

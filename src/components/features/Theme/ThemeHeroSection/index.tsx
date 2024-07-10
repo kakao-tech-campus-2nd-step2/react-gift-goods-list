@@ -3,18 +3,21 @@ import styled from '@emotion/styled';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+
+import { useFetchThemes } from '@/api/customHook';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data: themes, loading, error } = useFetchThemes();
 
-  if (!currentTheme) {
-    return null;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
+
+  const currentTheme = themes?.find((t) => t.key === themeKey);
+  if (!currentTheme) return null;
 
   const { backgroundColor, label, title, description } = currentTheme;
 

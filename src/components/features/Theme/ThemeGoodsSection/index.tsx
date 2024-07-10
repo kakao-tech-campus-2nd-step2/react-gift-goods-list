@@ -4,13 +4,19 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+
+import { useFetchProductsByTheme } from '@/api/customHook';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
+
   return (
     <Wrapper>
       <Container>
@@ -21,15 +27,16 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {products &&
+            products.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
         </Grid>
       </Container>
     </Wrapper>

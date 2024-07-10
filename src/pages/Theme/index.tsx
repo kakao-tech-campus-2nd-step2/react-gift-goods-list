@@ -3,15 +3,17 @@ import { Navigate, useParams } from 'react-router-dom';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
+import { useFetchThemes } from '@/api/customHook';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data: themes, loading, error } = useFetchThemes();
 
-  if (!currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error || !themes) return <Navigate to={RouterPath.notFound} />;
+
+  const currentTheme = getCurrentTheme(themeKey, themes);
+  if (!currentTheme) return <Navigate to={RouterPath.notFound} />;
 
   return (
     <>

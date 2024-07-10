@@ -46,7 +46,7 @@ const FlexContainer = styled.div({
 });
 
 const UserButton = ({ navigate }: { navigate: NavigateFunction }) => {
-    const isAuthenticated = useContext(AuthContext).isAuthenticated;
+    const { isAuthenticated } = useContext(AuthContext);
 
     return (
         <div>

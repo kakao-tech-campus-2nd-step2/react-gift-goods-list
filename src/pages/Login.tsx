@@ -11,7 +11,7 @@ export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const setIsAuthenticated = useContext(AuthContext).setIsAuthenticated;
+    const { setIsAuthenticated } = useContext(AuthContext);
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();

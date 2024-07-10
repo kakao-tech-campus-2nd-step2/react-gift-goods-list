@@ -44,7 +44,7 @@
 
 ---
 
-- [ ] Loading 컴포넌트 추가
+- [x] Loading 컴포넌트 추가
 - [ ] isLoading 결과에 따라 Loading 컴포넌트 랜더링
 - [ ] useGetAPI 함수 리턴값에 에러 상태 추가
 - [ ] 에러 처리

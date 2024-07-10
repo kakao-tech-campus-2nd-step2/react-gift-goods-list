@@ -10,7 +10,7 @@ export const fetchThemeProducts = async (params: ThemeProductsRequest): Promise<
   const response = await axiosInstance.get<ThemeProductsResponse>(`/api/v1/themes/${params.themeKey}/products`, {
     params: {
       pageToken: params.pageToken,
-      maxResults: params.maxResults,
+      maxResults: params.maxResults ?? 20,
     },
   });
   return response.data;

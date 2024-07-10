@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -17,39 +18,61 @@ type Theme = {
 }
 
 export const ThemeCategorySection = () => {
-
-  const [themes, setThemes] = useState<Theme[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [themes, setThemes] = useState<Theme[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTheme = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
-      const response = await axiosInstance.get('/api/v1/themes')
-      setThemes(response.data.themes)
-    } catch(err) {
-      console.error(err)
-      setError('themes를 fetch하는데 실패함')
+      const response = await axiosInstance.get('/api/v1/themes');
+      console.log('Fetch themes: ', response.data.themes);
+      setThemes(response.data.themes);
+    } catch (err: unknown) {
+      console.error(err);
+      if (isAxiosError(err)) {
+        // 서버가 상태 코드를 응답한 경우
+        if (err.response) {
+          switch (err.response.status) {
+            case 404:
+              setError('Themes not found');
+              break;
+            case 500:
+              setError('Internal server error');
+              break;
+            default:
+              setError('An unexpected error occurred');
+          }
+        } else if (err.request) {
+          // 요청이 만들어졌지만 응답을 받지 못한 경우
+          setError('Network error');
+        }
+      } else {
+        // 다른 에러인 경우
+        setError('Failed to fetch themes');
+      }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTheme()
-  }, [])
+    fetchTheme();
+  }, []);
 
-  if (loading)
-    return (
-      <div>Loading...</div>
-    )
-  
-  if (error)
-    return (
-      <div>{error}</div>
-  )
+  if (loading) {
+    return <LoadingWrapper>Loading...</LoadingWrapper>;
+  }
+
+  if (error) {
+    return <ErrorWrapper>{error}</ErrorWrapper>;
+  }
+
+  if (themes.length === 0) {
+    return <NoDataWrapper>No themes available</NoDataWrapper>;
+  }
 
   return (
     <Wrapper>
@@ -66,9 +89,8 @@ export const ThemeCategorySection = () => {
                 image={theme.imageURL}
                 label={theme.label}
               />
-          </Link>
-        ))}
- 
+            </Link>
+          ))}
         </Grid>
       </Container>
     </Wrapper>
@@ -81,4 +103,20 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
+`;
+
+const NoDataWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
 `;

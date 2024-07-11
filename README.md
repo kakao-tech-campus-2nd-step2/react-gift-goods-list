@@ -1,6 +1,6 @@
 # react-gift-goods-list
 FE 카카오 선물하기 3주차 과제
-### 🌱 1단계 - API 적용하기
+### 🌱 1단계 - API 적용
 - [X] 첨부된 `oas.yaml` 파일을 토대로 Request, Response Type을 정의
 - [X] React Query를 사용하지 않고 Axios를 사용해서 구현
 - [X] 첨부된 `oas.yaml` 파일과 Mock API URL을 사용하여 API 구현
@@ -20,3 +20,6 @@ FE 카카오 선물하기 3주차 과제
 - [X] 각 API에서 Loading 상태에 대한 UI 대응
 - [X] 데이터가 없는 경우에 대한 UI 대응
 - [X] HTTP Status에 따라 Error를 다르게 처리
+### 🪴 3단계 - 테마 별 선물 추천 API에 페이지네이션 구현 & React Query 사용
+- [ ] 스크롤을 내리면 추가로 데이터를 요청하여 표시
+- [ ] 1단계에서 구현한 API를 React-Query를 사용해서 구현

@@ -6,12 +6,14 @@ import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import { useContext, useEffect } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
+import FetchStatusBoundary
+  from '@components/atoms/container/FetchStatusBoundary';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 import { isThemesLoaded } from '@/utils';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const products = useFetchThemeProducts({ themeKey: themeKey || '' });
+  const { products, fetchStatus } = useFetchThemeProducts({ themeKey: themeKey || '' });
   const themes = useContext(ThemeContext);
   const navigate = useNavigate();
 
@@ -33,7 +35,9 @@ function ThemePage() {
           justifyContent="center"
           padding="40px 16px 300px"
         >
-          <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
+          <FetchStatusBoundary fetchStatus={fetchStatus}>
+            <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
+          </FetchStatusBoundary>
         </Container>
       </Container>
     </Page>

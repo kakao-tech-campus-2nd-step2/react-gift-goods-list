@@ -15,6 +15,10 @@ type Props = {
 
 type QueryParams = Record<string, string | number>;
 
+const generateRandomId = (): string => {
+  return Math.random().toString(36).substr(2, 9);
+};
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,7 +35,13 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const queryParams: QueryParams = pageToken ? { maxResults, pageToken } : { maxResults };
 
         const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
-        setCurrentGoods((prevGoods) => [...prevGoods, ...data.products]);
+        setCurrentGoods((prevGoods) => [
+          ...prevGoods,
+          ...data.products.map((product: GoodsData) => ({
+            ...product,
+            id: generateRandomId(),
+          })),
+        ]);
         setNextPageToken(data.nextPageToken || null);
       } catch (error: unknown) {
         if (error instanceof Error) {

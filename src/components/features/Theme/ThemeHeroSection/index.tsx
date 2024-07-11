@@ -1,22 +1,44 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
-type Props = {
+interface ThemeHeroSectionProps {
   themeKey: string;
-};
+}
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
+  const [theme, setTheme] = useState<ThemeData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  if (!currentTheme) {
-    return null;
-  }
+  useEffect(() => {
+    const fetchThemeDetails = async () => {
+      try {
+        const themes = await fetchThemes();
+        const foundTheme = themes.find(t => t.key === themeKey);
+        if (!foundTheme) throw new Error('Theme not found');
+        setTheme(foundTheme);
+      } catch (fetchError) {
+        console.error('Failed to fetch theme details:', fetchError);
+        setHasError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const { backgroundColor, label, title, description } = currentTheme;
+    fetchThemeDetails();
+  }, [themeKey]);
+
+  if (loading) return <div>Loading...</div>;
+  if (hasError) return <Navigate to="/" />;
+  if (!theme) return <div>Theme not found</div>;
+
+  const { backgroundColor, label, title, description } = theme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>

@@ -1,34 +1,26 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { fetchRankingProducts } from '@/api/api';
+import { fetchThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData, RankingFilterOption } from '@/types';
-
-import { GoodsRankingFilter } from '../../Home/GoodsRankingSection/Filter';
-
-const initialFilterOption: RankingFilterOption = {
-  targetType: 'ALL',
-  rankType: 'MANY_WISH',
-};
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection: React.FC<Props> = ({}) => {
+export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [filterOption, setFilterOption] = useState<RankingFilterOption>(initialFilterOption);
 
   useEffect(() => {
     const loadRankingProducts = async () => {
       try {
-        const response = await fetchRankingProducts(filterOption.targetType, filterOption.rankType);
+        const response = await fetchThemeProducts(themeKey);
         setGoodsList(response.products);
         setIsLoading(false);
       } catch (error) {
@@ -38,12 +30,7 @@ export const ThemeGoodsSection: React.FC<Props> = ({}) => {
     };
 
     loadRankingProducts();
-  }, [filterOption]);
-
-  const handleFilterOptionChange = (option: RankingFilterOption) => {
-    setFilterOption(option);
-    setIsLoading(true);
-  };
+  }, [themeKey]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -56,10 +43,6 @@ export const ThemeGoodsSection: React.FC<Props> = ({}) => {
   return (
     <Wrapper>
       <Container>
-        <GoodsRankingFilter
-          filterOption={filterOption}
-          onFilterOptionChange={handleFilterOptionChange}
-        />
         <Grid
           columns={{
             initial: 2,

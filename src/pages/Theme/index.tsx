@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
+import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { ThemeData } from '@/types';
 
@@ -40,5 +41,10 @@ export const ThemePage: React.FC = () => {
     return <Navigate to="/" />;
   }
 
-  return <>{currentTheme && <ThemeHeroSection theme={currentTheme} />}</>;
+  return (
+    <>
+      {currentTheme && <ThemeHeroSection theme={currentTheme} />}
+      <ThemeGoodsSection themeKey={themeKey} />;
+    </>
+  );
 };

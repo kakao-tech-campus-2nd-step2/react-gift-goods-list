@@ -9,6 +9,8 @@ import Button from '@components/atoms/button/Button';
 import {
   RankingSectionTitle, RankingSectionTitleContainer,
 } from '@components/organisms/main/ranking/RankingSection.styles';
+import FetchStatusBoundary
+  from '@components/atoms/container/FetchStatusBoundary';
 import { TargetFilter, RankFilter } from '@/types';
 
 function RankingSection() {
@@ -16,7 +18,7 @@ function RankingSection() {
   const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
   const [isFolded, setIsFolded] = useState(true);
 
-  const products = useFetchProducts({ targetFilter, rankFilter });
+  const { products, fetchStatus } = useFetchProducts({ targetFilter, rankFilter });
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -37,12 +39,14 @@ function RankingSection() {
           setPopularityFilter={setRankFilter}
         />
         <Container padding="40px 0 20px">
-          <GiftDisplaySection
-            products={isFolded ? products.slice(0, 6) : products}
-            maxColumns={6}
-            minColumns={3}
-            indexed
-          />
+          <FetchStatusBoundary fetchStatus={fetchStatus}>
+            <GiftDisplaySection
+              products={isFolded ? products.slice(0, 6) : products}
+              maxColumns={6}
+              minColumns={3}
+              indexed
+            />
+          </FetchStatusBoundary>
         </Container>
         <Container elementSize="full-width" justifyContent="center">
           <Container elementSize="full-width" maxWidth="480px">

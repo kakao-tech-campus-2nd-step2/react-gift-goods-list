@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
 
+import { RankingFilterOption } from '@/types/index';
+
 type Props = {
-  value?: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
+  value: RankingFilterOption['targetType'];
   selected: boolean;
-  onClick: (target?: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN') => void;
+  onClick: (target: RankingFilterOption['targetType']) => void;
 };
 
 export const TargetTypeButton = ({ value, selected, onClick }: Props) => {
-  const getTargetIcon = (targetValue?: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN') => {
+  const getTargetIcon = (targetValue: RankingFilterOption['targetType']) => {
     switch (targetValue) {
       case 'FEMALE':
         return '👩🏻‍🦳';
@@ -20,7 +22,7 @@ export const TargetTypeButton = ({ value, selected, onClick }: Props) => {
     }
   };
 
-  const getTargetText = (targetValue?: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN') => {
+  const getTargetText = (targetValue: RankingFilterOption['targetType']) => {
     switch (targetValue) {
       case 'FEMALE':
         return '여성이';

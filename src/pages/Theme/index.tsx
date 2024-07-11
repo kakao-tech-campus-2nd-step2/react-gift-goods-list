@@ -23,14 +23,11 @@ export default () => {
             navigate(`/error/${themes?.httpStatusCode}/themes_${themeKey}`, { replace: true });
         if (products?.httpStatusCode !== 200)
             navigate(`/error/${products?.httpStatusCode}/themes_${themeKey}`, { replace: true });
-        if (!themes?.isLoading) {
-            const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
-            if (index === -1) {
-                navigate('/error/404', { replace: true });
-            } else {
-                setTheme(themes?.data?.themes[index]);
-            }
-        }
+        if (themes?.isLoading) return;
+        const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
+        if (index === -1) navigate('/error/404', { replace: true });
+
+        setTheme(themes?.data?.themes[index]);
     }, [navigate, themes, themeKey, products?.httpStatusCode]);
 
     return (

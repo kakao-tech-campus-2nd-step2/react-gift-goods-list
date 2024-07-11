@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
+import { useEffect,useState } from 'react';
 
-//import { useState } from 'react';
+import { fetchThemes } from '@/api/api';
 //import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 
 type Props = {
@@ -14,7 +14,28 @@ type Props = {
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
 
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null> (null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const getTheme = async () => {
+      try {
+        const response = await fetchThemes()
+        const theme = getCurrentTheme(themeKey, response.themes)
+        setCurrentTheme(theme || null)
+      } catch(err) {
+        console.error('Failed to load themes', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    getTheme()
+  }, [themeKey])
+
+  if (loading) {
+    return <LoadingWrapper>Loading...</LoadingWrapper>;
+  }
+
 
   if (!currentTheme) {
     return null;
@@ -85,6 +106,11 @@ const Description = styled.p`
     font-size: 24px;
     line-height: 32px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {

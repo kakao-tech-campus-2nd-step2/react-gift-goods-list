@@ -27,3 +27,19 @@ export function hasKey(list: Object) {
 export function isEmptyList(list: any[]) {
   return Array.isArray(list) && list.length === 0;
 }
+
+export function throttle(fn: (...args: any) => any, delay: number) {
+  let waiting = false;
+
+  function closure(this: any, ...args: any[]) {
+    if (!waiting) {
+      fn.apply(this, args);
+      waiting = true;
+      setTimeout(() => {
+        waiting = false;
+      }, delay);
+    }
+  }
+
+  return closure;
+}

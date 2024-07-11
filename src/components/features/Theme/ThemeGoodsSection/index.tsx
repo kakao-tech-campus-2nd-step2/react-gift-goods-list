@@ -22,7 +22,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     const fetchGoods = async () => {
       try {
         const response = await axios.get(
-          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products?maxResults=20`,
+          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products`,
+          { params: { maxResults: 20 } },
         );
         setGoodsList(response.data.products);
       } catch {

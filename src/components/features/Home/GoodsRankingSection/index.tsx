@@ -19,8 +19,8 @@ export const GoodsRankingSection = () => {
     const fetchGoodsRanking = async () => {
       try {
         const response = await axios.get(
-          process.env.REACT_APP_API_KEY +
-            `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
+          process.env.REACT_APP_API_KEY + `/api/v1/ranking/products`,
+          { params: { targetType: filterOption.targetType, rankType: filterOption.rankType } },
         );
         setGoodsList(response.data.products);
       } catch (err) {

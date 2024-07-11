@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getRankingProducts } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
-import { GoodsData } from '@/types';
+import { GoodsData, RankingFilterOption } from '@/types';
 import { GoodsRankingFilter } from './GoodsRankingFilter';
 import { GoodsRankingList } from './GoodsRankingList';
 
@@ -12,10 +12,13 @@ export const GoodsRankingSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
+  const [selectedTarget, setSelectedTarget] = useState<RankingFilterOption['targetType']>('ALL');
+  const [selectedRank, setSelectedRank] = useState<RankingFilterOption['rankType']>('MANY_WISH');
+
   useEffect(() => {
     const fetchRankingProducts = async () => {
       try {
-        const data = await getRankingProducts();
+        const data = await getRankingProducts(selectedTarget, selectedRank);
         setGoodsList(data.products);
         setIsLoading(false);
       } catch (error) {
@@ -25,7 +28,15 @@ export const GoodsRankingSection = () => {
     };
 
     fetchRankingProducts();
-  }, []);
+  }, [selectedTarget, selectedRank]);
+
+  const handleFilterChange = (
+    targetType: RankingFilterOption['targetType'],
+    rankType: RankingFilterOption['rankType'],
+  ) => {
+    setSelectedTarget(targetType);
+    setSelectedRank(rankType);
+  };
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error loading ranking products.</p>;
@@ -34,7 +45,7 @@ export const GoodsRankingSection = () => {
     <StyledGoodsRankingSection>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter />
+        <GoodsRankingFilter onFilterChange={handleFilterChange} />
         <GoodsRankingList goodsList={goodsList} />
       </Container>
     </StyledGoodsRankingSection>

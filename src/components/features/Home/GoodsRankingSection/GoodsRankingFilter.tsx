@@ -1,3 +1,5 @@
+// GoodsRankingFilter.tsx
+
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
@@ -5,7 +7,14 @@ import { RankingFilterOption } from '@/types';
 import { RankTypeButton } from './RankTypeButton';
 import { TargetTypeButton } from './TargetTypeButton';
 
-export const GoodsRankingFilter = () => {
+type Props = {
+  onFilterChange: (
+    targetType: RankingFilterOption['targetType'],
+    rankType: RankingFilterOption['rankType'],
+  ) => void;
+};
+
+export const GoodsRankingFilter = ({ onFilterChange }: Props) => {
   const [selectedTarget, setSelectedTarget] = useState<RankingFilterOption['targetType']>('ALL');
   const [selectedRank, setSelectedRank] = useState<RankingFilterOption['rankType']>('MANY_WISH');
 
@@ -16,15 +25,26 @@ export const GoodsRankingFilter = () => {
     { label: '위시로 받은', value: 'MANY_WISH_RECEIVE' },
   ];
 
+  // GoodsRankingSection으로 prop 전달
+  const handleTargetTypeClick = (target: RankingFilterOption['targetType']) => {
+    setSelectedTarget(target);
+    onFilterChange(target, selectedRank);
+  };
+
+  const handleRankTypeClick = (rank: RankingFilterOption['rankType']) => {
+    setSelectedRank(rank);
+    onFilterChange(selectedTarget, rank);
+  };
+
   return (
     <StyledGoodsRankingFilter>
       <TargetTypeContainer>
-        {targetTypes.map((item) => (
+        {targetTypes.map((target) => (
           <TargetTypeButton
-            key={item}
-            value={item}
-            selected={selectedTarget === item}
-            onClick={() => setSelectedTarget(item)}
+            key={target}
+            value={target}
+            selected={selectedTarget === target}
+            onClick={() => handleTargetTypeClick(target)}
           />
         ))}
       </TargetTypeContainer>
@@ -42,7 +62,7 @@ export const GoodsRankingFilter = () => {
             label={rank.label}
             value={rank.value}
             selected={selectedRank === rank.value}
-            onClick={() => setSelectedRank(rank.value)}
+            onClick={() => handleRankTypeClick(rank.value)}
           />
         ))}
       </RankTypeContainer>

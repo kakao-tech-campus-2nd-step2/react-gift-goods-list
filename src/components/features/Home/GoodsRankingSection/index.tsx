@@ -24,7 +24,6 @@ export const GoodsRankingSection = () => {
     getRankingProducts(filterOption)
       .then((data) => {
         setProducts(data.products);
-        setIsLoading(false);
       })
       .catch((err) => {
         /**
@@ -35,7 +34,9 @@ export const GoodsRankingSection = () => {
         } else {
           console.error(err);
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
+
   }, [filterOption]);
 
   return (

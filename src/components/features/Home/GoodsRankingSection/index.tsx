@@ -1,28 +1,59 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
+import LoadingSpinner from '@/components/common/Loading';
+import Nothing from '@/components/common/Nothing';
+
+import { GoodsData } from '@/types';
+import { getData } from '@/api';
+
+interface ProductsResponse {
+  products: GoodsData[];
+}
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
+  const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // GoodsMockData를 21번 반복 생성
+  useEffect(() => {
+    const getRankingProducts = async () => {
+      try {
+        setLoading(true);
+        const { targetType, rankType } = filterOption;
+        const data = await getData<ProductsResponse>(
+          `/api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
+        );
+        setRankingProducts(data.products);
+      } catch (error) {
+        console.error('Error fetching ranking products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getRankingProducts();
+  }, [filterOption])
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {loading ? <LoadingSpinner /> :
+          rankingProducts.length ?
+            <GoodsRankingList goodsList={rankingProducts} /> :
+            <Nothing />
+        }
       </Container>
     </Wrapper>
   );

@@ -14,7 +14,7 @@ import { isThemesLoaded } from '@/utils';
 function ThemePage() {
   const { themeKey } = useParams();
   const { products, fetchStatus } = useFetchThemeProducts({ themeKey: themeKey || '' });
-  const themes = useContext(ThemeContext);
+  const { themes, fetchStatus: themeFetchStatus } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,19 +27,21 @@ function ThemePage() {
 
   return isThemesLoaded(themes) ? (
     <Page>
-      <Banner themeKey={themeKey as string} />
-      <Container elementSize="full-width" justifyContent="center">
-        <Container
-          elementSize="full-width"
-          maxWidth={MAX_CONTENT_WIDTH}
-          justifyContent="center"
-          padding="40px 16px 300px"
-        >
-          <FetchStatusBoundary fetchStatus={fetchStatus}>
-            <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
-          </FetchStatusBoundary>
+      <FetchStatusBoundary fetchStatus={themeFetchStatus}>
+        <Banner themeKey={themeKey as string} />
+        <Container elementSize="full-width" justifyContent="center">
+          <Container
+            elementSize="full-width"
+            maxWidth={MAX_CONTENT_WIDTH}
+            justifyContent="center"
+            padding="40px 16px 300px"
+          >
+            <FetchStatusBoundary fetchStatus={fetchStatus}>
+              <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
+            </FetchStatusBoundary>
+          </Container>
         </Container>
-      </Container>
+      </FetchStatusBoundary>
     </Page>
   ) : null;
 }

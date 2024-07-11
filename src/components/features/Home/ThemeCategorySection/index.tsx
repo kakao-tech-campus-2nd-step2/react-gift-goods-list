@@ -7,7 +7,7 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import { ThemeData } from '@/types';
+import type { ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
@@ -18,7 +18,6 @@ export const ThemeCategorySection = () => {
     const loadThemes = async () => {
       const themesData = await fetchThemes();
       setThemes(themesData);
-      console.log(themesData);
     };
     loadThemes();
   }, []);

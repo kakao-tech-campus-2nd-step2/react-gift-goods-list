@@ -9,7 +9,7 @@ import { Grid } from '@/components/common/Layout/Grid';
 import { useThemeProducts } from '@/services/useThemeProducts';
 
 export const ItemListWithInfiniteScroll = ({ themeKey }: { themeKey: string }) => {
-  const { data, isLoading, isError, fetchNextPage, hasNextPage } = useThemeProducts(themeKey);
+  const { data, isLoading, error, fetchNextPage, hasNextPage } = useThemeProducts(themeKey);
 
   const { ref, inView } = useInView({
     threshold: 0.8,
@@ -23,8 +23,8 @@ export const ItemListWithInfiniteScroll = ({ themeKey }: { themeKey: string }) =
   if (isLoading) {
     return <Loading />;
   }
-  if (isError) {
-    return <HandleBox>선물 테마 Key에 해당하는 선물 테마가 없어요.</HandleBox>;
+  if (error) {
+    return <HandleBox>{error.message}</HandleBox>;
   }
 
   const products = data?.pages.flatMap((page) => page.products) ?? [];

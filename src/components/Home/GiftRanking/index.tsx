@@ -23,15 +23,15 @@ export const GiftRanking = () => {
     setFilter((prev) => ({ targetType: targetType ?? prev.targetType, rankType: rankType ?? prev.rankType }));
   };
 
-  const { data, isLoading, isError } = useRankingProducts(filter);
+  const { data, isLoading, error } = useRankingProducts(filter);
   const filterdList = data?.products ?? [];
 
   const HandleFilteredList = () => {
     if (isLoading) {
       return <Loading />;
     }
-    if (isError) {
-      return <HandleBox>데이터를 불러오는 도중에 문제가 발생했습니다.</HandleBox>;
+    if (error) {
+      return <HandleBox>{error.message}</HandleBox>;
     }
     return <FilteredList filterdList={filterdList} />;
   };

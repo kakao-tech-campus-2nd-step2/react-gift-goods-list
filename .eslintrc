@@ -52,7 +52,9 @@
           ["@mocks", "./src/mocks"],
           ["@routes", "./src/routes"],
           ["@utils", "./src/utils"],
-          ["@context", "./src/context"]
+          ["@context", "./src/context"],
+          ["@types", "./src/types"],
+          ["@apis", "./src/apis"]
         ],
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }

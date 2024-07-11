@@ -25,18 +25,38 @@ export const fetchThemes = async (): Promise<ThemeData[]> => {
   }
   
 
-  export const fetchRankingProducts = async(targetType:string, rankType:string) : Promise<GoodsData[]> => {
-    const response = await axiosInstance.get('api/v1/ranking/products', {
-        params : { targetType, rankType }
-    });
-    return response.data.products;
+  export const fetchRankingProducts = async (targetType: string, rankType: string): Promise<GoodsData[]> => {
+    try {
+      const response = await axiosInstance.get('api/v1/ranking/products', {
+        params: { targetType, rankType }
+      });
+      if (response.status === 200) {
+        return response.data.products;
+      } else {
+        console.error("Failed to get ranking products", response);
+        return [];
+      }
+    } catch (error) {
+      console.error("Failed to fetch ranking products", error);
+      throw new Error("Network error or server is down");
+    }
   }
 
   export const fetchThemeProducts = async (themeKey: string, maxResults: number = 20): Promise<GoodsData[]> => {
-    const response = await axiosInstance.get(`api/v1/themes/${themeKey}/products`, {
-      params: { maxResults }
-    });
-    return response.data.products;
+    try {
+      const response = await axiosInstance.get(`api/v1/themes/${themeKey}/products`, {
+        params: { maxResults }
+      });
+      if (response.status === 200) {
+        return response.data.products;
+      } else {
+        console.error("Failed to get theme products", response);
+        return [];
+      }
+    } catch (error) {
+      console.error("Failed to fetch theme products", error);
+      throw new Error("Network error or server is down");
+    }
   };
 
   export const fetchTheme = async (themeKey: string): Promise<ThemeData> => {

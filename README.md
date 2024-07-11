@@ -25,4 +25,4 @@
 
 - [o] 각 API에서 Loading 상태에 대한 UI 대응
 - [o] 각 데이터가 없는 경우에 대한 UI 대응
-- [] HTTP status에 따라 Error 다르게 처리
+- [o] HTTP status에 따라 Error 다르게 처리

@@ -44,7 +44,8 @@ export const getThemes = async () => {
     if (axios.isAxiosError(error)) {
       // AxiosError 타입으로 캐스팅하여 처리
       const axiosError = error as AxiosError;
-      return axiosError.response?.status;
+      console.error('getThemes 요청 중 오류 발생:', setError(axiosError));
+      return setError(axiosError);
     } else {
       // 기타 다른 에러 처리
       console.error('getThemes 요청 중 오류 발생:', error);
@@ -82,7 +83,7 @@ export const getTheme = async (themeKey: string, maxResults: number = 20) => {
       // AxiosError 타입으로 캐스팅하여 처리
       const axiosError = error as AxiosError;
       console.error('getTheme 요청 중 오류 발생:', setError(axiosError));
-      throw axiosError;
+      return setError(axiosError);
     } else {
       // 기타 다른 에러 처리
       console.error('getTheme 요청 중 오류 발생:', error);

@@ -14,6 +14,7 @@ import {
 import FetchStatusBoundary
   from '@components/atoms/container/FetchStatusBoundary';
 import FetchStatus from '@constants/FetchStatus';
+import { ErrorMessages } from '@constants/ErrorMessage';
 import { RankFilter, TargetFilter } from '@/types';
 
 function RankingSection() {
@@ -21,7 +22,7 @@ function RankingSection() {
   const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
   const [isFolded, setIsFolded] = useState(true);
 
-  const { products, fetchStatus } = useFetchProducts({ targetFilter, rankFilter });
+  const { products, fetchStatus, errorCode } = useFetchProducts({ targetFilter, rankFilter });
 
   const DISPLAY_COUNT_WHEN_FOLDED = 6;
 
@@ -29,6 +30,7 @@ function RankingSection() {
     () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
     [products, fetchStatus],
   );
+  console.log(errorCode);
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -49,7 +51,7 @@ function RankingSection() {
           setPopularityFilter={setRankFilter}
         />
         <Container padding="40px 0 20px">
-          <FetchStatusBoundary fetchStatus={fetchStatus}>
+          <FetchStatusBoundary fetchStatus={fetchStatus} errorMessage={ErrorMessages[errorCode] || ''}>
             <GiftDisplaySection
               products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
               maxColumns={6}

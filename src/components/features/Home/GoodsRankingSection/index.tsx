@@ -7,6 +7,7 @@ import type { RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
+import LoadingSpinner from '@/components/common/Loading';
 
 import { GoodsData } from '@/types';
 import { getData } from '@/api';
@@ -21,10 +22,12 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
   const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getRankingProducts = async () => {
       try {
+        setLoading(true);
         const { targetType, rankType } = filterOption;
         const data = await getData<ProductsResponse>(
           `/api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
@@ -32,6 +35,8 @@ export const GoodsRankingSection = () => {
         setRankingProducts(data.products);
       } catch (error) {
         console.error('Error fetching ranking products:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -43,7 +48,9 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={rankingProducts} />
+        {loading ? <LoadingSpinner /> :
+          <GoodsRankingList goodsList={rankingProducts} />
+        }
       </Container>
     </Wrapper>
   );

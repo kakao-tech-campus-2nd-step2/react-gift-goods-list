@@ -7,6 +7,7 @@ import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
+import LoadingSpinner from '@/components/common/Loading';
 
 import { ThemeData } from '@/types';
 import { getData } from '@/api';
@@ -18,6 +19,7 @@ interface ThemeResponse {
 
 export const ThemeCategorySection = () => {
   const [themeData, setThemeData] = useState<ThemeData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getThemeData = async () => {
@@ -26,6 +28,8 @@ export const ThemeCategorySection = () => {
         setThemeData(data.themes);
       } catch (error) {
         console.error('Error fetching theme data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,21 +39,24 @@ export const ThemeCategorySection = () => {
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 4,
-            md: 6,
-          }}
-        >
-          {themeData.map((themeItem) => (
-            <Link key={themeItem.key} to={getDynamicPath.theme(themeItem.key)}>
-              <ThemeCategoryItem
-                image={themeItem.imageURL}
-                label={themeItem.label}
-              />
-            </Link>
-          ))}
-        </Grid>
+        {loading ?
+          <LoadingSpinner /> :
+          <Grid
+            columns={{
+              initial: 4,
+              md: 6,
+            }}
+          >
+            {themeData.map((themeItem) => (
+              <Link key={themeItem.key} to={getDynamicPath.theme(themeItem.key)}>
+                <ThemeCategoryItem
+                  image={themeItem.imageURL}
+                  label={themeItem.label}
+                />
+              </Link>
+            ))}
+          </Grid>
+        }
       </Container>
     </Wrapper>
   );

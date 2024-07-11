@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { getData } from '@/api';
 import { Navigate } from 'react-router-dom';
 import { RouterPath } from '@/routes/path';
+import LoadingSpinner from '@/components/common/Loading';
 
 type Props = {
   themeKey: string;
@@ -19,6 +20,7 @@ interface ThemeResponse {
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData>()
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getThemeData = async () => {
@@ -32,6 +34,8 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         }
       } catch (error) {
         console.error('Error fetching theme data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -51,9 +55,13 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   return (
     <Wrapper backgroundColor={backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        {loading ? <LoadingSpinner /> :
+          <>
+            <Label>{label}</Label>
+            <Title>{title}</Title>
+            {description && <Description>{description}</Description>}
+          </>
+        }
       </Container>
     </Wrapper>
   );

@@ -4,6 +4,7 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
+import LoadingSpinner from '@/components/common/Loading';
 
 import { useState, useEffect } from 'react';
 import { GoodsData } from '@/types';
@@ -19,6 +20,7 @@ interface GoodsResponse {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [themeGoods, setThemeGoods] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getThemeData = async () => {
@@ -30,6 +32,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         setThemeGoods(data.products);
       } catch (error) {
         console.error('Error fetching theme data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -40,23 +44,26 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {themeGoods.map((good) => (
-            <DefaultGoodsItems
-              key={good.id}
-              imageSrc={good.imageURL}
-              title={good.name}
-              amount={good.price.sellingPrice}
-              subtitle={good.brandInfo.name}
-            />
-          ))}
-        </Grid>
+        {loading ?
+          <LoadingSpinner /> :
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {themeGoods.map((good) => (
+              <DefaultGoodsItems
+                key={good.id}
+                imageSrc={good.imageURL}
+                title={good.name}
+                amount={good.price.sellingPrice}
+                subtitle={good.brandInfo.name}
+              />
+            ))}
+          </Grid>
+        }
       </Container>
     </Wrapper>
   );

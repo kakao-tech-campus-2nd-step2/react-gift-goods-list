@@ -10,6 +10,7 @@ module.exports = {
     'airbnb/hooks',
     'airbnb-typescript',
     'plugin:storybook/recommended',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
     'plugin:prettier/recommended',
   ],
   overrides: [

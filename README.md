@@ -11,7 +11,8 @@
 
 #### React Query 세팅
 
-- [ ] React Query 설치하기
+- [x] React Query 설치하기
+- [ ] React Query 초기 설정
 
 #### 페이지네이션 + React Query 바꾸기
 

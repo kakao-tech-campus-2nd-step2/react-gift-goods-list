@@ -1,20 +1,36 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { ProductData } from '@/api/types';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
+import { ErrorMessage } from '@/components/features/Error/ErrorMessage';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
   goodsList: ProductData[];
+  errorMessage: string | null;
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ goodsList, errorMessage }: Props) => {
   const [hasMore, setHasMore] = useState(false);
-
+  const [message, setMessage] = useState<string | null>(null);
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+
+  useEffect(() => {
+    if (errorMessage) {
+      setMessage(errorMessage);
+    } else if (goodsList.length === 0) {
+      setMessage('보여줄 상품이 없어요!');
+    } else {
+      setMessage(null);
+    }
+  }, [goodsList, errorMessage]);
+
+  if (message) {
+    return <ErrorMessage message={message} />;
+  }
 
   return (
     <Wrapper>

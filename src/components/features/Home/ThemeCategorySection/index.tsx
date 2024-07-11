@@ -1,99 +1,50 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
+import { getThemes } from '@/api';
+import { Image } from '@/components/common/Image';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { Image } from '@/components/common/Image';
+import { getDynamicPath } from '@/routes';
+import { ThemeData } from '@/types';
 
 export const ThemeCategorySection = () => {
+  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const data = await getThemes();
+        setThemes(data.themes);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchThemes();
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading themes.</p>;
+
   return (
     <StyledThemeCategorySection>
       <div>
         <Container>
           <Grid columns={4}>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="생일"
-              />
-              <CategoryTitle>생일</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="졸업선물"
-              />
-              <CategoryTitle>졸업선물</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="스몰럭셔리"
-              />
-              <CategoryTitle>스몰럭셔리</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="명품선물"
-              />
-              <CategoryTitle>명품선물</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="결혼/집들이"
-              />
-              <CategoryTitle>결혼/집들이</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="따뜻한선물"
-              />
-              <CategoryTitle>따뜻한선물</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="가벼운선물"
-              />
-              <CategoryTitle>가벼운선물</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="팬심저격"
-              />
-              <CategoryTitle>팬심저격</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="교환권"
-              />
-              <CategoryTitle>교환권</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="건강/비타민"
-              />
-              <CategoryTitle>건강/비타민</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="과일/한우"
-              />
-              <CategoryTitle>과일/한우</CategoryTitle>
-            </ThemeCategoryItem>
-            <ThemeCategoryItem>
-              <CategoryImage
-                src="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-                alt="출산/키즈"
-              />
-              <CategoryTitle>출산/키즈</CategoryTitle>
-            </ThemeCategoryItem>
+            {themes.map((theme) => (
+              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem>
+                  <CategoryImage src={theme.imageURL} alt={theme.label} />
+                  <CategoryTitle>{theme.label}</CategoryTitle>
+                </ThemeCategoryItem>
+              </Link>
+            ))}
           </Grid>
         </Container>
       </div>

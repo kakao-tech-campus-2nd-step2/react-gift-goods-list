@@ -5,6 +5,8 @@ export const ThemeMockData: ThemeData = {
   key: 'life_small_gift',
   label: '가벼운 선물',
   title: '예산은 가볍게, 감동은 무겁게❤️',
+  imageURL:
+    'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F20240214_EWQEQ.png',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
 };

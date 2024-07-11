@@ -5,10 +5,10 @@ import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { ProductData } from '@/types/response';
 
 type Props = {
-  goodsList: GoodsData[];
+  goodsList: ProductData[];
 };
 
 export const GoodsRankingList = ({ goodsList }: Props) => {

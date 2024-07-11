@@ -25,7 +25,7 @@ function RankingSection() {
 
   const DISPLAY_COUNT_WHEN_FOLDED = 6;
 
-  const isButtonEnabled = useCallback(
+  const showButton = useCallback(
     () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
     [products, fetchStatus],
   );
@@ -61,7 +61,7 @@ function RankingSection() {
         <Container elementSize="full-width" justifyContent="center">
           <Container elementSize="full-width" maxWidth="480px">
             {
-              isButtonEnabled()
+              showButton()
                 ? (
                   <Button
                     theme="lightGray"

@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchData } from '@/components/common/API/api';
 import { Container } from '@/components/common/layouts/Container';
+import ErrorMessage from '@/components/common/Status/errorMessage';
 import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 
@@ -19,6 +21,8 @@ interface ThemeData {
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
+  errorMessage?: string;
+  errorCode?: string;
   data: T | null;
 }
 
@@ -42,8 +46,14 @@ const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
         const data = await fetchData('/api/v1/themes', { key });
         setFetchState({ isLoading: false, isError: false, data: data.themes });
       } catch (error) {
-        console.error('Error fetching themes:', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
+        const axiosError = error as AxiosError;
+        setFetchState({
+          isLoading: false,
+          isError: true,
+          data: null,
+          errorMessage: axiosError.message,
+          errorCode: axiosError.code,
+        });
       }
     };
 
@@ -62,7 +72,7 @@ const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
   if (fetchState.isLoading)
     return <Loading />;
   if (fetchState.isError)
-    return <p>데이터를 불러오는 중에 문제가 발생했습니다.</p>;
+    return <ErrorMessage message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} code={fetchState.errorCode} />;
 
   const currentTheme = fetchState.data?.find((theme) => theme.key === themeKey);
   if (!currentTheme) {

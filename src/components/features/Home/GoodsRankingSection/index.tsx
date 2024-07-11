@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import EmptyData from '@/components/common/Status/emptyData';
+import ErrorMessage from '@/components/common/Status/errorMessage';
 import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
@@ -33,6 +36,8 @@ interface ProductData {
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
+  errorCode?: string;
+  errorMessage?: string;
   data: T | null;
 }
 
@@ -55,7 +60,14 @@ export const GoodsRankingSection: React.FC = () => {
         const response = await fetchData('/api/v1/ranking/products', filters);
         setFetchState({ isLoading: false, isError: false, data: response.products });
       } catch (error) {
-        setFetchState({ isLoading: false, isError: true, data: null });
+        const axiosError = error as AxiosError;
+        setFetchState({
+          isLoading: false,
+          isError: true,
+          data: null,
+          errorMessage: axiosError.message,
+          errorCode: axiosError.code,
+        });
       }
     };
 
@@ -70,11 +82,11 @@ export const GoodsRankingSection: React.FC = () => {
         {fetchState.isLoading ? (
           <Loading />
         ) : fetchState.isError ? (
-          <ErrorMessage>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessage>
+          <ErrorMessage code= {fetchState.errorCode} message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} />
         ) : fetchState.data && fetchState.data.length > 0 ? (
           <GoodsRankingList goodsList={fetchState.data} />
         ) : (
-          <EmptyMessage>보여줄 상품이 없어요!</EmptyMessage>
+          <EmptyData />
         )}
       </Container>
     </Wrapper>
@@ -102,17 +114,6 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
-`;
-
-const ErrorMessage = styled.p`
-  text-align: center;
-  margin-top: 20px;
-`;
-
-const EmptyMessage = styled.p`
-  color: #000;
-  text-align: center;
-  margin-top: 20px;
 `;
 
 export default GoodsRankingSection;

@@ -1,15 +1,18 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import ErrorMessage from '@/components/common/Status/errorMessage';
 import Loading from '@/components/common/Status/loading';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 import { fetchData } from '../../../common/API/api';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
+
 
 interface ThemeData {
   id: number;
@@ -24,6 +27,8 @@ interface ThemeData {
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
+  errorCode?: string;
+  errorMessage?: string;
   data: T | null;
 }
 
@@ -41,8 +46,14 @@ export const ThemeCategorySection: React.FC = () => {
         const data = await fetchData('/api/v1/themes');
         setFetchState({ isLoading: false, isError: false, data: data.themes });
       } catch (error) {
-        console.error('Error fetching themes:', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
+        const axiosError = error as AxiosError;
+        setFetchState({
+          isLoading: false,
+          isError: true,
+          data: null,
+          errorCode: axiosError.code,
+          errorMessage: axiosError.message,
+        });
       }
     };
 
@@ -51,7 +62,14 @@ export const ThemeCategorySection: React.FC = () => {
 
   if (fetchState.isLoading)
     return <Loading />;
-  if (fetchState.isError) return <p>Failed to fetch themes</p>;
+  if (fetchState.isError)
+    return (
+      <ErrorMessage
+        code={fetchState.errorCode}
+        message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'}
+      />
+    );
+
 
   return (
     <Wrapper>

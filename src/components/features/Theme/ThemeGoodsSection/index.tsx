@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import EmptyData from '@/components/common/Status/emptyData';
+import ErrorMessage from '@/components/common/Status/errorMessage';
 import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 
@@ -32,6 +35,8 @@ interface ApiResponse {
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
+  errorCode?: string;
+  errorMessage?: string;
   data: T;
   hasMore: boolean;
   nextPageToken: string | null;
@@ -74,8 +79,14 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
         nextPageToken: data.nextPageToken,
       }));
     } catch (error) {
-      console.error('Error fetching products:', error);
-      setFetchState(prevState => ({ ...prevState, isLoading: false, isError: true }));
+      const axiosError = error as AxiosError;
+      setFetchState((prevState) => ({
+        ...prevState,
+        isLoading: false,
+        isError: true,
+        errorCode: axiosError.code,
+        errorMessage: axiosError.message,
+      }));
     }
   }, []);
 
@@ -110,9 +121,9 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   if (fetchState.isLoading && fetchState.data.length === 0)
     return <Loading />;
   if (fetchState.isError)
-    return <ErrorMessage>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessage>;
+    return <ErrorMessage code={fetchState.errorCode} message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} />;
   if (!fetchState.data || fetchState.data.length === 0)
-    return <EmptyMessage>상품이 없습니다.</EmptyMessage>;
+    return <EmptyData />
 
   return (
     <Wrapper>
@@ -147,16 +158,6 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
-`;
-
-const ErrorMessage = styled.p`
-  text-align: center;
-  margin-top: 20px;
-`;
-
-const EmptyMessage = styled.p`
-  text-align: center;
-  margin-top: 20px;
 `;
 
 export default ThemeGoodsSection;

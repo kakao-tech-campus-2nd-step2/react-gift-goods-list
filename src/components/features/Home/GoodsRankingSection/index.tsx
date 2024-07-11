@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 import { getRankingProducts } from "@/api";
@@ -16,15 +17,35 @@ export const GoodsRankingSection = () => {
     targetType: "ALL",
     rankType: "MANY_WISH",
   });
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const [isError, setError] = useState<boolean>(false);
+  const [errMessage, setErrMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchThemes = async () => {
+      setLoading(true);
       try {
         const products = await getRankingProducts(filterOption);
         setRankingProducts(products.products);
+        setError(false);
       } catch (error) {
         console.error("Error fetching RankingProducts:", error);
         setRankingProducts([]);
+        setError(true);
+
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.status) {
+            case 400:
+              setErrMessage("데이터를 불러오는 중에 문제가 발생했습니다.");
+              break;
+            default:
+              setErrMessage("알 수 없는 오류가 발생했습니다.");
+          }
+        } else {
+          setErrMessage("알 수 없는 오류가 발생했습니다.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -36,10 +57,14 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {rankingProducts.length ? (
+        {isLoading ? (
+          <MessageDiv>로딩중</MessageDiv>
+        ) : isError ? (
+          <MessageDiv>{errMessage}</MessageDiv>
+        ) : rankingProducts.length ? (
           <GoodsRankingList goodsList={rankingProducts} />
         ) : (
-          <ErrorDiv>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorDiv>
+          <MessageDiv>보여줄 상품이 없어요!</MessageDiv>
         )}
       </Container>
     </Wrapper>
@@ -54,7 +79,7 @@ const Wrapper = styled.section`
   }
 `;
 
-const ErrorDiv = styled.div`
+const MessageDiv = styled.div`
   width: 100%;
   display: flex;
   -webkit-box-pack: center;

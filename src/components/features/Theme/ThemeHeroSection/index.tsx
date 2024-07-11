@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { useEffect,useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
-//import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
@@ -16,21 +16,27 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
 
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null> (null)
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getTheme = async () => {
       try {
         const response = await fetchThemes()
         const theme = getCurrentTheme(themeKey, response.themes)
-        setCurrentTheme(theme || null)
+        if (!theme) {
+          navigate('/')
+        } else {
+          setCurrentTheme(theme)
+        }
       } catch(err) {
         console.error('Failed to load themes', err)
+        navigate('/')
       } finally {
         setLoading(false)
       }
     }
     getTheme()
-  }, [themeKey])
+  }, [themeKey, navigate])
 
   if (loading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;

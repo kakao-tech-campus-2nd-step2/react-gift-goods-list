@@ -10,3 +10,6 @@
 > - [x] url의 pathParams와 /api/v1/themes API를 사용하여 Section을 구현해요.
 > - [x] /api/v1/themes/{themeKey}/products API를 사용하여 상품 목록을 구현해요.
 > - [x] API 요청 시 한번에 20개의 상품 목록이 내려오도록 해요.
+> - [x] 각 API에서 Loading 상태에 대한 UI 대응을 해요.
+> - [x] 데이터가 없는 경우에 대한 UI 대응을 해요.
+> - [x] Http Status에 따라 Error를 다르게 처리해요.

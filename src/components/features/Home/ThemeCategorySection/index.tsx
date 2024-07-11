@@ -12,11 +12,7 @@ import { breakpoints } from '@/styles/variants';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const {
-    data: themes,
-    isLoading,
-    isError,
-  } = useQuery('themes', fetchThemes);
+  const { data: themes, isLoading, isError } = useQuery('themes', fetchThemes);
 
   return (
     <Wrapper>
@@ -30,11 +26,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes && themes.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>
-          ))}
+          {themes &&
+            themes.map((theme) => (
+              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+              </Link>
+            ))}
         </Grid>
       </Container>
     </Wrapper>

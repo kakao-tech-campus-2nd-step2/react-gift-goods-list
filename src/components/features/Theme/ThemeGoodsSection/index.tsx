@@ -17,17 +17,11 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isError,
-    error,
-    isLoading,
-  } = useInfiniteQuery(['themeProducts', themeKey], fetchThemeProducts, {
-    getNextPageParam: (lastPage, allPages) => lastPage.length ? allPages.length * 20 : undefined, 
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, error, isLoading } =
+    useInfiniteQuery(['themeProducts', themeKey], fetchThemeProducts, {
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length ? allPages.length * 20 : undefined,
+    });
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -37,13 +31,17 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }, [inView, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
-    return <LoadingContainer><Loading /></LoadingContainer>;
+    return (
+      <LoadingContainer>
+        <Loading />
+      </LoadingContainer>
+    );
   }
 
   if (isError) {
     const response = (error as AxiosError).response;
     let errorMessage = '';
-        
+
     switch (response?.status) {
       case 400:
         errorMessage = '잘못된 요청입니다.';
@@ -54,7 +52,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       default:
         errorMessage = '에러가 발생했습니다.';
     }
-    return <Message>{errorMessage}</Message>
+    return <Message>{errorMessage}</Message>;
   }
 
   return (
@@ -67,15 +65,17 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {data?.pages.flat().map((product: ProductData) => (
-            <DefaultGoodsItems
-              key={product.id}
-              imageSrc={product.imageURL}
-              title={product.name}
-              amount={product.price.sellingPrice}
-              subtitle={product.brandInfo.name}
-            />
-          ))}
+          {data?.pages
+            .flat()
+            .map((product: ProductData) => (
+              <DefaultGoodsItems
+                key={product.id}
+                imageSrc={product.imageURL}
+                title={product.name}
+                amount={product.price.sellingPrice}
+                subtitle={product.brandInfo.name}
+              />
+            ))}
         </Grid>
         {isFetchingNextPage && (
           <LoadingContainer>

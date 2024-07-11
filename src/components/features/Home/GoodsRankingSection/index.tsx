@@ -25,9 +25,7 @@ export const GoodsRankingSection = () => {
     data: products,
     isLoading,
     isError,
-  } = useQuery(['rankingProducts', filterOption],
-    () => fetchRankingProducts(filterOption)
-  );
+  } = useQuery(['rankingProducts', filterOption], () => fetchRankingProducts(filterOption));
 
   const ShowMore = () => {
     if (products) setVisibleProducts(products.length);
@@ -53,33 +51,28 @@ export const GoodsRankingSection = () => {
           }}
           gap={16}
         >
-          {products && products.slice(0, visibleProducts).map((product, index) => (
-            <RankingGoodsItems
-              key={product.id}
-              rankingIndex={index + 1}
-              imageSrc={product.imageURL}
-              title={product.name}
-              amount={product.price.sellingPrice}
-              subtitle={product.brandInfo.name}
-            />
-          ))}
+          {products &&
+            products
+              .slice(0, visibleProducts)
+              .map((product, index) => (
+                <RankingGoodsItems
+                  key={product.id}
+                  rankingIndex={index + 1}
+                  imageSrc={product.imageURL}
+                  title={product.name}
+                  amount={product.price.sellingPrice}
+                  subtitle={product.brandInfo.name}
+                />
+              ))}
         </Grid>
         {products && products.length > 6 && (
-          <Container padding='30px 0 0 0'>
+          <Container padding="30px 0 0 0">
             {visibleProducts <= 6 ? (
-              <Button
-                theme='outline'
-                size='responsive'
-                onClick={ShowMore}
-              >
+              <Button theme="outline" size="responsive" onClick={ShowMore}>
                 더보기
               </Button>
             ) : (
-              <Button
-                theme='outline'
-                size='responsive'
-                onClick={ShowLess}
-              >
+              <Button theme="outline" size="responsive" onClick={ShowLess}>
                 접기
               </Button>
             )}

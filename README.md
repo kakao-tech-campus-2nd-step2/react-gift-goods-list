@@ -47,7 +47,7 @@
 - [x] Loading 컴포넌트 추가
 - [x] isLoading 결과에 따라 Loading 컴포넌트 랜더링
 - [x] useGetAPI 함수 리턴값에 에러 상태 추가
-- [ ] 에러 처리
+- [x] 에러 처리
 
 ## page
 
@@ -58,5 +58,6 @@
 ### 과제 수행 일지
 
 - [1단계 구현](https://www.notion.so/Day-12-3431b41b37c9495f9a38e716b76dbc3c?pvs=4#60529c9431f742cca9f32f0abfb023a9)
+- [2단계 구현](https://www.notion.so/Day-13-3979aa2c2f24497fa46b8e4058ced32a?pvs=4#07345ce4a17e4f518b9341995aa40bc2)
 
 ### 궁금한 점

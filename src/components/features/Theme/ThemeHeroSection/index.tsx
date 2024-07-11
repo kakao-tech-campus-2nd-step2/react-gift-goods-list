@@ -1,14 +1,11 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import type { AxiosError } from 'axios';
+import { useQuery } from 'react-query';
 
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-
-interface ThemeHeroSectionProps {
-  themeKey: string;
-}
 
 const LoadingMessage = styled.div`
   text-align: center;
@@ -16,41 +13,25 @@ const LoadingMessage = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  color: red;
   text-align: center;
   padding: 20px;
 `;
+interface ThemeHeroSectionProps {
+  themeKey: string;
+}
 
-export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
-  const [theme, setTheme] = useState<ThemeData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+export const ThemeHeroSection = ({themeKey} : ThemeHeroSectionProps) => {
 
-  useEffect(() => {
-    const fetchThemeDetails = async () => {
-      try {
-        const themes = await fetchThemes();
-        const foundTheme = themes.find(t => t.key === themeKey);
-        if (!foundTheme) {
-          setError('Theme not found');
-          setTheme(null);
-        } else {
-          setTheme(foundTheme);
-          setError('');
-        }
-      } catch (fetchError) {
-        console.error('Failed to fetch theme details:', fetchError);
-        setError('Failed to load theme data');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: themes, isLoading, isError, error } = useQuery(['themes'], fetchThemes);
 
-    fetchThemeDetails();
-  }, [themeKey]);
+  const theme = themes?.find((t: ThemeData) => t.key === themeKey);
 
-  if (loading) return <LoadingMessage>Loading...</LoadingMessage>;
-  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (isLoading) return <LoadingMessage>Loading...</LoadingMessage>;
+  if (isError) {
+    const axiosError = error as AxiosError; 
+    return <ErrorMessage>Error: {axiosError?.message}</ErrorMessage>;
+  }
+
   if (!theme) return <ErrorMessage>Theme not found</ErrorMessage>;
 
   const { backgroundColor, label, title, description } = theme;
@@ -65,6 +46,7 @@ export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
     </Wrapper>
   );
 };
+
 
 const Wrapper = styled.section<{ backgroundColor: string }>`
   padding: 27px 20px 23px;

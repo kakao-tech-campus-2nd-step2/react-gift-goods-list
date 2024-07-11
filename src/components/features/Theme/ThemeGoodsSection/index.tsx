@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import { useEffect,useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
 
 import { fetchThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { GoodsData, InfiniteQueryResponse } from '@/types';
 
 
 interface ThemeGoodsSectionProps {
@@ -14,59 +14,51 @@ interface ThemeGoodsSectionProps {
 }
 
 export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
-  const [products, setProducts] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState('');
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery<InfiniteQueryResponse, Error>(
+    ['themeProducts', themeKey],
+    ({ pageParam = '' }) => fetchThemeProducts(themeKey, pageParam, 20), 
+    {
+      getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,
+    }
+  );
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const fetchedProducts = await fetchThemeProducts(themeKey);
-        if (fetchedProducts.length === 0) {
-          setFetchError('No products found.');
-        } else {
-          setProducts(fetchedProducts);
-          setFetchError('');
-        }
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-        setFetchError('Failed to load products.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [themeKey]);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingMessage>Loading products...</LoadingMessage>;
   }
 
-  if (fetchError) {
-    return <ErrorMessage>{fetchError}</ErrorMessage>;
+  if (isError) {
+    return <ErrorMessage>Error: {error?.message}</ErrorMessage>;
   }
 
+  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight * 1.2 && hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
   return (
-    <Wrapper>
+    <Wrapper onScroll={handleScroll}>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+        <Grid columns={{ initial: 2, md: 4 }} gap={16}>
+          {data?.pages.map((page) =>
+            page.products.map((product: GoodsData) => (
+              <DefaultGoodsItems
+                key={product.id}
+                imageSrc={product.imageURL}
+                title={product.name}
+                amount={product.price.sellingPrice}
+                subtitle={product.brandInfo.name}
+              />
+            ))
+          )}
         </Grid>
       </Container>
     </Wrapper>
@@ -74,6 +66,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
 };
 
 const Wrapper = styled.section`
+  overflow-y: auto;
   width: 100%;
   padding: 28px 16px 180px;
 
@@ -89,7 +82,6 @@ const LoadingMessage = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  color: red;
   text-align: center;
   padding: 20px;
   font-size: 16px;

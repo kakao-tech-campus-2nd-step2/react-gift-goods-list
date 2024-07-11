@@ -30,4 +30,4 @@
 ## step3 요구사항
 
 - [] 스크롤을 내리면 추가로 데이터 요청
-- [] API를 react-query로 구현
+- [o] API를 react-query로 구현

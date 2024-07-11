@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import type { AxiosError } from 'axios'; 
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
@@ -8,35 +9,23 @@ import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const themes = await fetchThemes();
-        const foundTheme = themes.find(t => t.key === themeKey);
-        if (!foundTheme) {
-          setError('Theme not found.');
-        } else {
-          setError('');
-        }
-      } catch (fetchError) {
-        console.error('Failed to fetch themes', fetchError);
-        setError('An error occurred while fetching theme details.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [themeKey]);
+  const { data: themes, isLoading, isError, error } = useQuery('themes', fetchThemes);
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingMessage>Loading theme details...</LoadingMessage>;
   }
 
-  if (error) {
-    return <ErrorMessage>{error}</ErrorMessage>;
+  const axiosError = error as AxiosError;
+
+  if (isError) {
+    return <ErrorMessage>Error: {axiosError.message}</ErrorMessage>;
+  }
+
+  const currentTheme = themes?.find((theme: { key: string; }) => theme.key === themeKey);
+
+  if (!currentTheme) {
+    return <ErrorMessage>Theme not found.</ErrorMessage>;
   }
 
   return (

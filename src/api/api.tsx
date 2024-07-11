@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { useQuery } from 'react-query';
 
-import type {GoodsData,ThemeData } from '@/types';
+import type {GoodsData,InfiniteQueryResponse,ThemeData } from '@/types';
 
 const axiosInstance = axios.create({
     baseURL: 'https://react-gift-mock-api-leedyun.vercel.app/',
@@ -42,16 +43,23 @@ export const fetchThemes = async (): Promise<ThemeData[]> => {
     }
   }
 
-  export const fetchThemeProducts = async (themeKey: string, maxResults: number = 20): Promise<GoodsData[]> => {
+  export const fetchThemeProducts = async (
+    themeKey: string,
+    pageToken: string | undefined,
+    maxResults: number = 20
+  ): Promise<InfiniteQueryResponse> => {
+    const params = pageToken ? { pageToken, maxResults } : { maxResults };
     try {
-      const response = await axiosInstance.get(`api/v1/themes/${themeKey}/products`, {
-        params: { maxResults }
+      const response = await axiosInstance.get(`/api/v1/themes/${themeKey}/products`, {
+        params
       });
       if (response.status === 200) {
-        return response.data.products;
+        return {
+          products: response.data.products,
+          nextPageToken: response.data.nextPageToken 
+        };
       } else {
-        console.error("Failed to get theme products", response);
-        return [];
+        throw new Error('Failed to fetch products');
       }
     } catch (error) {
       console.error("Failed to fetch theme products", error);
@@ -73,4 +81,16 @@ export const fetchThemes = async (): Promise<ThemeData[]> => {
       throw error;
     }
   };
+
+export const useThemes = () => useQuery('themes', fetchThemes);
+export const useRankingProducts = (targetType: string, rankType: string) => useQuery(['rankingProducts', targetType, rankType], () => fetchRankingProducts(targetType, rankType));
+export const useThemeProducts = (themeKey: string, pageToken?: string) => 
+  useQuery(
+    ['themeProducts', themeKey, pageToken],
+    () => fetchThemeProducts(themeKey, pageToken),
+    {
+      keepPreviousData: true, 
+    }
+  );
+
   

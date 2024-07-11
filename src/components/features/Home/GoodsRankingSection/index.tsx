@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { fetchRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
@@ -15,39 +16,26 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const loadRankingProducts = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const products = await fetchRankingProducts(filterOption.targetType, filterOption.rankType);
-        setGoodsList(products);
-        if (products.length === 0) {
-          setError('No products found.');
-        }
-      } catch (err) {
-        setError('Failed to fetch products. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRankingProducts();
-  }, [filterOption]); 
+  const { data: goodsList, isLoading, isError, error } = useQuery<GoodsData[], Error>(
+    ['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption.targetType, filterOption.rankType),
+    {
+      keepPreviousData: true, 
+      onError: (fetchError) => console.error('Failed to fetch products:', fetchError)
+    }
+  );
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading ? (
+        {isLoading ? (
           <LoadingMessage>Loading...</LoadingMessage>
-        ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage>
+        ) : isError ? (
+          <ErrorMessage>Error: {error.message}</ErrorMessage>
+        ) : !goodsList || goodsList.length === 0 ? (
+          <ErrorMessage>보여줄 상품이 없어요!</ErrorMessage>
         ) : (
           <GoodsRankingList goodsList={goodsList} />
         )}
@@ -86,7 +74,6 @@ const LoadingMessage = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  color: red;
   text-align: center;
   margin-top: 20px;
 `;

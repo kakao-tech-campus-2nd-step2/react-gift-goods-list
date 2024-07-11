@@ -32,3 +32,8 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+export interface InfiniteQueryResponse {
+  products: GoodsData[];
+  nextPageToken?: string | null; 
+}

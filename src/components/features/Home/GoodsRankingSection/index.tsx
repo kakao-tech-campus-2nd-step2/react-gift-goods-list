@@ -34,7 +34,13 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading ? <Loader /> : <GoodsRankingList goodsList={goodsList} />}
+        {loading ? (
+          <Loader />
+        ) : goodsList.length === 0 ? (
+          <Message>보여줄 상품이 없어요!</Message>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -61,4 +67,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Message = styled.p`
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
 `;

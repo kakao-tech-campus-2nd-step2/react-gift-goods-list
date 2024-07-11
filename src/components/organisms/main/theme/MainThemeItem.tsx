@@ -8,11 +8,8 @@ import ResponsiveContainer
 import { BREAKPOINT_SM } from '@styles/size';
 import styled from '@emotion/styled';
 import { useContext } from 'react';
+import { ThemeItemProps } from '@/types';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
-
-interface ThemeItemProps {
-  themeKey: string;
-}
 
 const ResponsiveThemeCaption = styled.p`
   font-size: 16px;
@@ -23,7 +20,7 @@ const ResponsiveThemeCaption = styled.p`
 `;
 
 function MainThemeItem({ themeKey }: ThemeItemProps) {
-  const { themes } = useContext(ThemeContext);
+  const themes = useContext(ThemeContext);
   const theme = themes[themeKey];
 
   return (

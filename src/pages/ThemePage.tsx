@@ -6,44 +6,38 @@ import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import { useContext, useEffect } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
-import FetchStatusBoundary
-  from '@components/atoms/container/FetchStatusBoundary';
-import FetchStatus from '@constants/FetchStatus';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
+import { isThemesLoaded } from '@/utils';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const { products, fetchStatus } = useFetchThemeProducts({ themeKey: themeKey || '' });
-  const { themes, fetchStatus: themeFetchStatus } = useContext(ThemeContext);
+  const products = useFetchThemeProducts({ themeKey: themeKey || '' });
+  const themes = useContext(ThemeContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (fetchStatus === FetchStatus.FETCHING) return;
+    if (!isThemesLoaded(themes)) return;
 
     if (!themeKey || !(themeKey in themes)) {
       navigate(-1);
     }
-  }, [products, navigate, themes, themeKey, fetchStatus]);
+  }, [products, navigate, themes, themeKey]);
 
-  return (
+  return isThemesLoaded(themes) ? (
     <Page>
-      <FetchStatusBoundary fetchStatus={themeFetchStatus}>
-        <Banner themeKey={themeKey as string} />
-        <Container elementSize="full-width" justifyContent="center">
-          <Container
-            elementSize="full-width"
-            maxWidth={MAX_CONTENT_WIDTH}
-            justifyContent="center"
-            padding="40px 16px 300px"
-          >
-            <FetchStatusBoundary fetchStatus={fetchStatus}>
-              <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
-            </FetchStatusBoundary>
-          </Container>
+      <Banner themeKey={themeKey as string} />
+      <Container elementSize="full-width" justifyContent="center">
+        <Container
+          elementSize="full-width"
+          maxWidth={MAX_CONTENT_WIDTH}
+          justifyContent="center"
+          padding="40px 16px 300px"
+        >
+          <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
         </Container>
-      </FetchStatusBoundary>
+      </Container>
     </Page>
-  );
+  ) : null;
 }
 
 export default ThemePage;

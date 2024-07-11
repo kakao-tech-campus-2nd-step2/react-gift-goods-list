@@ -25,5 +25,5 @@ export function hasKey(list: Object) {
 }
 
 export function isEmptyList(list: any[]) {
-  return Array.isArray(list) && list.length === 0;
+  return list.length === 0;
 }

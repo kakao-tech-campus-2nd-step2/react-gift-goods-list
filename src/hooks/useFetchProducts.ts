@@ -4,8 +4,7 @@ import RequestURLs from '@constants/RequestURLs';
 import { RankingProductsResponse } from '@/types/response';
 import { RankingProductsRequestQuery } from '@/types/request';
 import { ProductData } from '@/dto';
-import { RankFilter, TargetFilter } from '@/types';
-import FetchStatus from '@constants/FetchStatus';
+import { TargetFilter, RankFilter } from '@/types';
 
 interface FetchParams {
   targetFilter?: TargetFilter;
@@ -14,8 +13,6 @@ interface FetchParams {
 
 function useFetchProducts({ targetFilter, rankFilter }: FetchParams) {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.FETCHING);
-
   useEffect(() => {
     const params: RankingProductsRequestQuery = {
       targetType: targetFilter,
@@ -23,21 +20,15 @@ function useFetchProducts({ targetFilter, rankFilter }: FetchParams) {
     };
 
     async function request() {
-      try {
-        const response = await axiosInstance
-          .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params });
-        setProducts(response.data.products);
-        setFetchStatus(FetchStatus.FETCH_SUCCESS);
-      } catch (e) {
-        console.error(e);
-        setFetchStatus(FetchStatus.FETCH_ERROR);
-      }
+      const response = await axiosInstance
+        .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params });
+      setProducts(response.data.products);
     }
 
     request();
   }, [targetFilter, rankFilter]);
 
-  return { products, fetchStatus };
+  return products;
 }
 
 export default useFetchProducts;

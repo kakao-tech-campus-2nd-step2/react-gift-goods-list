@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
@@ -11,21 +10,37 @@ interface ThemeHeroSectionProps {
   themeKey: string;
 }
 
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  padding: 20px;
+`;
+
 export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const [theme, setTheme] = useState<ThemeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchThemeDetails = async () => {
       try {
         const themes = await fetchThemes();
         const foundTheme = themes.find(t => t.key === themeKey);
-        if (!foundTheme) throw new Error('Theme not found');
-        setTheme(foundTheme);
+        if (!foundTheme) {
+          setError('Theme not found');
+          setTheme(null);
+        } else {
+          setTheme(foundTheme);
+          setError('');
+        }
       } catch (fetchError) {
         console.error('Failed to fetch theme details:', fetchError);
-        setHasError(true);
+        setError('Failed to load theme data');
       } finally {
         setLoading(false);
       }
@@ -34,9 +49,9 @@ export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
     fetchThemeDetails();
   }, [themeKey]);
 
-  if (loading) return <div>Loading...</div>;
-  if (hasError) return <Navigate to="/" />;
-  if (!theme) return <div>Theme not found</div>;
+  if (loading) return <LoadingMessage>Loading...</LoadingMessage>;
+  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (!theme) return <ErrorMessage>Theme not found</ErrorMessage>;
 
   const { backgroundColor, label, title, description } = theme;
 

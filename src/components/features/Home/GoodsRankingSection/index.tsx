@@ -16,10 +16,24 @@ export const GoodsRankingSection = () => {
   });
 
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   useEffect(() => {
     const loadRankingProducts = async () => {
-      const products = await fetchRankingProducts(filterOption.targetType, filterOption.rankType);
-      setGoodsList(products);
+      setLoading(true);
+      setError('');
+      try {
+        const products = await fetchRankingProducts(filterOption.targetType, filterOption.rankType);
+        setGoodsList(products);
+        if (products.length === 0) {
+          setError('No products found.');
+        }
+      } catch (err) {
+        setError('Failed to fetch products. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadRankingProducts();
@@ -30,7 +44,13 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goodsList} />
+        {loading ? (
+          <LoadingMessage>Loading...</LoadingMessage>
+        ) : error ? (
+          <ErrorMessage>{error}</ErrorMessage>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -57,4 +77,16 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingMessage = styled.div`
+  color: #0070f3;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;

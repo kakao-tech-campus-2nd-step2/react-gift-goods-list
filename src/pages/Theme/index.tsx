@@ -1,31 +1,30 @@
+import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { RouterPath } from '@/routes/path';
-import { ThemeData } from '@/types';
+import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const themes = await fetchThemes();
-        const foundTheme = getCurrentTheme(themeKey, themes);
+        const foundTheme = themes.find(t => t.key === themeKey);
         if (!foundTheme) {
-          setHasError(true);
+          setError('Theme not found.');
         } else {
-          setCurrentTheme(foundTheme);
+          setError('');
         }
       } catch (fetchError) {
         console.error('Failed to fetch themes', fetchError);
-        setHasError(true);
+        setError('An error occurred while fetching theme details.');
       } finally {
         setLoading(false);
       }
@@ -33,12 +32,13 @@ export const ThemePage = () => {
   }, [themeKey]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingMessage>Loading theme details...</LoadingMessage>;
   }
 
-  if (hasError || !currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>;
   }
+
   return (
     <>
       <ThemeHeroSection themeKey={themeKey} />
@@ -46,3 +46,16 @@ export const ThemePage = () => {
     </>
   );
 };
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+`;

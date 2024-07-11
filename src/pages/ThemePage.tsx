@@ -6,38 +6,44 @@ import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import { useContext, useEffect } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
+import FetchStatusBoundary
+  from '@components/atoms/container/FetchStatusBoundary';
+import FetchStatus from '@constants/FetchStatus';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
-import { isThemesLoaded } from '@/utils';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const products = useFetchThemeProducts({ themeKey: themeKey || '' });
-  const themes = useContext(ThemeContext);
+  const { products, fetchStatus } = useFetchThemeProducts({ themeKey: themeKey || '' });
+  const { themes, fetchStatus: themeFetchStatus } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isThemesLoaded(themes)) return;
+    if (fetchStatus === FetchStatus.FETCHING) return;
 
     if (!themeKey || !(themeKey in themes)) {
       navigate(-1);
     }
-  }, [products, navigate, themes, themeKey]);
+  }, [products, navigate, themes, themeKey, fetchStatus]);
 
-  return isThemesLoaded(themes) ? (
+  return (
     <Page>
-      <Banner themeKey={themeKey as string} />
-      <Container elementSize="full-width" justifyContent="center">
-        <Container
-          elementSize="full-width"
-          maxWidth={MAX_CONTENT_WIDTH}
-          justifyContent="center"
-          padding="40px 16px 300px"
-        >
-          <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
+      <FetchStatusBoundary fetchStatus={themeFetchStatus}>
+        <Banner themeKey={themeKey as string} />
+        <Container elementSize="full-width" justifyContent="center">
+          <Container
+            elementSize="full-width"
+            maxWidth={MAX_CONTENT_WIDTH}
+            justifyContent="center"
+            padding="40px 16px 300px"
+          >
+            <FetchStatusBoundary fetchStatus={fetchStatus}>
+              <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
+            </FetchStatusBoundary>
+          </Container>
         </Container>
-      </Container>
+      </FetchStatusBoundary>
     </Page>
-  ) : null;
+  );
 }
 
 export default ThemePage;

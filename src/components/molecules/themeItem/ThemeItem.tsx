@@ -11,7 +11,7 @@ interface ThemeItemProps {
 }
 
 function ThemeItem({ themeKey }: ThemeItemProps) {
-  const themes = useContext(ThemeContext);
+  const { themes } = useContext(ThemeContext);
   const theme = themes[themeKey];
 
   return (

@@ -1,22 +1,34 @@
 import useFetchProducts from '@hooks/useFetchProducts';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Container from '@components/atoms/container/Container';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
-import TargetFilterArea from '@components/organisms/main/ranking/TargetFilterArea';
+import TargetFilterArea
+  from '@components/organisms/main/ranking/TargetFilterArea';
 import RankFilterArea from '@components/organisms/main/ranking/RankFilterArea';
 import Button from '@components/atoms/button/Button';
 import {
-  RankingSectionTitle, RankingSectionTitleContainer,
+  RankingSectionTitle,
+  RankingSectionTitleContainer,
 } from '@components/organisms/main/ranking/RankingSection.styles';
-import { TargetFilter, RankFilter } from '@/types';
+import FetchStatusBoundary
+  from '@components/atoms/container/FetchStatusBoundary';
+import FetchStatus from '@constants/FetchStatus';
+import { RankFilter, TargetFilter } from '@/types';
 
 function RankingSection() {
   const [targetFilter, setTargetFilter] = useState<TargetFilter>('ALL');
   const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
   const [isFolded, setIsFolded] = useState(true);
 
-  const products = useFetchProducts({ targetFilter, rankFilter });
+  const { products, fetchStatus } = useFetchProducts({ targetFilter, rankFilter });
+
+  const DISPLAY_COUNT_WHEN_FOLDED = 6;
+
+  const showButton = useCallback(
+    () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
+    [products, fetchStatus],
+  );
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -37,23 +49,31 @@ function RankingSection() {
           setPopularityFilter={setRankFilter}
         />
         <Container padding="40px 0 20px">
-          <GiftDisplaySection
-            products={isFolded ? products.slice(0, 6) : products}
-            maxColumns={6}
-            minColumns={3}
-            indexed
-          />
+          <FetchStatusBoundary fetchStatus={fetchStatus}>
+            <GiftDisplaySection
+              products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
+              maxColumns={6}
+              minColumns={3}
+              indexed
+            />
+          </FetchStatusBoundary>
         </Container>
         <Container elementSize="full-width" justifyContent="center">
           <Container elementSize="full-width" maxWidth="480px">
-            <Button
-              theme="lightGray"
-              elementSize={{ width: '100%', height: '60px' }}
-              text={isFolded ? '더보기' : '접기'}
-              onClick={() => {
-                setIsFolded(!isFolded);
-              }}
-            />
+            {
+              showButton()
+                ? (
+                  <Button
+                    theme="lightGray"
+                    elementSize={{ width: '100%', height: '60px' }}
+                    text={isFolded ? '더보기' : '접기'}
+                    onClick={() => {
+                      setIsFolded(!isFolded);
+                    }}
+                  />
+                )
+                : null
+            }
           </Container>
         </Container>
       </Container>

@@ -159,3 +159,12 @@ export interface MyAccountInfoData {
   profileImageURL: string;
   point: number;
 }
+
+export class APIError extends Error {
+  code: number | undefined;
+
+  constructor(message: string, code?: number | undefined) {
+    super(message);
+    this.code = code;
+  }
+}

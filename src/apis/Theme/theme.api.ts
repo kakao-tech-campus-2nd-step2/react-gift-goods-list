@@ -11,13 +11,13 @@ export async function getThemes(): Promise<ThemesResponse> {
 }
 
 export async function getThemesProducts(
-  themesKey: string,
+  themeKey: string,
   pageToken: string = '',
-  maxResults: number = 10
+  maxResults: number
 ): Promise<ProductsResponse> {
   try {
     const response = await axiosClient.get(
-      `/api/v1/themes/${themesKey}/products`,
+      `/api/v1/themes/${themeKey}/products`,
       {
         params: {
           pageToken,
@@ -27,6 +27,7 @@ export async function getThemesProducts(
     );
     return response.data;
   } catch (error) {
+    console.log(`getThemesProducts error: ${error}`);
     throw new Error(`getThemesProducts error: ${error}`);
   }
 }

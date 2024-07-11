@@ -9,7 +9,7 @@ export function useGoodsSectionControl(themeKey: string) {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleThemeProductsResponse = (data: Theme.ThemeProductsResponse) => {
     const { products, nextPageToken, pageInfo: ResponsePageInfo } = data;
@@ -25,15 +25,30 @@ export function useGoodsSectionControl(themeKey: string) {
     });
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    getThemeProducts({ themeKey, maxResults: 20 })
-      .then((data: Theme.ThemeProductsResponse) => handleThemeProductsResponse(data))
-      .catch((err) => {
+  const fetchingRetrialData = async () => {
+    let isDone = false;
+    let retryCount = 0;
+
+    while (!isDone && retryCount < 5) {
+      try {
+        const data = await getThemeProducts({ themeKey, maxResults: 20 });
+        handleThemeProductsResponse(data);
+        isDone = true;
+      } catch (err) {
         console.log(err, pageInfo);
-        setIsError(true);
-      });
+        retryCount += 1;
+        if (retryCount === 4) {
+          setIsError(true);
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+    }
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchingRetrialData();
   }, [themeKey]);
 
   useEffect(() => {

@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-import type { ProductData } from '@/apis/products/type';
 import { getThemeProducts } from '@/apis/themes/themes';
-import type { PageInfo, ThemeProductsResponse } from '@/apis/themes/type';
-import type { GetThemeProductsType } from '@/apis/themes/type';
 
 export function useGoodsSectionControl(themeKey: string) {
-  const [goodsList, setGoodsList] = useState<ProductData[]>([]);
-  const [pageInfo, setPageinfo] = useState<PageInfo>(); // windowing 하는 용도?
+  const [goodsList, setGoodsList] = useState<Home.ProductData[]>([]);
+  const [pageInfo, setPageinfo] = useState<Theme.PageInfo>(); // windowing 하는 용도?
   const [pageToken, setPageToken] = useState<string | null>();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleThemeProductsResponse = (data: ThemeProductsResponse) => {
+  const handleThemeProductsResponse = (data: Theme.ThemeProductsResponse) => {
     const { products, nextPageToken, pageInfo: ResponsePageInfo } = data;
     setPageinfo(ResponsePageInfo);
     setPageToken(nextPageToken);
@@ -31,7 +28,7 @@ export function useGoodsSectionControl(themeKey: string) {
   useEffect(() => {
     setIsLoading(true);
     getThemeProducts({ themeKey, maxResults: 20 })
-      .then((data: ThemeProductsResponse) => handleThemeProductsResponse(data))
+      .then((data: Theme.ThemeProductsResponse) => handleThemeProductsResponse(data))
       .catch((err) => {
         console.log(err, pageInfo);
         setIsError(true);
@@ -46,8 +43,8 @@ export function useGoodsSectionControl(themeKey: string) {
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && pageToken) {
           setIsLoading(true);
-          getThemeProducts({ themeKey, pageToken, maxResults: 20 } as GetThemeProductsType)
-            .then((data: ThemeProductsResponse) => handleThemeProductsResponse(data))
+          getThemeProducts({ themeKey, pageToken, maxResults: 20 } as Theme.GetThemeProductsType)
+            .then((data: Theme.ThemeProductsResponse) => handleThemeProductsResponse(data))
             .catch((err) => {
               console.error(err, pageInfo);
               setIsError(true);

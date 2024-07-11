@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
 import { getRankingProducts } from '@/apis/products/products';
-import type { ProductData } from '@/apis/products/type';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
@@ -17,7 +16,7 @@ const defaultFilter: RankingFilterOption = {
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
-  const [products, setProducts] = useState<ProductData[]>([]);
+  const [products, setProducts] = useState<Home.ProductData[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

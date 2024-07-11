@@ -44,6 +44,32 @@ const makeFetchRetryOnError =
     }
   };
 
+export const handleStatusCode = (error: AxiosError) => {
+  if (error.response) {
+    switch (error.response.status) {
+      case 400:
+        console.error('[400] 잘못된 요청입니다.');
+        break;
+      case 401:
+        console.error('[401] 권한이 없습니다.');
+        break;
+      case 403:
+        console.error('[402] 금지된 요청입니다.');
+        break;
+      case 404:
+        console.error('[404] 페이지를 찾을 수 없습니다.');
+        break;
+      case 500:
+        console.error('[500] 서버에서 발생한 오류입니다.');
+        break;
+      default:
+        console.error(`[${error.response.status}]`);
+    }
+  } else {
+    console.error('요청에 대한 응답이 오지 않았습니다.');
+  }
+};
+
 export function useGoodsSectionControl(themeKey: string) {
   const [goodsList, setGoodsList] = useState<Home.ProductData[]>([]);
   const [pageInfo, setPageinfo] = useState<Theme.PageInfo>(); // windowing 하는 용도?
@@ -68,9 +94,10 @@ export function useGoodsSectionControl(themeKey: string) {
   };
 
   const handleError = (error: AxiosError, retryCount: number) => {
-    console.log(error, pageInfo);
+    handleStatusCode(error);
     if (retryCount === MAX_RETRY_COUNT - 1) {
       setIsError(true);
+      console.log('현재 상황: ', pageInfo);
     }
   };
 

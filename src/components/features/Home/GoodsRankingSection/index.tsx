@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getRankingProducts } from '@/apis/products/products';
 import { Container } from '@/components/common/layouts/Container';
+import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -29,14 +30,10 @@ export const GoodsRankingSection = () => {
         /**
          * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
          */
-        if (err.response.status === 400) {
-          setIsError(true);
-        } else {
-          console.error(err);
-        }
+        handleStatusCode(err);
+        setIsError(true);
       })
       .finally(() => setIsLoading(false));
-
   }, [filterOption]);
 
   return (

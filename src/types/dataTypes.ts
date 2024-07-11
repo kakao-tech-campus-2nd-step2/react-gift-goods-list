@@ -24,6 +24,7 @@ export interface ThemeData {
   label: string;
   title: string;
   description?: string;
+  imageURL: string;
   backgroundColor?: string;
 }
 

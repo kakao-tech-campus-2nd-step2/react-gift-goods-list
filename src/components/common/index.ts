@@ -9,4 +9,5 @@ export { default as Container } from './Layout/Container';
 export { default as Grid } from './Layout/Grid';
 export { default as CenteredContainer } from './Layout/CenteredContainer';
 export { default as SectionHeader } from './SectionHeader';
-export { default as PrivateRoute } from '../../routes/components/PrivateRoute';
+export { default as Spinner } from './Spinner';
+export { default as ErrorMessage } from './ErrorMessage';

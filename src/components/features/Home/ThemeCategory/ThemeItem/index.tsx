@@ -1,27 +1,21 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Container, Image } from '@components/common';
-import { useNavigate } from 'react-router-dom';
-import { getDynamicPath } from '@utils/getDynamicPath';
-import { ROUTE_PATH } from '@routes/path';
 
 const IMAGE_SIZE = 90;
 const IMAGE_RADIUS = 32;
 
 export interface ThemeItemProps {
   image: string;
-  name: string;
-  themeKey: string;
+  label: string;
 }
 
-export default function ThemeItem({ image, name, themeKey, ...rest }: ThemeItemProps) {
-  const navigate = useNavigate();
-
+export default function ThemeItem({ image, label, ...rest }: ThemeItemProps) {
   return (
-    <ThemeItemContainer {...rest} onClick={() => navigate(getDynamicPath(ROUTE_PATH.THEME, { themeKey }))}>
+    <ThemeItemContainer {...rest}>
       <Container flexDirection="column" alignItems="center">
-        <Image src={image} width={IMAGE_SIZE} height={IMAGE_SIZE} radius={IMAGE_RADIUS} alt={name} />
-        <CategoryName>{name}</CategoryName>
+        <Image src={image} width={IMAGE_SIZE} height={IMAGE_SIZE} radius={IMAGE_RADIUS} alt={label} />
+        <CategoryName>{label}</CategoryName>
       </Container>
     </ThemeItemContainer>
   );

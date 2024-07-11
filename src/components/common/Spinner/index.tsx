@@ -1,9 +1,20 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Container } from '@components/common';
 
 export default function Spinner() {
-  return <StyledSpinner />;
+  return (
+    <SpinnerContainer>
+      <Container justifyContent="center" alignItems="center">
+        <StyledSpinner />
+      </Container>
+    </SpinnerContainer>
+  );
 }
+
+const SpinnerContainer = styled.div`
+  padding: 48px 0 48px 0;
+`;
 
 const StyledSpinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);

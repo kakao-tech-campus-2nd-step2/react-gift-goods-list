@@ -1,19 +1,25 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { CenteredContainer } from '@components/common';
-import { useParams } from 'react-router-dom';
-import { THEME_KEY } from './constants';
+import { useLocation } from 'react-router-dom';
+
+interface LocationState {
+  title: string;
+  label: string;
+  description?: string;
+  backgroundColor: string;
+}
 
 export default function SectionHeader() {
-  const { themeKey } = useParams<{ themeKey: string }>();
-  const theme = THEME_KEY.find((t) => t.themeKey === themeKey);
+  const location = useLocation();
+  const { title, description, label, backgroundColor } = location.state as LocationState;
 
   return (
-    <SectionHeaderContainer color={theme?.color}>
+    <SectionHeaderContainer color={backgroundColor}>
       <CenteredContainer maxWidth="md">
-        <Label>{theme?.label}</Label>
-        <Title>{theme?.title}</Title>
-        <Description>{theme?.description}</Description>
+        <Label>{label}</Label>
+        <Title>{title}</Title>
+        <Description>{description}</Description>
       </CenteredContainer>
     </SectionHeaderContainer>
   );
@@ -27,7 +33,7 @@ const SectionHeaderContainer = styled.section<{ color?: string }>`
 
 const Label = styled.p`
   font-size: 20px;
-  color: #333;
+  color: #ffffffb3;
   font-weight: 700;
 `;
 
@@ -40,6 +46,6 @@ const Title = styled.h1`
 
 const Description = styled.p`
   font-size: 24px;
-  color: #505050;
+  color: #ffffff8c;
   padding-top: 12px;
 `;

@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ApiService } from '@/api';
 import type { GetRankingProductsParameters, ProductData } from '@/api/types';
+import type { APIError } from '@/api/types';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
+import { handleApiError } from '@/utils/errorHandler/errorHandler';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -16,14 +18,18 @@ export const GoodsRankingSection = () => {
   });
 
   const [rankingProducts, setRankingProducts] = useState<ProductData[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRankingProducts = async () => {
+      setErrorMessage(null);
       try {
         const response = await ApiService.fetchRankingProducts(filterOption);
         setRankingProducts(response.products);
       } catch (error) {
-        console.error('선물 랭킹을 불러올 수 없어여', error);
+        if (error as APIError) {
+          setErrorMessage(handleApiError(error as APIError));
+        }
       }
     };
 
@@ -35,7 +41,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={rankingProducts} />
+        <GoodsRankingList goodsList={rankingProducts} errorMessage={errorMessage} />
       </Container>
     </Wrapper>
   );

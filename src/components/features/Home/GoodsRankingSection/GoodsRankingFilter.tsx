@@ -1,27 +1,30 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import { RankingFilterOption } from '@/types';
 import { RankTypeButton } from './RankTypeButton';
 import { TargetTypeButton } from './TargetTypeButton';
 
 export const GoodsRankingFilter = () => {
-  const [selectedTarget, setSelectedTarget] = useState('ALL');
-  const [selectedRank, setSelectedRank] = useState('MANY_WISH');
-  const rankTypes = [
+  const [selectedTarget, setSelectedTarget] = useState<RankingFilterOption['targetType']>('ALL');
+  const [selectedRank, setSelectedRank] = useState<RankingFilterOption['rankType']>('MANY_WISH');
+
+  const targetTypes: RankingFilterOption['targetType'][] = ['ALL', 'FEMALE', 'MALE', 'TEEN'];
+  const rankTypes: { label: string; value: RankingFilterOption['rankType'] }[] = [
     { label: '받고 싶어한', value: 'MANY_WISH' },
-    { label: '많이 선물한', value: 'MANY_RECEIVED' },
-    { label: '위시로 받은', value: 'MANY_WISH_RECEIVED' },
+    { label: '많이 선물한', value: 'MANY_RECEIVE' },
+    { label: '위시로 받은', value: 'MANY_WISH_RECEIVE' },
   ];
 
   return (
     <StyledGoodsRankingFilter>
       <TargetTypeContainer>
-        {['ALL', 'FEMALE', 'MALE', 'TEEN'].map((item) => (
+        {targetTypes.map((item) => (
           <TargetTypeButton
             key={item}
-            value={item as 'ALL' | 'FEMALE' | 'MALE' | 'TEEN'}
+            value={item}
             selected={selectedTarget === item}
-            onClick={() => setSelectedTarget(item as 'ALL' | 'FEMALE' | 'MALE' | 'TEEN')}
+            onClick={() => setSelectedTarget(item)}
           />
         ))}
       </TargetTypeContainer>
@@ -37,11 +40,9 @@ export const GoodsRankingFilter = () => {
           <RankTypeButton
             key={rank.value}
             label={rank.label}
-            value={rank.value as 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED'}
+            value={rank.value}
             selected={selectedRank === rank.value}
-            onClick={() =>
-              setSelectedRank(rank.value as 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED')
-            }
+            onClick={() => setSelectedRank(rank.value)}
           />
         ))}
       </RankTypeContainer>

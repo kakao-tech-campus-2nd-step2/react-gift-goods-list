@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 
+import { RankingFilterOption } from '@/types';
+
 type Props = {
   label: string;
-  value?: 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED';
+  value: RankingFilterOption['rankType'];
   selected: boolean;
-  onClick: (value?: 'MANY_WISH' | 'MANY_RECEIVED' | 'MANY_WISH_RECEIVED') => void;
+  onClick: (value: RankingFilterOption['rankType']) => void;
 };
 
 export const RankTypeButton = ({ label, value, selected, onClick }: Props) => {

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
 import { BASE_URL, type ThemeData } from '@/types';
 
@@ -12,6 +13,7 @@ type Props = {
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData>();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchThemeData = async () => {
@@ -19,12 +21,17 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         const res = await axios.get(`${BASE_URL}/api/v1/themes`);
         const theme = getCurrentTheme(themeKey, res.data.themes);
         setCurrentTheme(theme);
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
       }
     };
     fetchThemeData();
   }, [themeKey]);
+
+  if (isLoading) {
+    return <Message>Loading...</Message>;
+  }
 
   if (!currentTheme) {
     return null;

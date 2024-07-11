@@ -1,41 +1,41 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { getRankingProducts } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { GoodsData } from '@/types';
 import { GoodsRankingFilter } from './GoodsRankingFilter';
 import { GoodsRankingList } from './GoodsRankingList';
 
-const GoodsMockData: GoodsData = {
-  id: 123,
-  name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
-  imageURL:
-    'https://st.kakaocdn.net/product/gift/product/20231030175450_53e90ee9708f45ffa45b3f7b4bc01c7c.jpg',
-  wish: {
-    wishCount: 201,
-    isWished: false,
-  },
-  price: {
-    basicPrice: 29000,
-    discountRate: 0,
-    sellingPrice: 29000,
-  },
-  brandInfo: {
-    id: 2088,
-    name: 'BBQ',
-    imageURL:
-      'https://st.kakaocdn.net/product/gift/gift_brand/20220216170226_38ba26d8eedf450683200d6730757204.png',
-  },
-};
-
-const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
-
 export const GoodsRankingSection = () => {
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchRankingProducts = async () => {
+      try {
+        const data = await getRankingProducts();
+        setGoodsList(data.products);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchRankingProducts();
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading ranking products.</p>;
+
   return (
     <StyledGoodsRankingSection>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={goodsList} />
       </Container>
     </StyledGoodsRankingSection>
   );

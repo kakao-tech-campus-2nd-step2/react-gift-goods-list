@@ -47,7 +47,6 @@ export const useFetchData = <T>({ fetchData }: UseFetchDataProps<T>): UseFetchDa
 
   useEffect(() => {
     fetchDataCallback();
-    console.log('ddd');
   }, [fetchDataCallback]);
 
   return { data, loading, error };

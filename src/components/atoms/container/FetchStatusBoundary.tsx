@@ -6,15 +6,15 @@ import LoadingSpinner from '@components/atoms/LoadingSpinner';
 interface FetchStatusBoundaryProps {
   children: ReactNode;
   fetchStatus: FetchStatus;
-  loading?: ReactNode;
-  error?: ReactNode;
+  loadingComponent?: ReactNode;
+  errorComponent?: ReactNode;
 }
 
 function FetchStatusBoundary({
-  children, fetchStatus, loading, error,
+  children, fetchStatus, loadingComponent, errorComponent,
 }: FetchStatusBoundaryProps) {
   if (fetchStatus === FetchStatus.FETCHING) {
-    return loading || (
+    return loadingComponent || (
       <Container elementSize="full-width" justifyContent="center">
         <Container elementSize={{ width: '80px', height: '80px' }}>
           <LoadingSpinner />
@@ -24,7 +24,7 @@ function FetchStatusBoundary({
   }
 
   if (fetchStatus === FetchStatus.FETCH_ERROR) {
-    return error || (
+    return errorComponent || (
       <Container elementSize="full-width" justifyContent="center">
         <p>서버에서 데이터 로드 중 오류가 발생했습니다.</p>
       </Container>

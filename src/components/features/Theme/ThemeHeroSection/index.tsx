@@ -1,18 +1,37 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
+import { fetchThemes } from '@/api/theme';
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!currentTheme) {
+  useEffect(() => {
+    const loadTheme = async () => {
+      const data = await fetchThemes();
+      const findTheme = data.themes.find((theme) => theme.key === themeKey);
+      setCurrentTheme(findTheme || null);
+      setIsLoading(false);
+    };
+
+    loadTheme();
+  }, [themeKey]);
+
+  if (!isLoading && !currentTheme) {
+    return <Navigate to={RouterPath.home} />;
+  }
+
+  if (isLoading || !currentTheme) {
     return null;
   }
 

@@ -7,8 +7,8 @@
 - 메인 페이지 - Theme 카테고리 섹션
   - [x] **`/api/v1/themes`** API를 사용하여 Section을 구현
 - 메인 페이지 - 실시간 급상승 선물랭킹 섹션
-  - [ ] **`/api/v1/ranking/products`** API를 사용하여 Section 구현
-  - [ ] 필터 조건을 선택하면 해당 조건에 맞게 API 요청
+  - [x] **`/api/v1/ranking/products`** API를 사용하여 Section 구현
+  - [x] 필터 조건을 선택하면 해당 조건에 맞게 API 요청
 - Theme 페이지 - header
   - [ ] url의 pathParams와 **`/api/v1/themes`** API를 사용하여 Section 구현
   - [ ] **`themeKey`**가 잘못된 경우, 메인 페이지로 연결

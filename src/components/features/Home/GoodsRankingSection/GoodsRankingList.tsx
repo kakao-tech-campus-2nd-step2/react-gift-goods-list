@@ -2,28 +2,9 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Button } from '@/components/common/Button';
-import { Grid } from '@/components/common/layouts/Grid';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/RankingGoodsItem';
-
-type GoodsData = {
-  id: number;
-  name: string;
-  imageURL: string;
-  wish: {
-    wishCount: number;
-    isWished: boolean;
-  };
-  price: {
-    basicPrice: number;
-    discountRate: number;
-    sellingPrice: number;
-  };
-  brandInfo: {
-    id: number;
-    name: string;
-    imageURL: string;
-  };
-};
+import { Grid } from '@/components/common/layouts/Grid';
+import { GoodsData } from '@/types';
 
 type Props = {
   goodsList: GoodsData[];

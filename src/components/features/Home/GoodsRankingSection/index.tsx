@@ -1,28 +1,9 @@
 import styled from '@emotion/styled';
 
 import { Container } from '@/components/common/layouts/Container';
+import { GoodsData } from '@/types';
 import { GoodsRankingFilter } from './GoodsRankingFilter';
 import { GoodsRankingList } from './GoodsRankingList';
-
-type GoodsData = {
-  id: number;
-  name: string;
-  imageURL: string;
-  wish: {
-    wishCount: number;
-    isWished: boolean;
-  };
-  price: {
-    basicPrice: number;
-    discountRate: number;
-    sellingPrice: number;
-  };
-  brandInfo: {
-    id: number;
-    name: string;
-    imageURL: string;
-  };
-};
 
 const GoodsMockData: GoodsData = {
   id: 123,

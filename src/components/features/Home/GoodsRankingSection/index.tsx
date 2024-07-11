@@ -18,14 +18,20 @@ export const GoodsRankingSection = () => {
   // GoodsMockData를 21번 반복 생성
 
   const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchRanking = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const data = await fetchRankingProducts(filterOption);
         setRankingProducts(data.products || []);
       } catch (err) {
         console.error('Error fetching ranking products: ', err);
+        setLoading(false);
+        setError(err as Error);
         setRankingProducts([]);
       }
     };
@@ -37,7 +43,13 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={rankingProducts} />
+        {loading ? (
+          <LoadingIndicator>Loading...</LoadingIndicator>
+        ) : error ? (
+          <ErrorMessage>Error fetching ranking products: {error.message}</ErrorMessage>
+        ) : (
+          <GoodsRankingList goodsList={rankingProducts} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -64,4 +76,23 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingIndicator = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+const ErrorMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
 `;

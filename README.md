@@ -15,3 +15,8 @@
 - [x] 메인 페이지 실시간 급상승 선물랭킹 섹션 UI 대응 및 Error 처리
 - [x] Theme 페이지 상품 목록 섹션 UI 대응 및 Error 처리
 - [x] Themes API UI 대응 및 Error 처리
+
+## 3단계 - 테마 별 선물 추천 API에 페이지네이션 구현하기 & React Query 사용해보기
+
+- [x] Theme 페이지에 페이지네이션 구현
+- [ ] API를 react-query를 사용해 구현

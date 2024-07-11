@@ -25,7 +25,7 @@ export function useGoodsSectionControl(themeKey: string) {
     });
   };
 
-  const fetchingRetrialData = async () => {
+  const fetchThemeProducts = async () => {
     let isDone = false;
     let retryCount = 0;
 
@@ -37,6 +37,7 @@ export function useGoodsSectionControl(themeKey: string) {
       } catch (err) {
         console.log(err, pageInfo);
         retryCount += 1;
+
         if (retryCount === 4) {
           setIsError(true);
         } else {
@@ -48,7 +49,7 @@ export function useGoodsSectionControl(themeKey: string) {
   };
 
   useEffect(() => {
-    fetchingRetrialData();
+    fetchThemeProducts();
   }, [themeKey]);
 
   useEffect(() => {
@@ -63,8 +64,8 @@ export function useGoodsSectionControl(themeKey: string) {
             .catch((err) => {
               console.error(err, pageInfo);
               setIsError(true);
-            });
-          setIsLoading(false);
+            })
+            .finally(() => setIsLoading(false));
         }
       });
       observerRef.current.observe(loaderRef.current);

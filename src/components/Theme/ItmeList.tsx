@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { GoodsItem } from '@/components/common/GoodsItem';
 import { HandleBox, Loading } from '@/components/common/Handle';
@@ -6,16 +8,26 @@ import { Container } from '@/components/common/Layout/Container';
 import { Grid } from '@/components/common/Layout/Grid';
 import { useThemeProducts } from '@/services/useThemeProducts';
 
-export const ItemList = ({ themeKey }: { themeKey: string }) => {
-  const { isLoading, isError, data } = useThemeProducts(themeKey);
-  const products = data?.products ?? [];
+export const ItemListWithInfiniteScroll = ({ themeKey }: { themeKey: string }) => {
+  const { data, isLoading, isError, fetchNextPage, hasNextPage } = useThemeProducts(themeKey);
+
+  const { ref, inView } = useInView({
+    threshold: 0.8,
+  });
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return <Loading />;
   }
   if (isError) {
-    return <HandleBox>데이터를 불러오는 중에 문제가 발생했습니다.</HandleBox>;
+    return <HandleBox>선물 테마 Key에 해당하는 선물 테마가 없어요.</HandleBox>;
   }
+
+  const products = data?.pages.flatMap((page) => page.products) ?? [];
   if (products.length == 0) {
     return <HandleBox>상품이 없어요!</HandleBox>;
   }
@@ -33,6 +45,7 @@ export const ItemList = ({ themeKey }: { themeKey: string }) => {
               amount={item.price.basicPrice}
             />
           ))}
+          <div ref={ref}></div>
         </Grid>
       </Container>
     </ListWrapper>

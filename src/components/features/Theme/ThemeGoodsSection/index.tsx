@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
@@ -16,6 +18,7 @@ type Props = {
 
 export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const navigate = useNavigate();
+
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +32,27 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     const fetchThemeProducts = async () => {
       try {
         const response = await getThemeProducts(themeKey);
-        setGoodsList(response.products);
+        if (response.products.length === 0) {
+          setError('상품이 없습니다.');
+        } else {
+          setGoodsList(response.products);
+        }
       } catch (err) {
-        setError('Failed to fetch products');
+        const axiosError = err as AxiosError;
+        if (axiosError.response) {
+          switch (axiosError.response.status) {
+            case 404:
+              setError('데이터를 찾을 수 없습니다.');
+              break;
+            case 500:
+              setError('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+              break;
+            default:
+              setError('알 수 없는 오류가 발생했습니다.');
+          }
+        } else {
+          setError('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
+        }
       } finally {
         setLoading(false);
       }
@@ -41,7 +62,12 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   }, [themeKey, navigate]);
 
   if (loading) {
-    return <TextView>Loading...</TextView>;
+    return (
+      <LoadingContainer>
+        <ClipLoader color="#36d7b7" loading={loading} size={50} />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingContainer>
+    );
   }
 
   if (error) {
@@ -89,4 +115,19 @@ const TextView = styled.div`
   align-items: center;
   padding: 40px 16px 60px;
   font-size: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+`;
+
+const LoadingText = styled.p`
+  margin-top: 10px;
+  font-size: 16px;
+  color: #36d7b7;
 `;

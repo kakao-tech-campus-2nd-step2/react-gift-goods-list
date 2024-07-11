@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -10,7 +11,7 @@ interface FetchDataUIProps<T> {
 
 export const FetchDataUI = <T,>({ loading, error, data, children }: FetchDataUIProps<T>) => {
   if (loading) {
-    return <LoadingMsg>Loading...</LoadingMsg>;
+    return <Loading></Loading>;
   }
 
   if (error) {
@@ -24,23 +25,32 @@ export const FetchDataUI = <T,>({ loading, error, data, children }: FetchDataUIP
   return <>{children}</>;
 };
 
-const LoadingMsg = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 16px;
-  color: #007bff;
+const rotation = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const Loading = styled.span`
+  width: 48px;
+  height: 48px;
+  border: 5px solid #d2d2d2;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: ${rotation} 1s linear infinite;
 `;
 
 const ErrorMsg = styled.div`
   text-align: center;
   padding: 20px;
-  font-size: 16px;
-  color: red;
 `;
 
 const NoDataMsg = styled.div`
   text-align: center;
   padding: 20px;
-  font-size: 16px;
-  color: #007bff;
 `;

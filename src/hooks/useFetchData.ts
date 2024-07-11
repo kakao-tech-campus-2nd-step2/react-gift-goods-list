@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 
+import { ERROR_MESSAGES } from '@/\bconstants/errorMessages';
+
 interface UseFetchDataProps<T> {
   fetchData: () => Promise<T>;
 }
@@ -24,21 +26,10 @@ export const useFetchData = <T>({ fetchData }: UseFetchDataProps<T>): UseFetchDa
       setData(res);
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-
-        if (status === 400) {
-          setError('잘못된 요청입니다.');
-        } else if (status === 403) {
-          setError('권한이 없습니다.');
-        } else if (status === 404) {
-          setError('찾을 수 없는 페이지입니다.');
-        } else if (status === 500) {
-          setError('서버 오류입니다.');
-        } else {
-          setError(err.response?.data);
-        }
+        const status = err.response?.status || 'default';
+        setError(ERROR_MESSAGES[status] || ERROR_MESSAGES.default);
       } else {
-        setError('네트워크 오류가 발생했습니다.');
+        setError(ERROR_MESSAGES.network);
       }
     } finally {
       setLoading(false);

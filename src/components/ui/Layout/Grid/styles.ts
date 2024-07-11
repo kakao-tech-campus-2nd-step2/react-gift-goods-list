@@ -18,18 +18,16 @@ export const gridStyle = (gap: number, columns: number | ResponseGrid) => {
     });
   }
 
-  const breakpoints = [
-    'initial',
-    ...Object.keys(columns),
-  ] as (keyof typeof breakpoint)[];
-  const responseGridStyle = breakpoints
-    .map((point) => {
-      return `@media screen and (min-width: ${breakpoint[point]}) { grid-template-columns: repeat(${columns[point]}, 1fr); }`;
-    })
-    .join(' ');
+  const breakpoints = Object.keys(columns) as (keyof typeof breakpoint)[];
+  const responseGridStyle = Object.fromEntries(
+    breakpoints.map((point) => [
+      `@media screen and (min-width: ${breakpoint[point]})`,
+      { gridTemplateColumns: `repeat(${columns[point]}, 1fr)` },
+    ])
+  );
 
   return css({
     ...baseStyle,
-    responseGridStyle,
+    ...responseGridStyle,
   });
 };

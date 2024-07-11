@@ -27,9 +27,7 @@ export const ThemeCategorySection = () => {
       <Grid
         columns={{
           initial: 4,
-          lg: 6,
-          md: 4,
-          sm: 4,
+          md: 6,
         }}
         gap={40}
         css={gridStyle}

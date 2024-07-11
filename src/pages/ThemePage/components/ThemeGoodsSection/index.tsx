@@ -13,13 +13,20 @@ type ThemeGoodsProps = {
   themeKey: string;
 };
 
-export const ThemeGoods = ({ themeKey }: ThemeGoodsProps) => {
+export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsProps) => {
   const { themeProducts, loading, error } = useThemeProductData(themeKey);
 
-  if (error) return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <LoadingDots />;
-  if (!themeProducts?.length)
+  if (error) {
+    return <OneTextContainer>{error}</OneTextContainer>;
+  }
+
+  if (loading) {
+    return <LoadingDots />;
+  }
+
+  if (!themeProducts?.length) {
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
+  }
 
   return (
     <Content>

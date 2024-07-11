@@ -13,7 +13,7 @@ export type ThemeListData = Pick<
   'id' | 'key' | 'label' | 'imageURL'
 >;
 
-export type ThemeHeaderData = Pick<
+export type ThemeHeroData = Pick<
   ThemeData,
   'label' | 'title' | 'description' | 'backgroundColor'
 >;

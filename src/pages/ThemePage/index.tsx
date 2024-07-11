@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ROUTES from '@/constants/routes';
 import BaseLayout from '@/layouts/BaseLayout';
 
-import { ThemeGoods } from './components/ThemeGoods';
-import { ThemeHeader } from './components/ThemeHeader';
+import { ThemeGoodsSection } from './components/ThemeGoodsSection';
+import { ThemeHeroSection } from './components/ThemeHeroSection';
 
 export const ThemePage = () => {
   const navigate = useNavigate();
@@ -17,8 +17,8 @@ export const ThemePage = () => {
 
   return (
     <BaseLayout>
-      <ThemeHeader themeKey={themeKey} />
-      <ThemeGoods themeKey={themeKey} />
+      <ThemeHeroSection themeKey={themeKey} />
+      <ThemeGoodsSection themeKey={themeKey} />
     </BaseLayout>
   );
 };

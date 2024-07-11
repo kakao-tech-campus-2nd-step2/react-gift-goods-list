@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
-import { useThemeHeaderData } from '@/pages/ThemePage/hooks/useThemeHeaderData';
-import { ThemeHeaderData } from '@/types/themeType';
+import { useThemeHeroData } from '@/pages/ThemePage/hooks/useThemeHeroData';
+import { ThemeHeroData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
 import { OneTextContainer } from '@/components/OneTextContainer';
@@ -16,10 +16,10 @@ type ThemeHeaderProps = {
   themeKey: string;
 };
 
-export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
+export const ThemeHeroSection = ({ themeKey }: ThemeHeaderProps) => {
   const navigate = useNavigate();
 
-  const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
+  const { themeHero, loading, error } = useThemeHeroData(themeKey);
 
   useEffect(() => {
     if (error === ERROR_MESSAGES.DATA_NOT_FOUND) {
@@ -27,15 +27,20 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
     }
   }, [error, navigate]);
 
-  if (error === ERROR_MESSAGES.FETCH_ERROR)
+  if (error === ERROR_MESSAGES.FETCH_ERROR) {
     return <OneTextContainer>{error}</OneTextContainer>;
+  }
 
-  if (loading) return <Skeleton width="100vw" height="13rem" />;
+  if (loading) {
+    return <Skeleton width="100vw" height="13rem" />;
+  }
 
-  if (!themeHeader) return <OneTextContainer>{error}</OneTextContainer>;
+  if (!themeHero) {
+    return <OneTextContainer>{error}</OneTextContainer>;
+  }
 
   const { backgroundColor, label, title, description } =
-    themeHeader as ThemeHeaderData;
+    themeHero as ThemeHeroData;
 
   return (
     <Content

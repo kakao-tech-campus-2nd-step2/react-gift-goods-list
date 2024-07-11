@@ -1,10 +1,10 @@
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import { BACKEND_API } from '@/services/api';
-import { ThemeHeaderData, ThemeListData } from '@/types/themeType';
+import { ThemeHeroData, ThemeListData } from '@/types/themeType';
 
 import { GetThemesResponse } from './types';
 
-export const fetchThemeHeaderData = async (themeKey: string) => {
+export const fetchThemeHeroData = async (themeKey: string) => {
   try {
     const response = await BACKEND_API.get<GetThemesResponse>('/api/v1/themes');
     const theme = response.data.themes.find((t) => t.key === themeKey);
@@ -13,7 +13,7 @@ export const fetchThemeHeaderData = async (themeKey: string) => {
       throw new Error(ERROR_MESSAGES.DATA_NOT_FOUND);
     }
 
-    return theme as ThemeHeaderData;
+    return theme as ThemeHeroData;
   } catch (error) {
     if (error instanceof Error) {
       throw error;

@@ -6,6 +6,7 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 
 import { useFetchProductsByTheme } from '@/api/customHook';
+import Loading from '@/components/Loading';
 
 type Props = {
   themeKey: string;
@@ -14,7 +15,7 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error</div>;
 
   return (

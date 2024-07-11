@@ -5,6 +5,7 @@ import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 
 import { useFetchThemes } from '@/api/customHook';
+import Loading from '@/components/Loading';
 
 type Props = {
   themeKey: string;
@@ -13,7 +14,7 @@ type Props = {
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const { data: themes, loading, error } = useFetchThemes();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error</div>;
 
   const currentTheme = themes?.find((t) => t.key === themeKey);

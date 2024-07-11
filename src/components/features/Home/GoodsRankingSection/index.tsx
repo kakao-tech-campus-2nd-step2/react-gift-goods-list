@@ -9,6 +9,8 @@ import { useFetchRanking } from '@/api/customHook';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
+import Loading from '@/components/Loading';
+
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
@@ -17,7 +19,7 @@ export const GoodsRankingSection = () => {
 
   const { data: rankProducts, loading, error } = useFetchRanking(filterOption);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error</div>;
 
   return (

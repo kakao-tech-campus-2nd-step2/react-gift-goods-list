@@ -1,5 +1,5 @@
 import profile from '@/assets/default-profile.jpg';
-import { colors } from '@/styles/theme';
+import { colors } from '@/styles/variants/theme';
 
 import { Content } from '@/components/Content';
 import { Image } from '@/components/ui/Image/Default';

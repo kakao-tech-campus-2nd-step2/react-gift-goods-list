@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { colors } from '@/styles/theme';
+import { colors } from '@/styles/variants/theme';
 
 export const containerStyle = css({
   gap: '1rem',

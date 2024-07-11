@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 
 import { pulse } from '@/styles/animation';
-import { colors } from '@/styles/theme';
 import { getBorderRadius } from '@/styles/utils';
+import { colors } from '@/styles/variants/theme';
 import { Radius } from '@/types/uiTypes';
 
 export const skeletonStyles = (width: string, height: string, radius: Radius) =>

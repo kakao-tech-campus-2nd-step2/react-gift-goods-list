@@ -1,5 +1,5 @@
 import logo from '@/assets/logo.png';
-import { colors } from '@/styles/theme';
+import { colors } from '@/styles/variants/theme';
 
 import { Content } from '@/components/Content';
 import { Logo } from '@/components/Logo';

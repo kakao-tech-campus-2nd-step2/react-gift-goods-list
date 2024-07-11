@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
-import { colors } from '@/styles/theme';
 import { getAspectRatio, getBorderRadius } from '@/styles/utils';
+import { colors } from '@/styles/variants/theme';
 import { Radius, Ratio } from '@/types/uiTypes';
 
 export const imageStyle = (ratio: Ratio, radius: Radius, width: string) =>

@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 import { sync } from '@/styles/animation';
-import { colors } from '@/styles/theme';
+import { colors } from '@/styles/variants/theme';
 
 export const containerStyle = css({
   height: '15rem',

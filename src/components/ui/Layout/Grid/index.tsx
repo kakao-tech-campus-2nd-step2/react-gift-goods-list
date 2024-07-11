@@ -1,25 +1,18 @@
 import { HTMLAttributes, ReactNode } from 'react';
 
-import { Column, PlaceItems } from '@/types/uiTypes';
+import { ResponseGrid } from '@/types/uiTypes';
 
 import { gridStyle } from './styles';
 
 export interface GridProps extends HTMLAttributes<HTMLDivElement> {
   gap?: number;
-  columns?: Column;
-  placeItems?: PlaceItems;
+  columns: number | ResponseGrid;
   children: ReactNode;
 }
 
-export const Grid = ({
-  gap = 10,
-  columns = 3,
-  placeItems = 'center',
-  children,
-  ...props
-}: GridProps) => {
+export const Grid = ({ gap = 0, columns, children, ...props }: GridProps) => {
   return (
-    <div css={gridStyle(gap, columns, placeItems)} {...props}>
+    <div css={gridStyle(gap, columns)} {...props}>
       {children}
     </div>
   );

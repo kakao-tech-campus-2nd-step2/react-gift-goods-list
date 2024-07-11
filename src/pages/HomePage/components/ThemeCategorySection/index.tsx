@@ -9,7 +9,7 @@ import { OneTextContainer } from '@/components/OneTextContainer';
 import { Grid } from '@/components/ui/Layout/Grid';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
-import { gridStyle } from './styles';
+import { gridStyle, itemContainerStyle } from './styles';
 
 export const ThemeCategorySection = () => {
   const { themeCategoryList, loading, error } = useThemeCategoryData();
@@ -31,11 +31,12 @@ export const ThemeCategorySection = () => {
           md: 4,
           sm: 4,
         }}
+        gap={40}
         css={gridStyle}
       >
         {themeCategoryList?.map(
           ({ id, key, label, imageURL }: ThemeCategoryData) => (
-            <Link key={id} to={`/theme/${key}`}>
+            <Link key={id} to={`/theme/${key}`} css={itemContainerStyle}>
               <ThemeCategoryItem label={label} imageURL={imageURL} />
             </Link>
           )

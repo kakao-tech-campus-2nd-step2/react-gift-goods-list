@@ -1,6 +1,6 @@
 import { CSSObject, css } from '@emotion/react';
 
-import { colors } from '@/styles/theme';
+import { colors } from '@/styles/variants/theme';
 import { Size, Theme } from '@/types/uiTypes';
 
 const backgroundColor = {

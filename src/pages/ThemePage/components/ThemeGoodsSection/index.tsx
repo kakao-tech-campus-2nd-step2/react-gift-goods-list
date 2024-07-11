@@ -7,7 +7,7 @@ import { OneTextContainer } from '@/components/OneTextContainer';
 import { GoodsItem } from '@/components/ui/GoodsItem/Default';
 import { Grid } from '@/components/ui/Layout/Grid';
 
-import { contentStyle } from './styles';
+import { gridStyle } from './styles';
 
 type ThemeGoodsSectionProps = {
   themeKey: string;
@@ -34,11 +34,9 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
         gap={16}
         columns={{
           initial: 2,
-          lg: 4,
-          md: 2,
-          sm: 2,
+          md: 4,
         }}
-        css={contentStyle}
+        css={gridStyle}
       >
         {themeProducts?.map(
           ({ id, imageURL, brandInfo, name, price }: ProductData) => {

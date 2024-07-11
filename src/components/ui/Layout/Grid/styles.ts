@@ -1,16 +1,13 @@
 import { css } from '@emotion/react';
 
-import { Column, PlaceItems } from '@/types/uiTypes';
+import { breakpoint } from '@/styles/variants/breakpoint';
+import { ResponseGrid } from '@/types/uiTypes';
 
-export const gridStyle = (
-  gap: number,
-  columns: Column,
-  placeItems: PlaceItems
-) => {
+export const gridStyle = (gap: number, columns: number | ResponseGrid) => {
   const baseStyle = {
     display: 'grid',
     width: '100%',
-    placeItems,
+    placeItems: 'start',
     gap: `${gap}px`,
   };
 
@@ -21,21 +18,18 @@ export const gridStyle = (
     });
   }
 
+  const breakpoints = [
+    'initial',
+    ...Object.keys(columns),
+  ] as (keyof typeof breakpoint)[];
+  const responseGridStyle = breakpoints
+    .map((point) => {
+      return `@media screen and (min-width: ${breakpoint[point]}) { grid-template-columns: repeat(${columns[point]}, 1fr); }`;
+    })
+    .join(' ');
+
   return css({
     ...baseStyle,
-    justifyItems: 'center',
-    gridTemplateColumns: `repeat(${columns.initial}, 1fr)`,
-    '@media (max-width: 350px)': {
-      gridTemplateColumns: `repeat(${columns.initial}, 1fr)`,
-    },
-    '@media (min-width: 500px)': {
-      gridTemplateColumns: `repeat(${columns.sm}, 1fr)`,
-    },
-    '@media (min-width: 768px)': {
-      gridTemplateColumns: `repeat(${columns.md}, 1fr)`,
-    },
-    '@media (min-width: 1024px)': {
-      gridTemplateColumns: `repeat(${columns.lg}, 1fr)`,
-    },
+    responseGridStyle,
   });
 };

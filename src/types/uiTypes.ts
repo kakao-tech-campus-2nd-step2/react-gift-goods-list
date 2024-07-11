@@ -1,3 +1,5 @@
+import { breakpoint } from '@/styles/variants/breakpoint';
+
 export type Theme = 'kakao' | 'outline' | 'black' | 'lightGray' | 'darkGray';
 
 export type Size = 'small' | 'medium' | 'large' | 'response';
@@ -18,16 +20,9 @@ export type AlignItems =
   | 'baseline'
   | 'stretch';
 
-export type Column =
-  | number
-  | {
-      initial: number;
-      lg: number;
-      md: number;
-      sm: number;
-    };
-
-export type PlaceItems = 'strech' | 'start' | 'end' | 'center';
+export type ResponseGrid = {
+  [key in keyof typeof breakpoint]?: number;
+};
 
 export type Radius = number | 'circle';
 

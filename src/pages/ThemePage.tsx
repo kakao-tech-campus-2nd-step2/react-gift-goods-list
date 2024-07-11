@@ -9,7 +9,7 @@ import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import FetchStatusBoundary
   from '@components/atoms/container/FetchStatusBoundary';
 import FetchStatus from '@constants/FetchStatus';
-import { ErrorMessages } from '@constants/ErrorMessage';
+import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemePage() {
@@ -28,7 +28,10 @@ function ThemePage() {
 
   return (
     <Page>
-      <FetchStatusBoundary fetchStatus={themeFetchStatus} errorMessage={ErrorMessages[errorCode]}>
+      <FetchStatusBoundary
+        fetchStatus={themeFetchStatus}
+        errorMessage={ErrorMessages[errorCode] || ErrorMessages[ERROR_NOT_DEFINED]}
+      >
         <Banner themeKey={themeKey as string} />
         <Container elementSize="full-width" justifyContent="center">
           <Container
@@ -37,7 +40,10 @@ function ThemePage() {
             justifyContent="center"
             padding="40px 16px 300px"
           >
-            <FetchStatusBoundary fetchStatus={fetchStatus} errorMessage={ErrorMessages[errorCode]}>
+            <FetchStatusBoundary
+              fetchStatus={fetchStatus}
+              errorMessage={ErrorMessages[errorCode] || ErrorMessages[ERROR_NOT_DEFINED]}
+            >
               <GiftDisplaySection products={products} maxColumns={4} minColumns={2} />
             </FetchStatusBoundary>
           </Container>

@@ -1,10 +1,10 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import styled from '@emotion/styled';
-import { TargetType } from '../../constants';
+// import { TargetType } from '../../constants';
 
 export interface TargetItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: string;
-  target: TargetType;
+  target: string;
   selected: boolean;
   onSelect: () => void;
 }

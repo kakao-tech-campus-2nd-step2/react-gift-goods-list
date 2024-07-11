@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Container } from '@components/common';
 
 export interface ErrorMessageProps {
   message: string;
 }
 
 export default function ErrorMessage({ message, ...rest }: ErrorMessageProps) {
-  return <Message {...rest}>{message}</Message>;
+  return (
+    <Container justifyContent="center" alignItems="center">
+      <Message {...rest}>{message}</Message>
+    </Container>
+  );
 }
 
 const Message = styled.strong`

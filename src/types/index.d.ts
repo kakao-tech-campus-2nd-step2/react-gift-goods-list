@@ -47,21 +47,12 @@ interface ResponsiveContainerProps extends ContainerProps { // padding은 어떻
   sizeLg?: ContainerSize;
 }
 
-interface ThemeItemProps {
-  themeKey: ThemeKey;
-}
-
 export interface FixedSize {
   width: string,
   height: string,
 }
 
 export type ContainerSize = FixedSize | 'full-width';
-
-const themeKeys = ['birthday', 'graduation', 'smallluxury', 'luxury', 'marriage', 'warm',
-  'small', 'fan', 'exchange', 'health', 'grocery', 'kids'];
-
-export type ThemeKey = typeof themeKeys[number];
 
 export type ElementSize = FixedSize | 'responsive' | 'small' | 'big';
 

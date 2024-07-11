@@ -20,10 +20,10 @@ export function getSizeStyles(size?: ContainerSize) {
   `;
 }
 
-export function isThemesLoaded(themes: Object) {
-  return Object.keys(themes).length !== 0;
+export function hasKey(list: Object) {
+  return Object.keys(list).length !== 0;
 }
 
-export function isEmpty(products: any[]) {
-  return products.length === 0;
+export function isEmptyList(list: any[]) {
+  return list.length === 0;
 }

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
-import { Image } from '@/components/common/Image';
-import { Container as CommonContainer } from '@/components/common/layouts/Container';
+import { Image } from '@/components/common/Image/Image';
+import { Container as CommonContainer } from '@/components/common/layouts/Container/Container';
 import { breakpoints } from '@/styles/variants';
 
 export const SelectFriendsBanner = () => (

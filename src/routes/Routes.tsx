@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
-import { Layout } from '@/components/features/Layout';
-import { HomePage } from '@/pages/Home';
-import { LoginPage } from '@/pages/Login';
-import { MyAccountPage } from '@/pages/MyAccount';
-import { ThemePage } from '@/pages/Theme';
+import { Layout } from '@/components/features/Layout/Layout';
+import { HomePage } from '@/pages/Home/HomePage';
+import { LoginPage } from '@/pages/Login/LoginPage';
+import { MyAccountPage } from '@/pages/MyAccount/MyAccountPage';
+import { ThemePage } from '@/pages/Theme/ThemePage';
 
 import { PrivateRoute } from './components/PrivateRoute';
 import { RouterPath } from './path';

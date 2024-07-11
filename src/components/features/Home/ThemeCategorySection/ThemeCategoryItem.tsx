@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-import { Image } from '@/components/common/Image';
+import { Image } from '@/components/common/Image/Image';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeProps } from '@/types';
+import type { ThemeProps } from '@/types/types';
 
 export const ThemeCategoryItem = ({ key, imageURL, label, ...props }: ThemeProps) => (
   <Wrapper key={key} {...props}>

@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
-import { Button } from '@/components/common/Button';
+import { Button } from '@/components/common/Button/Button';
 import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineTextField';
-import { Spacing } from '@/components/common/layouts/Spacing';
+import { Spacing } from '@/components/common/layouts/Spacing/Spacing';
 import { breakpoints } from '@/styles/variants';
-import { authSessionStorage } from '@/utils/storage';
+import { authSessionStorage } from '@/utils/storage/storage';
 
 export const LoginPage = () => {
   const [id, setId] = useState('');

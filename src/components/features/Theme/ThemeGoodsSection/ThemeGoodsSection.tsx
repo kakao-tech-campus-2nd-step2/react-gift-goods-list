@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
-import { Container } from '@/components/common/layouts/Container';
-import { Grid } from '@/components/common/layouts/Grid';
+import { Container } from '@/components/common/layouts/Container/Container';
+import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { breakpoints } from '@/styles/variants';
 import { GoodsMockList } from '@/types/mock';
 

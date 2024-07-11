@@ -1,4 +1,4 @@
-import type { GoodsData, ThemeData } from '.';
+import type { GoodsData, ThemeData } from './types';
 
 export const ThemeMockData: ThemeData = {
   id: 1,

@@ -3,11 +3,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Container } from '@/components/common/layouts/Container';
-import { Grid } from '@/components/common/layouts/Grid';
+import { Container } from '@/components/common/layouts/Container/Container';
+import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { Theme } from '@/types';
+import type { Theme } from '@/types/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 

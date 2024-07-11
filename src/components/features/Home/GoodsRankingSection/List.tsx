@@ -1,17 +1,17 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { Button } from '@/components/common/Button';
+import { Button } from '@/components/common/Button/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
-import { Grid } from '@/components/common/layouts/Grid';
+import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { product } from '@/types';
-import type { ProductsListProps } from '@/types';
+import type { product } from '@/types/types';
+import type { ProductsListProps } from '@/types/types';
 
 export const GoodsRankingList = ({ productsList }: ProductsListProps) => {
   const [hasMore, setHasMore] = useState(false);
   const currentGoodsList = hasMore ? productsList : productsList.slice(0, 6);
-  
+
   return (
     <Wrapper>
       <Grid

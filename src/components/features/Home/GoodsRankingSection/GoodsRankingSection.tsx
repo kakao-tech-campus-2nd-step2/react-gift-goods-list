@@ -2,10 +2,10 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import { Container } from '@/components/common/layouts/Container';
+import { Container } from '@/components/common/layouts/Container/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import type { product } from '@/types';
+import type { RankingFilterOption } from '@/types/types';
+import type { product } from '@/types/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';

@@ -1,36 +1,18 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { Container } from '@/components/common/layouts/Container';
+import { Container } from '@/components/common/layouts/Container/Container';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
+import type { ThemeData } from '@/types/types';
 
 type Props = {
+  themes: ThemeData[];
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [Themes, setThemes] = useState<ThemeData[]>([]);
-
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await axios.get(
-          'https://react-gift-mock-api-ten.vercel.app/api/v1/themes'
-        );
-        setThemes(response.data.themes);
-      } catch (error) {
-        console.error('Error fetching themes:', error);
-      }
-    };
-
-    fetchThemes();
-  }, []);
-  
-  const currentTheme = getCurrentTheme(themeKey, Themes);
+export const ThemeHeroSection = ({ themes, themeKey }: Props) => {
+  const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {
     return <Navigate to={RouterPath.home} />;

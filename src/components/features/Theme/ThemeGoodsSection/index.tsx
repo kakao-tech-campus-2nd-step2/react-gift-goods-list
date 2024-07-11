@@ -5,6 +5,7 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import LoadingSpinner from '@/components/common/Loading';
+import Nothing from '@/components/common/Nothing';
 
 import { useState, useEffect } from 'react';
 import { GoodsData } from '@/types';
@@ -40,29 +41,30 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     getThemeData();
   }, [themeKey]);
 
-
   return (
     <Wrapper>
       <Container>
         {loading ?
           <LoadingSpinner /> :
-          <Grid
-            columns={{
-              initial: 2,
-              md: 4,
-            }}
-            gap={16}
-          >
-            {themeGoods.map((good) => (
-              <DefaultGoodsItems
-                key={good.id}
-                imageSrc={good.imageURL}
-                title={good.name}
-                amount={good.price.sellingPrice}
-                subtitle={good.brandInfo.name}
-              />
-            ))}
-          </Grid>
+          themeGoods.length ?
+            <Grid
+              columns={{
+                initial: 2,
+                md: 4,
+              }}
+              gap={16}
+            >
+              {themeGoods.map((good) => (
+                <DefaultGoodsItems
+                  key={good.id}
+                  imageSrc={good.imageURL}
+                  title={good.name}
+                  amount={good.price.sellingPrice}
+                  subtitle={good.brandInfo.name}
+                />
+              ))}
+            </Grid> :
+            <Nothing />
         }
       </Container>
     </Wrapper>

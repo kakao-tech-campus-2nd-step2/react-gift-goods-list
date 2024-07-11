@@ -8,6 +8,7 @@ import type { RankingFilterOption } from '@/types';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 import LoadingSpinner from '@/components/common/Loading';
+import Nothing from '@/components/common/Nothing';
 
 import { GoodsData } from '@/types';
 import { getData } from '@/api';
@@ -49,7 +50,9 @@ export const GoodsRankingSection = () => {
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {loading ? <LoadingSpinner /> :
-          <GoodsRankingList goodsList={rankingProducts} />
+          rankingProducts.length ?
+            <GoodsRankingList goodsList={rankingProducts} /> :
+            <Nothing />
         }
       </Container>
     </Wrapper>

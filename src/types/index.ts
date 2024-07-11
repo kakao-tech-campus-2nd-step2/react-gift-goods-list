@@ -5,7 +5,12 @@ export type ThemeData = {
   title: string;
   description?: string;
   backgroundColor: string;
+  imageURL: string;
 };
+
+export interface ThemesResponse {
+  themes: ThemeData[];
+}
 
 export type RankingFilterOption = {
   targetType: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';

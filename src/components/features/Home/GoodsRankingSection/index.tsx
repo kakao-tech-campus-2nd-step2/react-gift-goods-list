@@ -11,6 +11,7 @@ import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
 export const GoodsRankingSection = () => {
+  const [loading, setLoading] = useState(true);
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
@@ -28,12 +29,16 @@ export const GoodsRankingSection = () => {
         setRankingProducts(response.data.products);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchRankingProducts();
   }, [filterOption]);
 
-  
+  if (loading) {
+    return <LoadingScreen>Loading...</LoadingScreen>;
+  }
 
   return (
     <Wrapper>
@@ -67,4 +72,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingScreen = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;

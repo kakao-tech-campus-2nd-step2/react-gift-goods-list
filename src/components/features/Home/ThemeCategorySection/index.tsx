@@ -21,21 +21,37 @@ interface Theme {
 
 export const ThemeCategorySection = () => {
   const [themeFromAPI, setThemeFromAPI] = useState<Theme[]>([])
+  const [loading, setLoading] = useState(true)
 
   // 최초 렌더링 시 한 번만 실행
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
         const data = await fetchData('api/v1/themes')
-        setThemeFromAPI(data.themes)
-        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
+
+        // 의도적으로 지연 시간을 추가
+        setTimeout(() => {
+          setThemeFromAPI(data.themes)
+          setLoading(false)
+          console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
+        }, 2000) 
       }
       catch (error) {
         console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error)
+        setLoading(false) 
       }
     }
     fetchThemeData()
   }, [])
+  
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
   
   return (
     <Wrapper>
@@ -64,4 +80,32 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
 `;

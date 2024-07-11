@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import type { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteQuery } from 'react-query';
 
 import { fetchThemeProducts } from '@/api/themeProducts';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -15,50 +17,49 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState<ProductData[]>([]);
-
-  const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    error,
+    isLoading,
+  } = useInfiniteQuery(['themeProducts', themeKey], fetchThemeProducts, {
+    getNextPageParam: (lastPage, allPages) => lastPage.length ? allPages.length * 20 : undefined, 
+  });
+  const { ref, inView } = useInView();
 
   useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      setIsError(false);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-      try {
-        const productsData = await fetchThemeProducts(themeKey);
-        setProducts(productsData);
-      } catch (error) {
-        setIsError(true);
+  if (isLoading) {
+    return <LoadingContainer><Loading /></LoadingContainer>;
+  }
 
-        const response = (error as AxiosError).response;
+  if (isError) {
+    const response = (error as AxiosError).response;
+    let errorMessage = '';
         
-        switch (response?.status) {
-          case 400:
-            setErrorMessage('잘못된 요청입니다.');
-            break;
-          case 404:
-            setErrorMessage('해당 테마의 상품을 찾을 수 없습니다.');
-            break;
-          default:
-            setErrorMessage('에러가 발생했습니다.');
-        }
-
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getProducts();
-  }, [themeKey]);
+    switch (response?.status) {
+      case 400:
+        errorMessage = '잘못된 요청입니다.';
+        break;
+      case 404:
+        errorMessage = '해당 테마의 상품을 찾을 수 없습니다.';
+        break;
+      default:
+        errorMessage = '에러가 발생했습니다.';
+    }
+    return <Message>{errorMessage}</Message>
+  }
 
   return (
     <Wrapper>
       <Container>
-      {loading && <LoadingContainer><Loading /></LoadingContainer>}
-        {!loading && isError && <Message>{errorMessage}</Message>}
-        {!loading && !isError && products.length === 0 && <Container><Message>상품이 없어요.</Message></Container>}
         <Grid
           columns={{
             initial: 2,
@@ -66,7 +67,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {products.map((product) => (
+          {data?.pages.flat().map((product: ProductData) => (
             <DefaultGoodsItems
               key={product.id}
               imageSrc={product.imageURL}
@@ -76,6 +77,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             />
           ))}
         </Grid>
+        {isFetchingNextPage && (
+          <LoadingContainer>
+            <Loading />
+          </LoadingContainer>
+        )}
+        <div ref={ref} />
       </Container>
     </Wrapper>
   );
@@ -95,6 +102,8 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 60px;
+  padding-bottom: 60px;
 `;
 
 const Loading = styled.div`

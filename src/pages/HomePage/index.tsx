@@ -3,13 +3,13 @@ import BaseLayout from '@/layouts/BaseLayout';
 import { BannerBottom } from './components/BannerBottom';
 import { BannerTop } from './components/BannerTop';
 import { GoodsRankingSection } from './components/GoodsRankingSection';
-import { ThemeSection } from './components/ThemeSection';
+import { ThemeCategorySection } from './components/ThemeCategorySection';
 
 export const HomePage = () => {
   return (
     <BaseLayout>
       <BannerTop />
-      <ThemeSection />
+      <ThemeCategorySection />
       <BannerBottom />
       <GoodsRankingSection />
     </BaseLayout>

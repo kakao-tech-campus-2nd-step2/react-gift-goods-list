@@ -18,6 +18,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchProducts } from '@utils/query';
 import ProductSkeletonGrid
   from '@components/molecules/skeleton/ProductSkeletonGrid';
+import { QueryKeys } from '@constants/QueryKeys';
 import { RankFilter, TargetFilter } from '@/types';
 import { ProductData } from '@/dto';
 
@@ -27,7 +28,7 @@ function RankingSection() {
   const [isFolded, setIsFolded] = useState(true);
 
   const { data: products = [], status } = useQuery<ProductData[]>({
-    queryKey: ['filteredRanking', { targetType: targetFilter, rankType: rankFilter }],
+    queryKey: [QueryKeys.RANKING_PRODUCTS, { targetType: targetFilter, rankType: rankFilter }],
     queryFn: fetchProducts,
   });
 

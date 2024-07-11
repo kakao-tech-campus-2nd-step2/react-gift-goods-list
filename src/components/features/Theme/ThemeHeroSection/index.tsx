@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { isAxiosError } from 'axios';
 import { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +17,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
 
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null> (null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -24,12 +26,24 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         const response = await fetchThemes()
         const theme = getCurrentTheme(themeKey, response.themes)
         if (!theme) {
+          setError('The requested theme does not exist')
           navigate('/')
         } else {
           setCurrentTheme(theme)
         }
       } catch(err) {
-        console.error('Failed to load themes', err)
+        if (isAxiosError(err)) {
+          if (err.response?.status === 404) {
+            setError('Theme not found')
+          } else if (err.response?.status === 500) {
+            setError('Internal server error')
+          } else {
+            setError('An unexpected error')
+          }
+        } else {
+          setError('Failed to load themes')
+          console.error('Failed to load themes', err)
+        }
         navigate('/')
       } finally {
         setLoading(false)
@@ -42,6 +56,9 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
 
+  if (error) {
+    return <ErrorWrapper>{error}</ErrorWrapper>;
+  }
 
   if (!currentTheme) {
     return null;
@@ -117,6 +134,12 @@ const Description = styled.p`
 const LoadingWrapper = styled.div`
   padding: 20px;
   text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {

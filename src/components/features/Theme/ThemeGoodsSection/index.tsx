@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 import type {ProductData } from '@/api/api';
@@ -24,9 +25,23 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       setError(null)
       try {
         const response = await fetchThemeProducts({ themeKey, maxResults: 20 })
-        setProducts(response.products)
+        if (response.products.length === 0) {
+          setError('No Products found for this theme')
+        } else {
+          setProducts(response.products)
+        }
       } catch (err) {
-        setError('Failed to load products')
+        if (isAxiosError(err)) {
+          if (err.response?.status === 404) {
+            setError('Products not found')
+          } else if (err.response?.status === 500){
+            setError('Internal server error')
+          } else {
+            setError('An unexpected error')
+          }
+        } else {
+          setError('Failed to load products')
+        }
       } finally {
         setLoading(false)
       }

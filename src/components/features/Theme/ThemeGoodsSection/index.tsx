@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
+import { DefaultGoodsItems } from '@/components/common/GoodsItem/DefaultGoodsItems';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';

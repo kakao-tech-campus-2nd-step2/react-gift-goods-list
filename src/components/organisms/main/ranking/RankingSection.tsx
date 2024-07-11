@@ -16,6 +16,8 @@ import FetchStatus from '@constants/FetchStatus';
 import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts } from '@utils/query';
+import ProductSkeletonGrid
+  from '@components/molecules/skeleton/ProductSkeletonGrid';
 import { RankFilter, TargetFilter } from '@/types';
 import { ProductData } from '@/dto';
 
@@ -58,6 +60,13 @@ function RankingSection() {
           <FetchStatusBoundary
             fetchStatus={status}
             errorMessage={ErrorMessages[ERROR_NOT_DEFINED]}
+            loadingComponent={(
+              <ProductSkeletonGrid
+                columnsDefault={6}
+                itemCount={6}
+                columnsSm={3}
+              />
+            )}
           >
             <GiftDisplaySection
               products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}

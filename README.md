@@ -22,4 +22,4 @@ FE 카카오 선물하기 3주차 과제
 - [X] HTTP Status에 따라 Error를 다르게 처리
 ### 🪴 3단계 - 테마 별 선물 추천 API에 페이지네이션 구현 & React Query 사용
 - [X] 스크롤을 내리면 추가로 데이터를 요청하여 표시
-- [ ] 1단계에서 구현한 API를 React-Query를 사용해서 구현
+- [X] 1단계에서 구현한 API를 react-query를 사용해서 구현

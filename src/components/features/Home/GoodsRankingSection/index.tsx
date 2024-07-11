@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { fetchRankingProducts } from '@/api/ranking';
 import { Button } from '@/components/common/Button';
@@ -9,7 +10,6 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { Message } from '@/components/common/Message';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import type { ProductData } from '@/types/api';
 
 import { GoodsRankingFilter } from './Filter';
 
@@ -19,45 +19,32 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [visibleProducts, setVisibleProducts] = useState(6);
 
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useQuery(['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption)
+  );
+
   const ShowMore = () => {
-    setVisibleProducts(products.length);
+    if (products) setVisibleProducts(products.length);
   };
 
   const ShowLess = () => {
     setVisibleProducts(6);
   };
 
-  useEffect(() => {
-    const getRankingProducts = async () => {
-      setLoading(true);
-      setIsError(false);
-
-      try {
-        const productsData = await fetchRankingProducts(filterOption);
-        setProducts(productsData);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getRankingProducts();
-  }, [filterOption]);
-
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading && <Message>로딩중</Message>}
-        {!loading && isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
-        {!loading && !isError && products.length === 0 && <Message>보여줄 상품이 없어요!</Message>}
+        {isLoading && <Message>로딩중</Message>}
+        {isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
+        {products && products.length === 0 && <Message>보여줄 상품이 없어요!</Message>}
         <Grid
           columns={{
             initial: 3,
@@ -66,7 +53,7 @@ export const GoodsRankingSection = () => {
           }}
           gap={16}
         >
-          {!loading && !isError && products.slice(0, visibleProducts).map((product, index) => (
+          {products && products.slice(0, visibleProducts).map((product, index) => (
             <RankingGoodsItems
               key={product.id}
               rankingIndex={index + 1}
@@ -77,7 +64,7 @@ export const GoodsRankingSection = () => {
             />
           ))}
         </Grid>
-        {!loading && !isError && products.length > 0 && (
+        {products && products.length > 6 && (
           <Container padding='30px 0 0 0'>
             {visibleProducts <= 6 ? (
               <Button

@@ -1,4 +1,3 @@
-import useFetchProducts from '@hooks/useFetchProducts';
 import { useCallback, useState } from 'react';
 import Container from '@components/atoms/container/Container';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
@@ -15,20 +14,26 @@ import FetchStatusBoundary
   from '@components/atoms/container/FetchStatusBoundary';
 import FetchStatus from '@constants/FetchStatus';
 import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProducts } from '@utils/query';
 import { RankFilter, TargetFilter } from '@/types';
+import { ProductData } from '@/dto';
 
 function RankingSection() {
   const [targetFilter, setTargetFilter] = useState<TargetFilter>('ALL');
   const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
   const [isFolded, setIsFolded] = useState(true);
 
-  const { products, fetchStatus, errorCode } = useFetchProducts({ targetFilter, rankFilter });
+  const { data: products = [], status } = useQuery<ProductData[]>({
+    queryKey: ['filteredRanking', { targetType: targetFilter, rankType: rankFilter }],
+    queryFn: fetchProducts,
+  });
 
   const DISPLAY_COUNT_WHEN_FOLDED = 6;
 
   const showButton = useCallback(
-    () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
-    [products, fetchStatus],
+    () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && status === FetchStatus.FETCH_SUCCESS,
+    [products, status],
   );
 
   return (
@@ -51,8 +56,8 @@ function RankingSection() {
         />
         <Container padding="40px 0 20px">
           <FetchStatusBoundary
-            fetchStatus={fetchStatus}
-            errorMessage={ErrorMessages[errorCode] || ErrorMessages[ERROR_NOT_DEFINED]}
+            fetchStatus={status}
+            errorMessage={ErrorMessages[ERROR_NOT_DEFINED]}
           >
             <GiftDisplaySection
               products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}

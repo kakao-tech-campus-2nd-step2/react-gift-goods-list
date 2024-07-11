@@ -27,4 +27,4 @@
   - [x] ThemeGoods에서 “상품이 없어요.” 메시지 표시
 - Http Status에 따라 Error를 다르게 처리
   - [x] GoodsRanking에서 에러 처리
-  - [ ] ThemeGoods에서 에러 처리
+  - [x] ThemeGoods에서 에러 처리

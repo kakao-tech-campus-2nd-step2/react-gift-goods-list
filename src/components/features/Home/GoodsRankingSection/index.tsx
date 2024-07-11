@@ -61,7 +61,7 @@ export const GoodsRankingSection = () => {
         {loading ? (
           <Loader />
         ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage>
+          <Message>{error}</Message>
         ) : goodsList.length === 0 ? (
           <Message>보여줄 상품이 없어요!</Message>
         ) : (
@@ -96,13 +96,6 @@ const Title = styled.h2`
 `;
 
 const Message = styled.p`
-  width: 100%;
-  text-align: center;
-  font-size: 16px;
-  margin-top: 20px;
-`;
-
-const ErrorMessage = styled.p`
   width: 100%;
   text-align: center;
   font-size: 16px;

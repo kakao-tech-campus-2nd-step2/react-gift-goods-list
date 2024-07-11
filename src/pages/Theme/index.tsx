@@ -1,22 +1,51 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { css } from '@emotion/css';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
+import Header from '@/components/features/Header';
+import type { Products } from '@/entities/Product';
+import type { ThemeData, Themes } from '@/entities/Theme';
+import useData from '@/hooks/useData';
 
-export const ThemePage = () => {
-  const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+import DefaultList from './DefaultList';
+import ThemeHeader from './ThemeHeader';
 
-  if (!currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
-  }
+export default () => {
+    const themeKey = useParams().themeKey ?? '';
+    const products = useData<Products>(`/themes/${themeKey}/products?maxResults=20`);
+    const themes = useData<Themes>('/themes');
+    const [theme, setTheme] = useState<ThemeData>();
+    const navigate = useNavigate();
 
-  return (
-    <>
-      <ThemeHeroSection themeKey={themeKey} />
-      <ThemeGoodsSection themeKey={themeKey} />
-    </>
-  );
+    useEffect(() => {
+        if (!themes?.isLoading) return;
+        const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
+        if (index === -1) navigate('/error/404');
+
+        setTheme(themes?.data?.themes[index]);
+    }, [navigate, themes, themeKey]);
+
+    return (
+        <div>
+            <Header />
+            {/* theme header section */}
+            <section>
+                <ThemeHeader
+                    label={theme?.label ?? ''}
+                    title={theme?.title ?? ''}
+                    description={theme?.description ?? ''}
+                    backgroundColor={theme?.backgroundColor ?? '#000000'}
+                />
+            </section>
+            {/* goods list */}
+            <section
+                className={css`
+                    margin-top: 50px;
+                    margin-bottom: 100px;
+                `}
+            >
+                <DefaultList items={products?.data?.products ?? []} />
+            </section>
+        </div>
+    );
 };

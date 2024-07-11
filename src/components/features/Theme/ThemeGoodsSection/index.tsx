@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 
-import useFetch from '@/apis/useFetch';
+import { fetchThemeProducts } from '@/apis/fetch';
+// import useFetch from '@/apis/useFetch';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
@@ -9,21 +11,33 @@ import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
+  pageToken?: number;
 };
 
 interface GoodsDataArray {
   products: GoodsData[];
 }
 
-export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { data, status } = useFetch<GoodsDataArray>(
-    `api/v1/themes/${themeKey}/products?maxResults=20`,
-    { products: [] },
-  );
+export const ThemeGoodsSection = ({ themeKey, pageToken }: Props) => {
+  const {
+    data = {
+      products: [],
+    },
+    isError,
+    isLoading,
+  } = useQuery<GoodsDataArray>({
+    queryKey: ['themeProducts', themeKey, pageToken],
+    queryFn: () => fetchThemeProducts(themeKey, pageToken),
+  });
+
+  // const { data, status } = useFetch<GoodsDataArray>(
+  //   `api/v1/themes/${themeKey}/products?maxResults=20`,
+  //   { products: [] },
+  // );
   const goodsItemsData = data.products;
   let currentStatus;
-  if (status.loading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
-  else if (status.error) currentStatus = <StatusDiv>에러에러에러</StatusDiv>;
+  if (isLoading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
+  else if (isError) currentStatus = <StatusDiv>에러에러에러</StatusDiv>;
   else if (goodsItemsData.length === 0) currentStatus = <StatusDiv>상품이 없어요.</StatusDiv>;
 
   return (

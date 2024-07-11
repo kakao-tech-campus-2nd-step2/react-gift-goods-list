@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import useFetch from '@/apis/useFetch';
+import { fetchRankingSection } from '@/apis/fetch';
+// import useFetch from '@/apis/useFetch';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
@@ -14,18 +16,20 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
+  const {
+    data = { products: [] },
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['rankingSection', filterOption.targetType, filterOption.rankType],
+    queryFn: () => fetchRankingSection(filterOption.targetType, filterOption.rankType),
+  });
 
-  const initialGoodsList = { products: [] };
-  const { data, status } = useFetch(
-    `/api/v1/ranking/products?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`,
-    initialGoodsList,
-  );
   const goodsList = data?.products ?? [];
 
   let currentStatus;
-  if (status.loading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
-  if (status.error)
-    currentStatus = <StatusDiv>데이터를 불러오는 중에 문제가 발생했습니다.</StatusDiv>;
+  if (isLoading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
+  if (isError) currentStatus = <StatusDiv>데이터를 불러오는 중에 문제가 발생했습니다.</StatusDiv>;
   if (goodsList.length === 0) currentStatus = <StatusDiv>보여줄 상품이 없어요!</StatusDiv>;
 
   return (
@@ -33,7 +37,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {status.error || goodsList.length === 0 ? (
+        {isError || goodsList.length === 0 ? (
           currentStatus
         ) : (
           <GoodsRankingList goodsList={goodsList} />

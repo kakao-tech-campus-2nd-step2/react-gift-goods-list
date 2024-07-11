@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
-import useFetch from '@/apis/useFetch';
+import { fetchHomeTheme } from '@/apis/fetch';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
@@ -22,14 +23,18 @@ interface Theme {
 interface ThemesResponse {
   themes: Theme[];
 }
+
 export const ThemeCategorySection = () => {
-  const initialThemes = { themes: [] };
-  const { data, status } = useFetch<ThemesResponse>('/api/v1/themes', initialThemes);
+  const {
+    data = { themes: [] },
+    isLoading,
+    isError,
+  } = useQuery<ThemesResponse>({ queryKey: ['HomeTheme'], queryFn: fetchHomeTheme });
 
   let currentStatus;
 
-  if (status.loading) currentStatus = <div>로딩중...</div>;
-  if (status.error) currentStatus = <div>에러에러</div>;
+  if (isLoading) currentStatus = <div>로딩중...</div>;
+  if (isError) currentStatus = <div>에러에러</div>;
 
   return (
     <Wrapper>

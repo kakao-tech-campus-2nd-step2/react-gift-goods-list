@@ -21,6 +21,22 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         setCurrentTheme(theme);
       } catch (err) {
         console.error(err);
+        if (axios.isAxiosError(err)) {
+          switch (err.response?.status) {
+            case 400:
+              console.error('Bad Request');
+              break;
+            case 404:
+              console.error('Not Found');
+              break;
+            case 500:
+              console.error('Internal Server Error');
+              break;
+            default:
+              console.error(`Unknown Error ${err.response?.status}`);
+              break;
+          }
+        }
       }
     };
     fetchThemeData();

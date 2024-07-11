@@ -21,7 +21,6 @@ export const ThemeCategorySection = () => {
       try {
         const data = await getThemes();
         setThemes(data.themes);
-        console.log(data.themes);
       } catch (error) {
         console.error('Error fetching themes:', error);
       } finally {

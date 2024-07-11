@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import Loading from '@/components/common/Status/loading';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
@@ -48,7 +49,8 @@ export const ThemeCategorySection: React.FC = () => {
     fetchThemes();
   }, []);
 
-  if (fetchState.isLoading) return <p>Loading...</p>;
+  if (fetchState.isLoading)
+    return <Loading />;
   if (fetchState.isError) return <p>Failed to fetch themes</p>;
 
   return (

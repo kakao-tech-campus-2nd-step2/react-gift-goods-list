@@ -5,6 +5,7 @@ import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 
 interface ProductData {
@@ -107,7 +108,7 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   }, [fetchState.hasMore, fetchState.isLoading, fetchState.nextPageToken, themeKey, fetchProducts]);
 
   if (fetchState.isLoading && fetchState.data.length === 0)
-    return <LoadingMessage>Loading...</LoadingMessage>;
+    return <Loading />;
   if (fetchState.isError)
     return <ErrorMessage>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessage>;
   if (!fetchState.data || fetchState.data.length === 0)
@@ -149,11 +150,6 @@ const Wrapper = styled.section`
 `;
 
 const ErrorMessage = styled.p`
-  text-align: center;
-  margin-top: 20px;
-`;
-
-const LoadingMessage = styled.p`
   text-align: center;
   margin-top: 20px;
 `;

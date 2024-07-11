@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -67,7 +68,7 @@ export const GoodsRankingSection: React.FC = () => {
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {fetchState.isLoading ? (
-          <LoadingMessage>Loading...</LoadingMessage>
+          <Loading />
         ) : fetchState.isError ? (
           <ErrorMessage>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessage>
         ) : fetchState.data && fetchState.data.length > 0 ? (
@@ -104,12 +105,6 @@ const Title = styled.h2`
 `;
 
 const ErrorMessage = styled.p`
-  text-align: center;
-  margin-top: 20px;
-`;
-
-const LoadingMessage = styled.p`
-  color: #000;
   text-align: center;
   margin-top: 20px;
 `;

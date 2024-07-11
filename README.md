@@ -19,4 +19,8 @@
 
 <p>각 API에서 Loading 상태에 대한 UI 대응</p>
 <p>데이터가 없는 경우에 대한 UI 대응</p>
-<p>Http Status에 따라 Error를 다르게 처리</p>
+<p>Http Status에 따라 Error를 다르게 처리</p><br><br>
+
+<h1>3단계 - 테마 별 선물 추천 API에 페이지네이션 구현 & React Query 사용</h1>
+<p>스크롤을 내리면 추가로 데이터를 요청하여 보여지게</p>
+<p>1단계에서 구현한 API를 react-query를 사용해서 구현</p>

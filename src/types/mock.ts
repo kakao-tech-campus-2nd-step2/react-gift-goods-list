@@ -8,7 +8,7 @@ export const ThemeMockData: ThemeData = {
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
   imageURL:
-    'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png',
+    'https://st.kakaocdn.net/product/gift/gift_brand/20220216170226_38ba26d8eedf450683200d6730757204.png',
 };
 
 export const ThemeMockList = [ThemeMockData];
@@ -17,7 +17,7 @@ export const GoodsMockData: GoodsData = {
   id: 123,
   name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
   imageURL:
-    'https://st.kakaocdn.net/product/gift/product/20231030175450_53e90ee9708f45ffa45b3f7b4bc01c7c.jpg',
+    'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png',
   wish: {
     wishCount: 201,
     isWished: false,
@@ -39,3 +39,5 @@ export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, (_, index) 
   ...GoodsMockData,
   id: GoodsMockData.id + index,
 }));
+
+export const RankingProductsMockList = GoodsMockList;

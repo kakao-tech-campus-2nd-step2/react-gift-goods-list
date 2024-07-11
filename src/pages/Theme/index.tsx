@@ -5,7 +5,7 @@ import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/T
 import { RouterPath } from '@/routes/path';
 import { ThemeMockList } from '@/types/mock';
 
-export const ThemePage = () => {
+export const ThemePage: React.FC = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
   const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
 

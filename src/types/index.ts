@@ -36,3 +36,7 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+export interface RankingProductsResponse {
+  products: GoodsData[];
+}

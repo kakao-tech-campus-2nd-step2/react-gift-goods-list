@@ -1,18 +1,41 @@
 import axios from 'axios';
 
-import { ThemesResponse } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { RankingProductsResponse, ThemesResponse } from '@/types';
+import { RankingProductsMockList, ThemeMockList } from '@/types/mock';
 
-const API_URL = 'http://localhost:3000'; // 목 API URL
+const API_URL = 'https://react-gift-mock-api-eunkyung.vercel.app';
+
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const fetchThemes = async (): Promise<ThemesResponse> => {
-  // 실제 API 호출
   try {
-    const response = await axios.get<ThemesResponse>(`${API_URL}/api/v1/themes`);
+    const response = await apiClient.get<ThemesResponse>('/api/v1/themes');
     return response.data;
   } catch (error) {
-    // 실패하면 Mock 데이터를 반환
     console.warn('Failed to fetch themes, using mock data instead.');
     return { themes: ThemeMockList };
+  }
+};
+
+export const fetchRankingProducts = async (
+  targetType: string,
+  rankType: string,
+): Promise<RankingProductsResponse> => {
+  try {
+    const response = await axios.get<RankingProductsResponse>('/api/v1/ranking/products', {
+      params: {
+        targetType,
+        rankType,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.warn('랭킹상품 실패..');
+    return { products: RankingProductsMockList };
   }
 };

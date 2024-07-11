@@ -40,7 +40,6 @@ export type Theme = {
   imageURL: string;
 };
 export type ThemeProps = {
-  key: number;
   label: string;
   imageURL: string;
 };

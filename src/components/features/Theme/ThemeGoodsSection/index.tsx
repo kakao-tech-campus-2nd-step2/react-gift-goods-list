@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useCallback, useRef } from 'react';
+import { useInfiniteQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -8,53 +9,62 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
 import { getTheme } from '@/libs/api';
-import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
 
 export const ThemeGoodsSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [goods, setGoods] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchGoodsData = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const data = await getTheme(themeKey);
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery(
+      ['themeGoods', themeKey],
+      ({ pageParam = 1 }) => getTheme(themeKey, pageParam * 20),
+      {
+        getNextPageParam: (lastPage, pages) => {
+          if (!lastPage || !lastPage.products || lastPage.products.length < 20) {
+            return undefined;
+          }
+          return pages.length + 1;
+        },
+      },
+    );
 
-        if (typeof data === 'string') {
-          setError(data);
-        } else {
-          setGoods(data.products);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastGoodsElementRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (isFetchingNextPage) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
         }
-      } catch (err) {
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isFetchingNextPage, fetchNextPage, hasNextPage],
+  );
 
-    fetchGoodsData();
-  }, [themeKey]);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
   if (error) {
     return (
       <CenteredContent>
-        <ErrorMessage message={error} />
+        <ErrorMessage message="데이터를 가져오는 중 오류가 발생했습니다." />
       </CenteredContent>
     );
   }
 
-  if (!goods) {
-    return <Navigate to={RouterPath.notFound} />;
+  if (!data || !data.pages) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message="상품 데이터를 불러올 수 없습니다." />
+      </CenteredContent>
+    );
   }
+
+  const goods = data.pages.flatMap((page) => page.products) ?? [];
+
   return (
     <Wrapper>
       <Container>
@@ -65,16 +75,39 @@ export const ThemeGoodsSection = () => {
           }}
           gap={16}
         >
-          {goods.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {goods.map((good, index) => {
+            if (!good)
+              return (
+                <CenteredContent>
+                  <ErrorMessage message="에러가 발생했습니다." />
+                </CenteredContent>
+              ); // good이 undefined인지 확인
+            const { id, imageURL, name, price, brandInfo } = good;
+            if (goods.length === index + 1) {
+              return (
+                <DefaultGoodsItems
+                  ref={lastGoodsElementRef}
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              );
+            } else {
+              return (
+                <DefaultGoodsItems
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              );
+            }
+          })}
         </Grid>
+        {isFetchingNextPage && <LoadingSpinner />}
       </Container>
     </Wrapper>
   );
@@ -97,3 +130,5 @@ const CenteredContent = styled.div`
   height: 100%;
   padding: 20px 0;
 `;
+
+export default ThemeGoodsSection;

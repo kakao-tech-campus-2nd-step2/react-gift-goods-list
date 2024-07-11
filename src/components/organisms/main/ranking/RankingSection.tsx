@@ -1,5 +1,5 @@
 import useFetchProducts from '@hooks/useFetchProducts';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Container from '@components/atoms/container/Container';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
@@ -19,6 +19,13 @@ function RankingSection() {
   const [isFolded, setIsFolded] = useState(true);
 
   const { products, fetchStatus } = useFetchProducts({ targetFilter, rankFilter });
+
+  const DISPLAY_COUNT_WHEN_FOLDED = 6;
+
+  const isButtonEnabled = useCallback(
+    () => products.length >= DISPLAY_COUNT_WHEN_FOLDED,
+    [products],
+  );
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -41,7 +48,7 @@ function RankingSection() {
         <Container padding="40px 0 20px">
           <FetchStatusBoundary fetchStatus={fetchStatus}>
             <GiftDisplaySection
-              products={isFolded ? products.slice(0, 6) : products}
+              products={isFolded ? products.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
               maxColumns={6}
               minColumns={3}
               indexed
@@ -50,14 +57,20 @@ function RankingSection() {
         </Container>
         <Container elementSize="full-width" justifyContent="center">
           <Container elementSize="full-width" maxWidth="480px">
-            <Button
-              theme="lightGray"
-              elementSize={{ width: '100%', height: '60px' }}
-              text={isFolded ? '더보기' : '접기'}
-              onClick={() => {
-                setIsFolded(!isFolded);
-              }}
-            />
+            {
+              isButtonEnabled()
+                ? (
+                  <Button
+                    theme="lightGray"
+                    elementSize={{ width: '100%', height: '60px' }}
+                    text={isFolded ? '더보기' : '접기'}
+                    onClick={() => {
+                      setIsFolded(!isFolded);
+                    }}
+                  />
+                )
+                : null
+            }
           </Container>
         </Container>
       </Container>

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
@@ -17,39 +17,17 @@ interface Theme {
   imageURL: string;
 }
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-}
+const fetchThemes = async (): Promise<Theme[]> => {
+  const { data } = await axios.get(
+    'https://react-gift-mock-api-daeun0726.vercel.app/api/v1/themes',
+  );
+  return data.themes;
+};
 
 export const ThemeCategorySection = () => {
-  const [fetchState, setFetchState] = useState<FetchState<Theme[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-  });
+  const { data, isError, isLoading } = useQuery<Theme[]>('themes', fetchThemes);
 
-  useEffect(() => {
-    const fetchTheme = async () => {
-      setFetchState({ isLoading: true, isError: false, data: null });
-
-      try {
-        const response = await axios.get(
-          'https://react-gift-mock-api-daeun0726.vercel.app/api/v1/themes',
-        );
-        const themes = response.data.themes || [];
-        setFetchState({ isLoading: false, isError: false, data: themes });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
-      }
-    };
-
-    fetchTheme();
-  }, []);
-
-  if (fetchState.isLoading) {
+  if (isLoading) {
     return (
       <LoadingWrapper>
         <LoadingSpinner />
@@ -58,7 +36,7 @@ export const ThemeCategorySection = () => {
     );
   }
 
-  if (fetchState.isError) {
+  if (isError) {
     return (
       <ErrorWrapper>
         <ErrorMessage>Error loading data.</ErrorMessage>
@@ -75,8 +53,8 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {fetchState.data && fetchState.data.length > 0 ? (
-            fetchState.data.map((theme) => (
+          {data && data.length > 0 ? (
+            data.map((theme) => (
               <Link key={theme.key} to={getDynamicPath.theme(theme.key)}>
                 <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
               </Link>

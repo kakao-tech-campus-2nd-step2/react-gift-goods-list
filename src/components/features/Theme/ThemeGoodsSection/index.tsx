@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteQuery } from 'react-query';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
@@ -12,44 +14,34 @@ type Props = {
   themeKey: string;
 };
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-}
+type FetchGoodsResponse = {
+  products: GoodsData[];
+  nextPageToken?: string;
+};
+
+const fetchGoods = async (pageToken: string, themeKey: string): Promise<FetchGoodsResponse> => {
+  const { data } = await axios.get(
+    `https://react-gift-mock-api-daeun0726.vercel.app/api/v1/themes/${themeKey}/products?pageToken=${pageToken}&maxResults=20`,
+  );
+  return data;
+};
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
+  const { data, fetchNextPage, hasNextPage, isLoading, isError } = useInfiniteQuery({
+    queryKey: ['themeGoods', themeKey],
+    queryFn: ({ pageParam = 0 }) => fetchGoods(pageParam, themeKey),
+    getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
   });
 
+  const { ref, inView } = useInView();
+
   useEffect(() => {
-    const fetchGoods = async () => {
-      setFetchState({ isLoading: true, isError: false, data: null });
-      try {
-        const response = await axios.get(
-          `https://react-gift-mock-api-daeun0726.vercel.app/api/v1/themes/${themeKey}/products`,
-          {
-            params: {
-              maxResults: '20',
-            },
-          },
-        );
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-        const newGoods = response.data.products || [];
-        setFetchState({ isLoading: false, isError: false, data: newGoods });
-      } catch (error) {
-        console.error(error);
-        setFetchState({ isLoading: false, isError: true, data: null });
-      }
-    };
-
-    fetchGoods();
-  }, [themeKey]);
-
-  if (fetchState.isLoading) {
+  if (isLoading) {
     return (
       <LoadingWrapper>
         <LoadingSpinner />
@@ -58,7 +50,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   }
 
-  if (fetchState.isError) {
+  if (isError) {
     return (
       <ErrorWrapper>
         <ErrorMessage>Error loading data.</ErrorMessage>
@@ -66,7 +58,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   }
 
-  if (!fetchState.data || fetchState.data.length === 0) {
+  if (!data || data.pages[0].products.length === 0) {
     return (
       <NoDataWrapper>
         <NoDataMessage>No goods available.</NoDataMessage>
@@ -84,16 +76,19 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {fetchState.data.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data.pages.map((page) =>
+            page.products.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            )),
+          )}
         </Grid>
+        <div ref={ref} />
       </Container>
     </Wrapper>
   );

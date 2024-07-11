@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
@@ -9,11 +10,18 @@ import type { GoodsData, RankingFilterOption } from '@/types';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-}
+const fetchRankingProducts = async (filterOption: RankingFilterOption): Promise<GoodsData[]> => {
+  const { data } = await axios.get(
+    'https://react-gift-mock-api-daeun0726.vercel.app/api/v1/ranking/products',
+    {
+      params: {
+        targetType: filterOption.targetType,
+        rankType: filterOption.rankType,
+      },
+    },
+  );
+  return data.products;
+};
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -21,36 +29,12 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-  });
+  const { data, isError, isLoading } = useQuery<GoodsData[]>(
+    ['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption),
+  );
 
-  useEffect(() => {
-    const fetchRankingProducts = async () => {
-      setFetchState({ isLoading: true, isError: false, data: null });
-      try {
-        const response = await axios.get(
-          'https://react-gift-mock-api-daeun0726.vercel.app/api/v1/ranking/products',
-          {
-            params: {
-              targetType: filterOption.targetType,
-              rankType: filterOption.rankType,
-            },
-          },
-        );
-        setFetchState({ isLoading: false, isError: false, data: response.data.products });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
-      }
-    };
-
-    fetchRankingProducts();
-  }, [filterOption]);
-
-  if (fetchState.isLoading) {
+  if (isLoading) {
     return (
       <LoadingWrapper>
         <LoadingSpinner />
@@ -64,12 +48,12 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {fetchState.isError ? (
+        {isError ? (
           <ErrorWrapper>
             <ErrorMessage>Error loading data.</ErrorMessage>
           </ErrorWrapper>
-        ) : fetchState.data && fetchState.data.length > 0 ? (
-          <GoodsRankingList goodsList={fetchState.data} />
+        ) : data && data.length > 0 ? (
+          <GoodsRankingList goodsList={data} />
         ) : (
           <NoDataWrapper>No ranking data available.</NoDataWrapper>
         )}

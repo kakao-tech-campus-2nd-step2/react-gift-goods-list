@@ -1,4 +1,5 @@
 import type { AxiosError } from 'axios';
+
 import { useEffect, useRef, useState } from 'react';
 
 import { getThemeProducts } from '@/apis/themes/themes';
@@ -70,14 +71,8 @@ export const handleStatusCode = (error: AxiosError) => {
   }
 };
 
-export function useGoodsSectionControl(themeKey: string) {
-  const [goodsList, setGoodsList] = useState<Home.ProductData[]>([]);
-  const [pageInfo, setPageinfo] = useState<Theme.PageInfo>(); // windowing 하는 용도?
-  const [pageToken, setPageToken] = useState<string | null>();
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
-  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState<LoadingState>(defaultLoadState);
+
 
   const handleThemeProductsResponse = (data: Theme.ThemeProductsResponse) => {
     const { products, nextPageToken, pageInfo: ResponsePageInfo } = data;
@@ -127,6 +122,7 @@ export function useGoodsSectionControl(themeKey: string) {
           fetchNextThemeProducts().then(() =>
             setIsLoading((prev) => ({ ...prev, loadingMore: false })),
           );
+
         }
       });
       observerRef.current.observe(loaderRef.current);
@@ -138,4 +134,5 @@ export function useGoodsSectionControl(themeKey: string) {
   }, [themeKey, pageToken]);
 
   return { goodsList, loaderRef, isError, isLoading: isLoading.isInit || isLoading.loadingMore };
+
 }

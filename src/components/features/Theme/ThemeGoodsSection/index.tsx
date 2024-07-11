@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+
 import { Loader } from '@/components/common/Loader';
+
 import { useGoodsSectionControl } from '@/hooks/useGoodsSectionControl';
 import { breakpoints } from '@/styles/variants';
 
@@ -40,6 +42,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           </Grid>
         )}
         <Loader ref={loaderRef} className={isLoading ? 'loader show' : 'loader hidden'} />
+
       </Container>
     </Wrapper>
   );

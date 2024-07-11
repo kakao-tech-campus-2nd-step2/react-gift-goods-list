@@ -20,7 +20,7 @@ export const GoodsRankingSection = () => {
   const [products, setProducts] = useState<Home.ProductData[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   useEffect(() => {
     getRankingProducts(filterOption)
       .then((data) => {

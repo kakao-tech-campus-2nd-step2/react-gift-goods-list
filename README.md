@@ -20,3 +20,9 @@
 - [ｏ] url의 pathParams와 /api/vi/themes API를 사용
 - [ｏ] themeKey가 잘못된 경우 메인 페이지로
 - [ｏ] 요청시 한번에 20개의 상품 목록이 내려오도록 구현
+
+## step2 요구사항
+
+- [] 각 API에서 Loading 상태에 대한 UI 대응
+- [] 각 데이터가 없는 경우에 대한 UI 대응
+- [] HTTP status에 따라 Error 다르게 처리

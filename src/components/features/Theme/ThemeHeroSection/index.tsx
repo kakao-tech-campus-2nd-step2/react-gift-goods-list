@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { useContext } from "react";
 
+import type { ThemeProp } from "@/App";
 import { ThemesContext } from "@/App";
 import { Container } from "@/components/common/layouts/Container";
 import { breakpoints } from "@/styles/variants";
@@ -11,7 +12,8 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const themes: ThemeData[] = useContext(ThemesContext);
+  const ThemesApi: ThemeProp = useContext(ThemesContext);
+  const themes: ThemeData[] = ThemesApi.data;
   const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {

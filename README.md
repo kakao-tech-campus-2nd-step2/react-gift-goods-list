@@ -14,3 +14,4 @@
 
 - [x] 메인 페이지 실시간 급상승 선물랭킹 섹션 UI 대응 및 Error 처리
 - [x] Theme 페이지 상품 목록 섹션 UI 대응 및 Error 처리
+- [x] Themes API UI 대응 및 Error 처리

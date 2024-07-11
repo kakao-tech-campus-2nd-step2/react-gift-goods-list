@@ -3,7 +3,11 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
 const LoadingSpinner: React.FC = () => {
-    return <Spinner />;
+  return (
+    <Wrapper>
+      <Spinner />
+    </Wrapper>
+  )
 };
 
 export default LoadingSpinner;
@@ -25,3 +29,10 @@ const Spinner = styled.div`
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
 `;
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: 50%;
+  display: flex;
+  content-justify: center;
+`

@@ -10,8 +10,13 @@ type Props = {
   themeKey: string
 }
 
+export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+  return themeList.find((theme) => theme.key === themeKey);
+};
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+  const [loading, setLoading] = useState(true)
 
   // themeKey 가 변할 때 마다 실행
   useEffect(() => {
@@ -19,16 +24,30 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
       try {
         const data = await fetchData(`api/v1/themes`)
         const theme = getCurrentTheme(themeKey, data.themes)
-        setCurrentTheme(theme)
-        console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
+
+        // 의도적으로 지연 시간을 추가
+        setTimeout(() => {
+          setCurrentTheme(theme)
+          setLoading(false)
+          console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
+        }, 2000)
       }
       catch (error) {
         console.error('[ThemeHeroSection] Fetch Theme Data Fail: ', error)
+        setLoading(false)
       }
     }
     fetchThemeData()
   }, [themeKey])
   
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
 
   if (!currentTheme) {
     return null
@@ -99,6 +118,30 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
+`;

@@ -15,19 +15,18 @@ export const ThemePage = () => {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await axios.get(
-          `${url}/api/v1/themes`,
-        );
+        const response = await axios.get(`${url}/api/v1/themes`);
         setThemes(response.data.themes);
       } catch (error) {
         console.error('Error fetching themes:', error);
       }
     };
-
     fetchThemes();
   }, []);
 
-  console.log(themes);
+  if (themes.length === 0) {
+    return <div>no Data</div>;
+  }
 
   return (
     <>

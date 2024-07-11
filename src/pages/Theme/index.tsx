@@ -1,22 +1,44 @@
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
+import { fetchThemes } from '@/api/api';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
+import { ThemeData } from '@/types';
 
 export const ThemePage: React.FC = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  if (!currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
+  useEffect(() => {
+    const loadThemeData = async () => {
+      try {
+        const themesResponse = await fetchThemes();
+        const theme = getCurrentTheme(themeKey, themesResponse.themes);
+        if (!theme) {
+          setErrorMessage('Invalid theme key');
+          setIsLoading(false);
+          return;
+        }
+        setCurrentTheme(theme);
+        setIsLoading(false);
+      } catch (error) {
+        setErrorMessage('Failed to load theme data');
+        setIsLoading(false);
+      }
+    };
+
+    loadThemeData();
+  }, [themeKey]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  return (
-    <>
-      <ThemeHeroSection themeKey={themeKey} />
-      <ThemeGoodsSection themeKey={themeKey} />
-    </>
-  );
+  if (errorMessage) {
+    return <Navigate to="/" />;
+  }
+
+  return <>{currentTheme && <ThemeHeroSection theme={currentTheme} />}</>;
 };

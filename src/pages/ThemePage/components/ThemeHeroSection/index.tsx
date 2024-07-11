@@ -10,13 +10,13 @@ import { Content } from '@/components/Content';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-import { headerStyle, textStyle } from './styles';
+import { heroStyle, textStyle } from './styles';
 
-type ThemeHeaderProps = {
+type ThemeHeroSectionProps = {
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: ThemeHeaderProps) => {
+export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const navigate = useNavigate();
 
   const { themeHero, loading, error } = useThemeHeroData(themeKey);
@@ -47,7 +47,7 @@ export const ThemeHeroSection = ({ themeKey }: ThemeHeaderProps) => {
       backgroundColor={backgroundColor}
       flexDirection="column"
       gap="0.5rem"
-      css={headerStyle}
+      css={heroStyle}
     >
       <p css={textStyle('label')}>{label}</p>
       <h2 css={textStyle('title')}>{title}</h2>

@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import { colors } from '@/styles/theme';
 
-export const headerStyle = css({
+export const heroStyle = css({
   paddingTop: '2.5rem',
   paddingBottom: '2.5rem',
 });

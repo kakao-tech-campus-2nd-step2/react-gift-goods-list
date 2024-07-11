@@ -9,11 +9,11 @@ import { Grid } from '@/components/ui/Layout/Grid';
 
 import { contentStyle } from './styles';
 
-type ThemeGoodsProps = {
+type ThemeGoodsSectionProps = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsProps) => {
+export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
   const { themeProducts, loading, error } = useThemeProductData(themeKey);
 
   if (error) {

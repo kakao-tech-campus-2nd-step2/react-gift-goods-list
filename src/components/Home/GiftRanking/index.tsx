@@ -23,7 +23,7 @@ export const GiftRanking = () => {
     setFilter((prev) => ({ targetType: targetType ?? prev.targetType, rankType: rankType ?? prev.rankType }));
   };
 
-  const { isLoading, isError, data } = useRankingProducts(filter);
+  const { data, isLoading, isError } = useRankingProducts(filter);
   const filterdList = data?.products ?? [];
 
   const HandleFilteredList = () => {

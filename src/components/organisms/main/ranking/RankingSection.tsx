@@ -51,7 +51,7 @@ function RankingSection() {
         <Container padding="40px 0 20px">
           <FetchStatusBoundary fetchStatus={fetchStatus}>
             <GiftDisplaySection
-              products={isFolded ? products.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
+              products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
               maxColumns={6}
               minColumns={3}
               indexed

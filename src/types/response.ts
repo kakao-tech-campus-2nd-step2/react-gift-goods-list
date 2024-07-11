@@ -50,6 +50,7 @@ export interface ThemeData {
   title: string;
   description: string;
   backgroundColor: string;
+  imageURL: string; // 이미지 URL 추가
 }
 
 export interface MessageCardTemplateData {

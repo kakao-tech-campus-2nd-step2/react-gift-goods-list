@@ -1,4 +1,3 @@
-// src/services/api.ts
 import axios from 'axios';
 
 import type {
@@ -21,7 +20,7 @@ import type {
   GetThemesResponse,
 } from '../types/response';
 
-const API_BASE_URL = 'https://api.example.com';
+const API_BASE_URL = 'https://react-gift-mock-api-kakao.vercel.app';
 
 // 랭킹 제품 목록 가져오기
 export const getRankingProducts = async (

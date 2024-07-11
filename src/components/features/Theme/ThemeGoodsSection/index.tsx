@@ -4,6 +4,7 @@ import { useGetThemesProducts } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import Loading from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { data: productsResponse } = useGetThemesProducts({
+  const { data: productsResponse, loading } = useGetThemesProducts({
     themeKey,
   });
   const products = productsResponse?.data?.products || [];
@@ -19,23 +20,25 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {products?.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
-        </Grid>
+        <Loading isLoading={loading}>
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {products?.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
+          </Grid>
+        </Loading>
       </Container>
     </Wrapper>
   );

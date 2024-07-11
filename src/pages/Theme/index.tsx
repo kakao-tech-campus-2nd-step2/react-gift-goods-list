@@ -1,6 +1,7 @@
 import { Navigate, useParams } from 'react-router-dom';
 
 import { useGetThemes } from '@/api';
+import Loading from '@/components/common/Loading';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
@@ -14,15 +15,15 @@ export const ThemePage = () => {
 
   const currentTheme = getCurrentTheme(themeKey, themeList);
 
-  if (isThemeListLoading) {
-    return <div>Loading...</div>;
-  } else if (!currentTheme) {
+  if (!isThemeListLoading && !currentTheme) {
     return <Navigate to={RouterPath.notFound} />;
   }
 
   return (
     <>
-      <ThemeHeroSection themeKey={themeKey} themeList={themeList} />
+      <Loading isLoading={isThemeListLoading}>
+        <ThemeHeroSection themeKey={themeKey} themeList={themeList} />
+      </Loading>
       <ThemeGoodsSection themeKey={themeKey} />
     </>
   );

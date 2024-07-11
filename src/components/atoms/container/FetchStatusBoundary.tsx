@@ -8,10 +8,11 @@ interface FetchStatusBoundaryProps {
   fetchStatus: FetchStatus;
   loadingComponent?: ReactNode;
   errorComponent?: ReactNode;
+  errorMessage?: string;
 }
 
 function FetchStatusBoundary({
-  children, fetchStatus, loadingComponent, errorComponent,
+  children, fetchStatus, loadingComponent, errorComponent, errorMessage,
 }: FetchStatusBoundaryProps) {
   if (fetchStatus === FetchStatus.FETCHING) {
     return loadingComponent || (
@@ -26,7 +27,7 @@ function FetchStatusBoundary({
   if (fetchStatus === FetchStatus.FETCH_ERROR) {
     return errorComponent || (
       <Container elementSize="full-width" justifyContent="center">
-        <p>서버에서 데이터 로드 중 오류가 발생했습니다.</p>
+        <p>{errorMessage || '서버에서 데이터 로드 중 오류가 발생했습니다.'}</p>
       </Container>
     );
   }

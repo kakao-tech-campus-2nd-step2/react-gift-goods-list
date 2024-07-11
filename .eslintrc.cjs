@@ -52,7 +52,10 @@ module.exports = {
     'import/no-default-export': 'off',
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
-    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/no-extraneous-dependencies': [
+      'error',
+      { optionalDependencies: false },
+    ],
     'prettier/prettier': 'error',
   },
   settings: {

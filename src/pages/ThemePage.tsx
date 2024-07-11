@@ -8,8 +8,8 @@ import { useContext, useEffect } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import FetchStatusBoundary
   from '@components/atoms/container/FetchStatusBoundary';
+import FetchStatus from '@constants/FetchStatus';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
-import { isThemesLoaded } from '@/utils';
 
 function ThemePage() {
   const { themeKey } = useParams();
@@ -18,14 +18,14 @@ function ThemePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isThemesLoaded(themes)) return;
+    if (fetchStatus === FetchStatus.FETCHING) return;
 
     if (!themeKey || !(themeKey in themes)) {
       navigate(-1);
     }
-  }, [products, navigate, themes, themeKey]);
+  }, [products, navigate, themes, themeKey, fetchStatus]);
 
-  return isThemesLoaded(themes) ? (
+  return (
     <Page>
       <FetchStatusBoundary fetchStatus={themeFetchStatus}>
         <Banner themeKey={themeKey as string} />
@@ -43,7 +43,7 @@ function ThemePage() {
         </Container>
       </FetchStatusBoundary>
     </Page>
-  ) : null;
+  );
 }
 
 export default ThemePage;

@@ -1,6 +1,5 @@
-import type { GoodsData, ThemeData } from '.';
-
-export const ThemeMockData: ThemeData = {
+import type { GoodsData } from '.';
+export const ThemeMockData: Theme.ThemeData = {
   id: 1,
   key: 'life_small_gift',
   label: '가벼운 선물',

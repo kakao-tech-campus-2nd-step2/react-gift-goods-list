@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
 import { useContext } from 'react';
 
-// import { Navigate } from 'react-router-dom';
 import { Container } from '@/components/common/layouts/Container';
 import { ThemeContext } from '@/context/themeContext';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -86,6 +84,6 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+export const getCurrentTheme = (themeKey: string, themeList: Theme.ThemeData[]) => {
   return themeList.find((theme) => theme.key === themeKey);
 };

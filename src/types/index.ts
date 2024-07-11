@@ -1,5 +1,3 @@
-
-
 export const validTargetTypes = ['ALL', 'FEMALE', 'MALE', 'TEEN'] as const;
 export const validRankTypes = ['MANY_WISH', 'MANY_RECEIVE', 'MANY_WISH_RECEIVE'] as const;
 

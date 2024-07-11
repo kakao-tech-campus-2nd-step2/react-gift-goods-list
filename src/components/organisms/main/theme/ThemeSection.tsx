@@ -5,10 +5,12 @@ import MainThemeItem from '@components/organisms/main/theme/MainThemeItem';
 import ResponsiveThemeSection
   from '@components/organisms/main/theme/ResponsiveThemeSection';
 import { useContext } from 'react';
+import FetchStatusBoundary
+  from '@components/atoms/container/FetchStatusBoundary';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemeSection() {
-  const themes = useContext(ThemeContext);
+  const { themes, fetchStatus } = useContext(ThemeContext);
 
   return (
     <ResponsiveThemeSection>
@@ -17,15 +19,17 @@ function ThemeSection() {
         maxWidth={MAX_CONTENT_WIDTH}
         justifyContent="center"
       >
-        <ResponsiveGrid columnsDefault={6} columnsMd={4} gap={0}>
-          {Object.keys(themes).map((themeKey, i) => {
-            const key = `$gift-theme-${i}`;
+        <FetchStatusBoundary fetchStatus={fetchStatus}>
+          <ResponsiveGrid columnsDefault={6} columnsMd={4} gap={0}>
+            {Object.keys(themes).map((themeKey, i) => {
+              const key = `$gift-theme-${i}`;
 
-            return (
-              <MainThemeItem themeKey={themeKey} key={key} />
-            );
-          })}
-        </ResponsiveGrid>
+              return (
+                <MainThemeItem themeKey={themeKey} key={key} />
+              );
+            })}
+          </ResponsiveGrid>
+        </FetchStatusBoundary>
       </Container>
     </ResponsiveThemeSection>
   );

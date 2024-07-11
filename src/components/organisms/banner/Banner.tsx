@@ -11,7 +11,7 @@ interface BannerProps {
 }
 
 function Banner({ themeKey }: BannerProps) {
-  const themes = useContext(ThemeContext);
+  const { themes } = useContext(ThemeContext);
   const theme = themes[themeKey];
 
   return (

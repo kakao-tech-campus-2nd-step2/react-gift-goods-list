@@ -20,7 +20,7 @@ const ResponsiveThemeCaption = styled.p`
 `;
 
 function MainThemeItem({ themeKey }: ThemeItemProps) {
-  const themes = useContext(ThemeContext);
+  const { themes } = useContext(ThemeContext);
   const theme = themes[themeKey];
 
   return (

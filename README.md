@@ -1,8 +1,3 @@
-🚀 Getting Started
-✔️ Frontend에서 비동기 데이터를 처리하는 방법에 대해 고민해요.
-✔️ Axios 만을 사용해서 React에서 비동기 데이터를 구현해요.
-✔️ Suspense, Error Boundary를 사용하지 않고 fetch State를 관리해봐요.
-
 📝 요구사항
 - [ ] 본인만의 기준으로 일관된 코드를 작성해주세요.
 - [ ] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.

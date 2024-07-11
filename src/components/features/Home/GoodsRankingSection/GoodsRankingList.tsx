@@ -7,11 +7,18 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { GoodsData } from '@/types';
 
 type Props = {
+  isError: boolean;
   goodsList: GoodsData[];
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ isError, goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
+
+  if (isError) {
+    return <NoListMessage>데이터를 불러오는 중에 문제가 발생했습니다.</NoListMessage>;
+  } else if (goodsList.length === 0) {
+    return <NoListMessage>보여줄 상품이 없어요!</NoListMessage>;
+  }
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
 
@@ -46,6 +53,19 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
 
 const StyledGoodsRankingList = styled.div`
   padding: 20px 0 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const NoListMessage = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+  font-size: 16px;
 `;
 
 const ButtonWrapper = styled.div`

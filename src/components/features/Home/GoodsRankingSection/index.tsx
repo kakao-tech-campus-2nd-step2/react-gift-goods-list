@@ -39,14 +39,13 @@ export const GoodsRankingSection = () => {
   };
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error loading ranking products.</p>;
 
   return (
     <StyledGoodsRankingSection>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter onFilterChange={handleFilterChange} />
-        <GoodsRankingList goodsList={goodsList} />
+        <GoodsRankingList isError={isError} goodsList={goodsList} />
       </Container>
     </StyledGoodsRankingSection>
   );

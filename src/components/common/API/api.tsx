@@ -8,9 +8,12 @@ export const fetchData = async (endpoint: string, params = {}) => {
   try {
     const response = await Api.get(endpoint, { params });
     return response.data;
-  } catch (error) {
-    console.error(`Error fetching data from ${endpoint}:`, error);
-    throw error;
+  } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        const { status, data } = error.response || {};
+        const errorMessage = data?.description || '알 수 없는 오류가 발생했어요.';
+        throw new Error(JSON.stringify({ status, message: errorMessage }));
+      }
   }
 };
 

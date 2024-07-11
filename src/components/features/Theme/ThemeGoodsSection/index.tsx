@@ -14,6 +14,7 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -25,10 +26,16 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         setProducts(response.data.products);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
   }, [themeKey]);
+
+  if (loading) {
+    return <LoadingScreen>Loading...</LoadingScreen>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -61,4 +68,11 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const LoadingScreen = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;

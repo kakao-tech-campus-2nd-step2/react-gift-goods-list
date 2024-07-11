@@ -16,7 +16,7 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const { data: goodsList, isLoading, isError, error } = useQuery<GoodsData[], Error>(
+  const { data: goodsList, isLoading, isError } = useQuery<GoodsData[], Error>(
     ['rankingProducts', filterOption],
     () => fetchRankingProducts(filterOption.targetType, filterOption.rankType),
     {
@@ -33,7 +33,7 @@ export const GoodsRankingSection = () => {
         {isLoading ? (
           <LoadingMessage>Loading...</LoadingMessage>
         ) : isError ? (
-          <ErrorMessage>Error: {error.message}</ErrorMessage>
+          <ErrorMessage>에러가 발생했습니다.</ErrorMessage>
         ) : !goodsList || goodsList.length === 0 ? (
           <ErrorMessage>보여줄 상품이 없어요!</ErrorMessage>
         ) : (

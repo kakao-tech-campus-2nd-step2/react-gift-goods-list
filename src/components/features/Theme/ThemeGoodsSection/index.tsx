@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
 
 import { fetchThemeProducts } from '@/api/api';
@@ -14,38 +15,54 @@ interface ThemeGoodsSectionProps {
 }
 
 export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
+  const observerRef = useRef(null);
   const {
     data,
     isLoading,
     isError,
-    error,
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery<InfiniteQueryResponse, Error>(
     ['themeProducts', themeKey],
-    ({ pageParam = '' }) => fetchThemeProducts(themeKey, pageParam, 20), 
+    ({ pageParam = '' }) => fetchThemeProducts(themeKey, pageParam, 20),
     {
       getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,
     }
   );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        const first = entries[0];
+        if (first.isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentElement = observerRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
+  }, [fetchNextPage, hasNextPage]);
 
   if (isLoading) {
     return <LoadingMessage>Loading products...</LoadingMessage>;
   }
 
   if (isError) {
-    return <ErrorMessage>Error: {error?.message}</ErrorMessage>;
+    return <ErrorMessage>에러가 발생했습니다.</ErrorMessage>;
   }
 
-  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight * 1.2 && hasNextPage) {
-      fetchNextPage();
-    }
-  };
-
   return (
-    <Wrapper onScroll={handleScroll}>
+    <Wrapper>
       <Container>
         <Grid columns={{ initial: 2, md: 4 }} gap={16}>
           {data?.pages.map((page) =>
@@ -59,6 +76,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
               />
             ))
           )}
+          <div ref={observerRef} style={{ height: "20px", width: "100%" }} />
         </Grid>
       </Container>
     </Wrapper>

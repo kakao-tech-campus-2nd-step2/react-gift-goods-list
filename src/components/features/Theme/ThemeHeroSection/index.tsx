@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import type { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 
 import { fetchThemes } from '@/api/api';
@@ -22,14 +21,13 @@ interface ThemeHeroSectionProps {
 
 export const ThemeHeroSection = ({themeKey} : ThemeHeroSectionProps) => {
 
-  const { data: themes, isLoading, isError, error } = useQuery(['themes'], fetchThemes);
+  const { data: themes, isLoading, isError } = useQuery(['themes'], fetchThemes);
 
   const theme = themes?.find((t: ThemeData) => t.key === themeKey);
 
   if (isLoading) return <LoadingMessage>Loading...</LoadingMessage>;
   if (isError) {
-    const axiosError = error as AxiosError; 
-    return <ErrorMessage>Error: {axiosError?.message}</ErrorMessage>;
+    return <ErrorMessage>에러가 발생했습니다.</ErrorMessage>;
   }
 
   if (!theme) return <ErrorMessage>Theme not found</ErrorMessage>;

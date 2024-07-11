@@ -10,12 +10,13 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 import { useFetchThemes } from '@/api/customHook';
 import Loading from '@/components/Loading';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export const ThemeCategorySection = () => {
   const { data: themes, loading, error } = useFetchThemes();
 
   if (loading) return <Loading />;
-  if (error) return <div>Error</div>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Wrapper>

@@ -7,6 +7,7 @@ import { breakpoints } from '@/styles/variants';
 
 import { useFetchProductsByTheme } from '@/api/customHook';
 import Loading from '@/components/Loading';
+import ErrorMessage from '@/components/ErrorMessage';
 
 type Props = {
   themeKey: string;
@@ -16,7 +17,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
 
   if (loading) return <Loading />;
-  if (error) return <div>Error</div>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Wrapper>

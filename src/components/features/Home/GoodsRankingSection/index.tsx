@@ -10,6 +10,7 @@ import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
 import Loading from '@/components/Loading';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -20,7 +21,7 @@ export const GoodsRankingSection = () => {
   const { data: rankProducts, loading, error } = useFetchRanking(filterOption);
 
   if (loading) return <Loading />;
-  if (error) return <div>Error</div>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Wrapper>

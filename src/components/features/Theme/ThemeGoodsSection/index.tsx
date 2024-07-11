@@ -21,15 +21,15 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {products &&
-            products.map(({ id, imageURL, name, price, brandInfo }) => (
+        {products && products.length > 0 ? (
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {products.map(({ id, imageURL, name, price, brandInfo }) => (
               <DefaultGoodsItems
                 key={id}
                 imageSrc={imageURL}
@@ -38,7 +38,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
                 subtitle={brandInfo.name}
               />
             ))}
-        </Grid>
+          </Grid>
+        ) : (
+          <NoProductsMessage>상품이 없어요.</NoProductsMessage>
+        )}
       </Container>
     </Wrapper>
   );
@@ -51,4 +54,10 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const NoProductsMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
 `;

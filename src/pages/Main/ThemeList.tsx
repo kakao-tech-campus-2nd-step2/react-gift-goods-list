@@ -1,25 +1,36 @@
 import { css } from '@emotion/css';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Image } from '@/components/common/Image';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import LoadingUI from '@/components/common/LoadingUI';
 import type { Themes } from '@/entities/Theme';
 import useData from '@/hooks/useData';
 
 export default () => {
     const themes = useData<Themes>('/themes');
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (themes?.httpStatusCode !== 200)
+            navigate('/error/' + themes?.httpStatusCode + '/main_themeList', { replace: true });
+    }, [themes?.httpStatusCode, navigate]);
 
     return (
         <Grid columns={{ initial: 2, xs: 4, sm: 4, md: 6 }}>
-            {themes?.data?.themes.map((theme) => (
-                <ThemeButton
-                    key={theme.id}
-                    themeKey={theme.key}
-                    themeLabel={theme.label}
-                    themeImg={theme.imageURL}
-                />
-            ))}
+            {themes?.isLoading ? (
+                <LoadingUI />
+            ) : (
+                themes?.data?.themes.map((theme) => (
+                    <ThemeButton
+                        key={theme.id}
+                        themeKey={theme.key}
+                        themeLabel={theme.label}
+                        themeImg={theme.imageURL}
+                    />
+                ))
+            )}
         </Grid>
     );
 };

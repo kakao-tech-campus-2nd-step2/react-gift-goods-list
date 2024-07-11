@@ -27,9 +27,6 @@ export const GoodsRankingSection = () => {
         setProducts(data.products);
       })
       .catch((err) => {
-        /**
-         * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
-         */
         handleStatusCode(err);
         setIsError(true);
       })

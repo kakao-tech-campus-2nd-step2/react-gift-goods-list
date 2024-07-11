@@ -7,8 +7,8 @@ import { useThemeHeaderData } from '@/pages/ThemePage/hooks/useThemeHeaderData';
 import { ThemeHeaderData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
-import { LoadingDots } from '@/components/LoadingDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 import { headerStyle, textStyle } from './styles';
 
@@ -22,14 +22,16 @@ export const ThemeHeader = ({ themeKey }: ThemeHeaderProps) => {
   const { themeHeader, loading, error } = useThemeHeaderData(themeKey);
 
   useEffect(() => {
-    if (error === ERROR_MESSAGES.NOT_FOUND) {
+    if (error === ERROR_MESSAGES.DATA_NOT_FOUND) {
       navigate(ROUTES.HOME);
     }
   }, [error, navigate]);
 
   if (error === ERROR_MESSAGES.FETCH_ERROR)
     return <OneTextContainer>{error}</OneTextContainer>;
-  if (loading) return <LoadingDots />;
+
+  if (loading) return <Skeleton width="100vw" height="13rem" />;
+
   if (!themeHeader) return <OneTextContainer>{error}</OneTextContainer>;
 
   const { backgroundColor, label, title, description } =

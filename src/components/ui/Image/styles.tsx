@@ -1,19 +1,8 @@
 import { css } from '@emotion/react';
 
 import { colors } from '@/styles/theme';
+import { getAspectRatio, getBorderRadius } from '@/styles/utils';
 import { Radius, Ratio } from '@/types/uiTypes';
-
-const getBorderRadius = (radius: Radius) => {
-  if (radius === 'circle') return '50%';
-
-  return `${radius}rem`;
-};
-
-const getAspectRatio = (ratio: Ratio) => {
-  if (ratio === 'square') return '1/1';
-  if (ratio === 'auto') return 'auto';
-  return `${ratio}`;
-};
 
 export const imageStyle = (ratio: Ratio, radius: Radius, width: string) =>
   css({

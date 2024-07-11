@@ -1,26 +1,13 @@
-import { keyframes } from '@emotion/react';
+import { Container } from '@/components/ui/Layout/Container';
 
-import { Container } from '../ui/Layout/Container';
 import { containerStyle, dotStyle } from './styles';
-
-const syncKeyframes = keyframes`
-  33% {
-    transform: translateY(5px);
-  }
-  66% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-`;
 
 type DotProps = {
   delay: number;
 };
 
 const Dot = ({ delay }: DotProps) => {
-  return <span css={dotStyle(syncKeyframes, delay)} />;
+  return <span css={dotStyle(delay)} />;
 };
 
 export const LoadingDots = () => {

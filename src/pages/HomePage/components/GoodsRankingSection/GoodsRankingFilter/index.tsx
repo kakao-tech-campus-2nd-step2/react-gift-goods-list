@@ -1,7 +1,7 @@
 import { RankingFilter } from '@/types/productType';
 
-import { FilterRank } from './FilterRank';
-import { FilterTarget } from './FilterTarget';
+import { RankTypeFilter } from './RankTypeFilter';
+import { TargetTypeFilter } from './TargetTypeFilter';
 
 type GoodsRankingFilterProps = {
   filter: RankingFilter;
@@ -17,11 +17,14 @@ export const GoodsRankingFilter = ({
 }: GoodsRankingFilterProps) => {
   return (
     <>
-      <FilterTarget
+      <TargetTypeFilter
         targetFilter={filter.targetType}
         setTargetFilter={handleFilter}
       />
-      <FilterRank rankFilter={filter.rankType} setRankFilter={handleFilter} />
+      <RankTypeFilter
+        rankFilter={filter.rankType}
+        setRankFilter={handleFilter}
+      />
     </>
   );
 };

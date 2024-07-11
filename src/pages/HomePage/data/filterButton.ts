@@ -1,6 +1,6 @@
 import { RankingFilter } from '@/types/productType';
 
-type TargetFilterButton = {
+export type TargetFilterButton = {
   index: number;
   value: RankingFilter['targetType'];
   text: {
@@ -9,7 +9,7 @@ type TargetFilterButton = {
   };
 };
 
-type RankFilterButton = {
+export type RankFilterButton = {
   index: number;
   value: RankingFilter['rankType'];
   label: string;

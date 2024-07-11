@@ -4,7 +4,7 @@ import { useFetchData } from '@/hooks/useFetchData';
 import { fetchRankingProductData } from '@/services/rankingProductData';
 import { ProductData, RankingFilter } from '@/types/productType';
 
-export const useRankListData = (filter: RankingFilter) => {
+export const useRankProductData = (filter: RankingFilter) => {
   const {
     data: rankProducts,
     loading,

@@ -49,6 +49,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-use-before-define': ['off'],
+    "react-hooks/exhaustive-deps": 0
   },
   ignorePatterns: ['**/build/**/*', '.eslintrc.js', 'craco.config.js'],
   settings: {

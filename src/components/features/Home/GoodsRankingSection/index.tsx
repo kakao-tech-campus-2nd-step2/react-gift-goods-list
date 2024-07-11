@@ -1,28 +1,61 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { getRankingProducts } from '@/apis/products/products';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-export const GoodsRankingSection = () => {
-  const [filterOption, setFilterOption] = useState<RankingFilterOption>({
-    targetType: 'ALL',
-    rankType: 'MANY_WISH',
-  });
+const defaultFilter: RankingFilterOption = {
+  targetType: 'ALL',
+  rankType: 'MANY_WISH',
+};
 
-  // GoodsMockData를 21번 반복 생성
+export const GoodsRankingSection = () => {
+  const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
+  const [products, setProducts] = useState<Home.ProductData[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getRankingProducts(filterOption)
+      .then((data) => {
+        setProducts(data.products);
+      })
+      .catch((err) => {
+        /**
+         * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
+         */
+        if (err.response.status === 400) {
+          setIsError(true);
+        } else {
+          console.error(err);
+        }
+      })
+      .finally(() => setIsLoading(false));
+
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingFilter
+          filterOption={filterOption}
+          onFilterOptionChange={setFilterOption}
+          setIsError={setIsError}
+          setIsLoading={setIsLoading}
+        />
+        {isLoading ? (
+          <Container alignItems="center">로딩중</Container>
+        ) : isError ? (
+          <Container alignItems="center">데이터를 불러오는 중에 문제가 발생했습니다.</Container>
+        ) : (
+          <GoodsRankingList goodsList={products} />
+        )}
       </Container>
     </Wrapper>
   );

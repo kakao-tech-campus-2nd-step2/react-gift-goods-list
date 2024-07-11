@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
+import type { RankingFilterOption, TargetType } from '@/types';
+import { validTargetTypes } from '@/types';
 
 import { RankTypeButton } from './RankTypeButton';
 import { TargetTypeButton } from './TargetTypeButton';
@@ -10,9 +11,22 @@ import { TargetTypeButton } from './TargetTypeButton';
 type Props = {
   filterOption: RankingFilterOption;
   onFilterOptionChange: (option: RankingFilterOption) => void;
+  setIsError: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props) => {
+type VirtualTargetTypeButton = {
+  value: TargetType;
+  selected: boolean;
+  onClick: () => void;
+};
+
+export const GoodsRankingFilter = ({
+  filterOption,
+  onFilterOptionChange,
+  setIsError,
+  setIsLoading,
+}: Props) => {
   const handleFilterOption = (
     key: keyof RankingFilterOption,
     value: RankingFilterOption[keyof RankingFilterOption],
@@ -23,37 +37,27 @@ export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props
     });
   };
 
+  const vttbs: VirtualTargetTypeButton[] = validTargetTypes.map((value) => ({
+    value: value as TargetType,
+    selected: filterOption.targetType === value,
+    onClick: () => {
+      handleFilterOption('targetType', value as TargetType);
+      setIsError(false);
+      setIsLoading(true);
+    },
+  }));
+
   return (
     <Wrapper>
       <TargetTypeWrapper>
-        <TargetTypeButton
-          value="ALL"
-          selected={filterOption.targetType === 'ALL'}
-          onClick={(value) => {
-            handleFilterOption('targetType', value);
-          }}
-        />
-        <TargetTypeButton
-          value="FEMALE"
-          selected={filterOption.targetType === 'FEMALE'}
-          onClick={(value) => {
-            handleFilterOption('targetType', value);
-          }}
-        />
-        <TargetTypeButton
-          value="MALE"
-          selected={filterOption.targetType === 'MALE'}
-          onClick={(value) => {
-            handleFilterOption('targetType', value);
-          }}
-        />
-        <TargetTypeButton
-          value="TEEN"
-          selected={filterOption.targetType === 'TEEN'}
-          onClick={(value) => {
-            handleFilterOption('targetType', value);
-          }}
-        />
+        {vttbs.map((vttb) => (
+          <TargetTypeButton
+            key={vttb.value}
+            value={vttb.value}
+            selected={vttb.selected}
+            onClick={vttb.onClick}
+          />
+        ))}
       </TargetTypeWrapper>
       <Spacing />
       <RankTypeWrapper>
@@ -63,6 +67,8 @@ export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props
           selected={filterOption.rankType === 'MANY_WISH'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
+            setIsError(false);
+            setIsLoading(true);
           }}
         />
         <RankTypeButton
@@ -71,6 +77,8 @@ export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props
           selected={filterOption.rankType === 'MANY_RECEIVE'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
+            setIsError(false);
+            setIsLoading(true);
           }}
         />
         <RankTypeButton
@@ -79,6 +87,8 @@ export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props
           selected={filterOption.rankType === 'MANY_WISH_RECEIVE'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
+            setIsError(false);
+            setIsLoading(true);
           }}
         />
       </RankTypeWrapper>

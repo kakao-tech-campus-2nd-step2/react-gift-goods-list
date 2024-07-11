@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
+import { useContext } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import { ThemeContext } from '@/context/themeContext';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const themes = useContext(ThemeContext);
+  const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {
     return null;
@@ -83,6 +84,6 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+export const getCurrentTheme = (themeKey: string, themeList: Theme.ThemeData[]) => {
   return themeList.find((theme) => theme.key === themeKey);
 };

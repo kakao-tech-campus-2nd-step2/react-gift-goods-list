@@ -33,6 +33,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       <Container>
         {loading ? (
           <Loader />
+        ) : products.length === 0 ? (
+          <Message>상품이 없어요.</Message>
         ) : (
           <Grid
             columns={{
@@ -64,4 +66,11 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const Message = styled.p`
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
 `;

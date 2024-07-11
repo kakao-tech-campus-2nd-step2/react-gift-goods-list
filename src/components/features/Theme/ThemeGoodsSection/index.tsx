@@ -19,6 +19,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   useEffect(() => {
     const fetchThemeData = async () => {
+      setLoading(true);
       try {
         const maxResults = 20;
         const queryParams = { maxResults };

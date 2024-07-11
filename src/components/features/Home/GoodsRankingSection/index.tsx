@@ -17,14 +17,18 @@ export const GoodsRankingSection = () => {
   });
 
   const [goodsList, setGoodsList] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchRankingProduts = async () => {
+      setLoading(true);
       try {
         const data = await getRankingProducts(filterOption);
         setGoodsList(data.products);
       } catch (error) {
         console.log('Error fetching ranking products:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -36,7 +40,11 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goodsList} />
+        {loading ? (
+          <LoadingMessage>Loading...</LoadingMessage>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -63,4 +71,10 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
 `;

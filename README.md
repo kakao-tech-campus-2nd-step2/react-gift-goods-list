@@ -21,7 +21,7 @@
 - Loader 표시
   - [x] Loader 컴포넌트 생성
   - [x] GoodsRanking에서 Loading 상태인 경우, 로더 표시
-  - [ ] ThemeGoods에서 Loading 상태인 경우, 로더 표시
+  - [x] ThemeGoods에서 Loading 상태인 경우, 로더 표시
 - 데이터가 없는 경우
   - [ ] GoodsRanking에서 “보여줄 상품이 없어요!” 메시지 표시
   - [ ] ThemeGoods에서 “상품이 없어요.” 메시지 표시

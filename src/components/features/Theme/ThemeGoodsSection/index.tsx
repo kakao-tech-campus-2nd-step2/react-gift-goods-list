@@ -28,8 +28,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   return (
     <Wrapper>
-      <FetchDataUI loading={loading} error={error} data={data?.products || []}>
-        <Container>
+      <Container>
+        <FetchDataUI loading={loading} error={error} data={data?.products || []}>
           <Grid
             columns={{
               initial: 2,
@@ -47,8 +47,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
               />
             ))}
           </Grid>
-        </Container>
-      </FetchDataUI>
+        </FetchDataUI>
+      </Container>
     </Wrapper>
   );
 };

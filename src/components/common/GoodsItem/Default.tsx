@@ -1,6 +1,5 @@
-import styled from '@emotion/styled';
-
 import { Image } from '@/components/common/Image';
+import styled from '@emotion/styled';
 
 export type DefaultGoodsItemsProps = {
   imageSrc: string;
@@ -18,12 +17,18 @@ export const DefaultGoodsItems = ({
 }: DefaultGoodsItemsProps) => {
   return (
     <Wrapper {...props}>
-      <Image src={imageSrc} alt={`${title} 소개`} width="100%" ratio="square" radius={4} />
+      <Image
+        src={imageSrc}
+        alt={`${title} 소개`}
+        width='100%'
+        ratio='square'
+        radius={4}
+      />
       <InfoWrapper>
         <Subtitle>{subtitle}</Subtitle>
         <Title>{title}</Title>
         <Amount>
-          {amount}
+          {amount.toLocaleString()}
           <span>원</span>
         </Amount>
       </InfoWrapper>

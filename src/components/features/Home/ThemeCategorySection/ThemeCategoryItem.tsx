@@ -4,8 +4,8 @@ import { Image } from '@/components/common/Image/Image';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeProps } from '@/types/types';
 
-export const ThemeCategoryItem = ({ key, imageURL, label, ...props }: ThemeProps) => (
-  <Wrapper key={key} {...props}>
+export const ThemeCategoryItem = ({ imageURL, label, ...props }: ThemeProps) => (
+  <Wrapper {...props}>
     <CategoryImage src={imageURL} alt={label} />
     <Label>{label}</Label>
   </Wrapper>

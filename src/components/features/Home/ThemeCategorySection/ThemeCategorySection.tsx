@@ -39,8 +39,8 @@ export const ThemeCategorySection = () => {
           }}
         >
           {themes.map((theme) => (
-            <Link to={getDynamicPath.theme(`${theme.key}`)}>
-              <ThemeCategoryItem key={theme.id} imageURL={theme.imageURL} label={theme.label} />
+            <Link key={theme.id} to={getDynamicPath.theme(`${theme.key}`)}>
+              <ThemeCategoryItem imageURL={theme.imageURL} label={theme.label} />
             </Link>
           ))}
         </Grid>

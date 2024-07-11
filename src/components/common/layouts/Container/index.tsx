@@ -8,11 +8,12 @@ type Props = {
   flexDirection?: 'row' | 'column';
   justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around';
   alignItems?: 'center' | 'flex-start' | 'flex-end' | 'baseline' | 'stretch';
+  padding?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const Container: React.FC<Props> = forwardRef(
   (
-    { children, maxWidth, flexDirection, justifyContent, alignItems, ...props }: Props,
+    { children, maxWidth, flexDirection, justifyContent, alignItems, padding, ...props }: Props,
     ref: React.Ref<HTMLDivElement>,
   ) => {
     return (
@@ -23,6 +24,7 @@ export const Container: React.FC<Props> = forwardRef(
           flexDirection={flexDirection}
           justifyContent={justifyContent}
           alignItems={alignItems}
+          padding={padding}
         >
           {children}
         </Inner>
@@ -39,7 +41,7 @@ const Wrapper = styled.div`
 `;
 
 const Inner = styled.div<
-  Pick<Props, 'maxWidth' | 'flexDirection' | 'justifyContent' | 'alignItems'>
+  Pick<Props, 'maxWidth' | 'flexDirection' | 'justifyContent' | 'alignItems' | 'padding'>
 >`
   width: 100%;
   max-width: ${({ maxWidth }) => maxWidth ?? vars.breakpoints.md};
@@ -47,4 +49,5 @@ const Inner = styled.div<
   flex-direction: ${({ flexDirection }) => flexDirection ?? 'column'};
   justify-content: ${({ justifyContent }) => justifyContent ?? 'flex-start'};
   align-items: ${({ alignItems }) => alignItems ?? 'flex-start'};
+  padding: ${({ padding }) => padding ?? '0'};
 `;

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/ranking';
+import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
@@ -21,6 +22,15 @@ export const GoodsRankingSection = () => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [visibleProducts, setVisibleProducts] = useState(6);
+
+  const ShowMore = () => {
+    setVisibleProducts(products.length);
+  };
+
+  const ShowLess = () => {
+    setVisibleProducts(6);
+  };
 
   useEffect(() => {
     const getRankingProducts = async () => {
@@ -47,7 +57,7 @@ export const GoodsRankingSection = () => {
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {loading && <Message>로딩중</Message>}
         {!loading && isError && <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>}
-        {!loading && !isError && products.length === 0 && <Container><Message>보여줄 상품이 없어요!</Message></Container>}
+        {!loading && !isError && products.length === 0 && <Message>보여줄 상품이 없어요!</Message>}
         <Grid
           columns={{
             initial: 3,
@@ -56,7 +66,7 @@ export const GoodsRankingSection = () => {
           }}
           gap={16}
         >
-          {!loading && !isError && products.map((product, index) => (
+          {!loading && !isError && products.slice(0, visibleProducts).map((product, index) => (
             <RankingGoodsItems
               key={product.id}
               rankingIndex={index + 1}
@@ -67,6 +77,27 @@ export const GoodsRankingSection = () => {
             />
           ))}
         </Grid>
+        {!loading && !isError && products.length > 0 && (
+          <Container padding='30px 0 0 0'>
+            {visibleProducts <= 6 ? (
+              <Button
+                theme='outline'
+                size='responsive'
+                onClick={ShowMore}
+              >
+                더보기
+              </Button>
+            ) : (
+              <Button
+                theme='outline'
+                size='responsive'
+                onClick={ShowLess}
+              >
+                접기
+              </Button>
+            )}
+          </Container>
+        )}
       </Container>
     </Wrapper>
   );

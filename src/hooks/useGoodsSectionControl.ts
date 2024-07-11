@@ -58,14 +58,12 @@ export function useGoodsSectionControl(themeKey: string) {
     if (loaderRef.current) {
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && pageToken) {
-          setIsLoading(true);
           getThemeProducts({ themeKey, pageToken, maxResults: 20 } as Theme.GetThemeProductsType)
             .then((data: Theme.ThemeProductsResponse) => handleThemeProductsResponse(data))
             .catch((err) => {
               console.error(err, pageInfo);
               setIsError(true);
-            })
-            .finally(() => setIsLoading(false));
+            });
         }
       });
       observerRef.current.observe(loaderRef.current);

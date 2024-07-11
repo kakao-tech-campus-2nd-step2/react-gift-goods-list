@@ -218,3 +218,32 @@ Polyfill은 이전 버전에서 지원하지 않는 기능들에 대한 코드�
   - [x] 테마 페이지
     - [x] 헤더의 themeKey에 따라 서로 다른 내용 표시하기
     - [x] 상품 목록 섹션에 선물 표시하기
+- [ ] react-query로 리팩토링 수행하기
+- [ ] skeleton UI 구현하기
+  - [ ] Skeleton Grid를 구현하면 좋지 않을까?
+- [ ] IntersectionObserver과 useInfiniteQuery로 무한 스크롤 구현
+- [ ] ErrorBoundary로 에러 처리하기
+- [ ] Suspense로 로딩 화면 설계하기.
+  - [ ] fallback으로 Skeleton UI를 넣어보자
+  - [ ] 이미지 blob을 모두 받아온 후 표시하도록 설계해보자. 어떻게 해야할지 고민이 필요하다.
+
+## react-suspense
+
+Suspense는 `Render as you Fetch` , 즉, 데이터를 페치한 이후에 컴포넌트를 렌더링할 수 있도록 해주는 리액트 내장 기능이다.
+
+Suspense는 fallback prop을 통해 데이터가 다 페치되지 않았을 때 표시할 컴포넌트를 지정해줄 수 있고, 
+때문에 Skeleton UI와 같이 사용자 경험을 개선하기 위한 기능을 조금 더 편하게 이용할 수 있게 해준다.
+
+이걸 어떻게 구현하는지 좀 자세히 알아봤는데, Promise throw를 통해 해당 기능을 구현한다는 것을 알 수 있었다.
+
+부모 컴포넌트에서 data fetch가 필요한 자식 컴포넌트를 Suspense로 감싸서 렌더링할 때, 
+자식 컴포넌트는 data fetch가 완료되지 않은 경우 데이터를 요청할 때 사용한 Promise를 throw한다. 
+그러면 이 컴포넌트를 감싼 Suspense가 Promise throw를 감지하고, fallback으로 전달된 컴포넌트를 렌더링하게 되는 것이다.
+
+### 하지만..
+
+문제점이 하나 있다. Suspense는 본래 워터폴을 방지하고자 나온 기법이지만, 잘못 사용할 경우 워터폴 현상이 발생할 수 있다.
+이는 throw 때문인데, data fetch가 필요한 컴포넌트의 자식 중 또 data fetch가 필요한 컴포넌트가 있다면, 
+상위 컴포넌트가 Promise를 throw하는 동안 자식 컴포넌트가 호출되지 않기 때문에 data fetch도 일어나지 않는다.
+따라서 Suspense를 사용할 때에는 Promise로 자식 컴포넌트가 필요한 데이터까지 모두 받아와버리거나, 
+useSuspenseQueries와 같은 `react-query`에서 지원하는 기능을 이용하면 위 현상을 해결할 수 있다.

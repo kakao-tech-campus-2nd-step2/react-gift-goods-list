@@ -33,11 +33,15 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   }, [themeKey]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Message>Loading...</Message>;
   }
 
   if (errorMessage) {
-    return <div>{errorMessage}</div>;
+    return <Message>{errorMessage}</Message>;
+  }
+
+  if (goodsList.length === 0) {
+    return <Message>상품을 찾을 수 없습니다.</Message>;
   }
 
   return (
@@ -72,4 +76,13 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const Message = styled.div`
+  display: flex;
+  justify-content: center;
+  align-item: center;
+  height: 100%;
+  font-size: 1.5em;
+  color: #999;
 `;

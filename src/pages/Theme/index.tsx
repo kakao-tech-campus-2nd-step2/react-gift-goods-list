@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
@@ -34,7 +35,7 @@ export const ThemePage: React.FC = () => {
   }, [themeKey]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Message>Loading...</Message>;
   }
 
   if (errorMessage) {
@@ -48,3 +49,12 @@ export const ThemePage: React.FC = () => {
     </>
   );
 };
+
+const Message = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.5em;
+  color: #999;
+`;

@@ -1,4 +1,6 @@
-## 요구사항
+# 요구사항
+
+## Step1
 
 - 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의
 - React Query를 사용하지 말고 axiou를 사용해서 구현
@@ -23,3 +25,11 @@
 
 - /api/v1/themes/{themeKey}/products API를 사용하여 상품 목록을 구현
 - API 요청 시 한번에 20개의 상품 목록이 내려오도록
+
+---
+
+## Step2
+
+- 각API에서 Loading 상태에 대한 UI 대응
+- 데이터가 없는 경우에 대한 UI 대응
+- Http Status 에 따라 Error를 다르게 처리

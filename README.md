@@ -20,7 +20,7 @@
 
 <h3>2️⃣ Step 2 체크리스트</h3>
 
-- [ ] 각 API에서 Loading 상태에 대한 UI 대응
+- [x] 각 API에서 Loading 상태에 대한 UI 대응
 
 - [ ] 데이터가 없는 경우에 대한 UI 대응
 

@@ -43,3 +43,17 @@
    - API 요청 시 한번에 20개의 상품 목록이 내려오도록 합니다.
 
 ## Getting Started
+
+# 🚀 2단계 - Error, Loading Status 핸들링 하기
+
+## 🚀 Getting Started
+
+- ✔️ 비동기 데이터 요청 시 발생 할 수 있는 Loading, Error가 무엇이 있는지 생각하고 적용해봐요.
+- ✔️ 유저 관점에서 Loading과 Error를 어떻게 전달하면 좋을지? 고민해봐요.
+
+## 📝 Requirements
+
+- 본인만의 기준으로 일관된 코드를 작성해주세요.
+- 각 API에서 Loading 상태에 대한 UI 대응을 해요.
+- 데이터가 없는 경우에 대한 UI 대응을 해요.
+- Http Status에 따라 Error를 다르게 처리해요.

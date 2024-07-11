@@ -1,4 +1,6 @@
 import { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
+import FetchStatus from '@constants/FetchStatus';
+import { ThemeData } from '@/dto';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   elementSize: ElementSize,
@@ -61,6 +63,10 @@ export interface FixedSize {
   width: string,
   height: string,
 }
+
+export type ThemeDataRepository = { [key: string]: ThemeData };
+
+export type FetchStatusType = typeof FetchStatus[string];
 
 export type ContainerSize = FixedSize | 'full-width';
 

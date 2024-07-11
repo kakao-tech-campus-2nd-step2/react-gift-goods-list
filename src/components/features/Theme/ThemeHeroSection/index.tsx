@@ -1,16 +1,16 @@
 import styled from '@emotion/styled';
 
+import type { ThemeData } from '@/api/type';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
+  themeList: ThemeData[];
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const ThemeHeroSection = ({ themeKey, themeList }: Props) => {
+  const currentTheme = getCurrentTheme(themeKey, themeList);
 
   if (!currentTheme) {
     return null;

@@ -1,23 +1,43 @@
 import React from 'react';
-import rankingList from '@mocks/rankingList';
 import styled from '@emotion/styled';
-import { GoodsItem, Grid, Button } from '@components/common';
+import { Grid, Button, GoodsItem, Spinner, ErrorMessage } from '@components/common';
 import useToggle from '@hooks/useToggle';
+import useFetch from '@hooks/useFetch';
+import { useFilter } from '@context/filter/useFilter';
+import { getRankingProducts } from '@apis/ranking';
+import { RankingProductsResponse } from '@/types/responseTypes';
+import { TargetType, WishType } from '../Filter/constants';
 
 const INITIAL_DISPLAY_COUNT = 6;
 const GRID_GAP = 14;
 const GRID_COLUMNS = 6;
+const ERROR_MESSAGE = '데이터를 불러오는 중에 문제가 발생했습니다.';
 
 export default function RankingList() {
   const [showAll, toggleShowAll] = useToggle(false);
+  const { selectedTarget, selectedWish } = useFilter();
+  const { isLoading, isError, data } = useFetch<
+    RankingProductsResponse,
+    { targetType: TargetType; rankType: WishType }
+  >(getRankingProducts, { targetType: selectedTarget, rankType: selectedWish });
 
-  const displayedItems = showAll ? rankingList : rankingList.slice(0, INITIAL_DISPLAY_COUNT);
+  const displayedProducts = showAll ? data?.products : data?.products.slice(0, INITIAL_DISPLAY_COUNT);
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <ErrorMessage message={ERROR_MESSAGE} />;
 
   return (
     <RankingListContainer>
       <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
-        {displayedItems.map(({ id, imageSrc, subtitle, title, amount, rankingIndex, target, wish }) => (
-          <GoodsItem key={id} {...{ imageSrc, subtitle, title, amount, rankingIndex, target, wish }} />
+        {displayedProducts?.map((product, index) => (
+          <GoodsItem
+            key={product.id}
+            subtitle={product.brandInfo.name}
+            imageSrc={product.imageURL}
+            title={product.name}
+            amount={product.price.basicPrice}
+            rankingIndex={index + 1}
+          />
         ))}
       </Grid>
       <ButtonContainer>

@@ -38,7 +38,8 @@
     "@typescript-eslint/no-unused-vars": "error",
     "jsx-a11y/label-has-associated-control": [ 2, {
     "some": [ "nesting", "id" ]
-    }]
+    }],
+    "react-hooks/exhaustive-deps": "off"
   },
   "settings": {
     "import/resolver": {

@@ -1,15 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import useFilter from '@hooks/useFilter';
+import { useFilter } from '@context/filter/useFilter';
 import Wish from './Wish';
 import Target from './Target';
-import { FILTER_TARGETS, FILTER_WISHS } from './constants';
 
 export default function Filter() {
-  const { selectedTarget, selectedWish, selectTarget, selectWish } = useFilter(
-    FILTER_TARGETS[0].name,
-    FILTER_WISHS[0].wish,
-  );
+  const { selectedTarget, selectedWish, selectTarget, selectWish } = useFilter();
 
   return (
     <FilterContainer>

@@ -1,23 +1,14 @@
-import { useEffect } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { useFetchData } from '@/hooks/useFetchData';
 import { fetchThemeProductData } from '@/services/themeProductData';
-import { ProductData } from '@/types/productType';
 
-export const useThemeProductData = (themeKey: string) => {
-  const {
-    data: themeProducts,
-    loading,
-    error,
-    fetchData,
-  } = useFetchData<ProductData[]>();
-
-  useEffect(() => {
-    (async () => {
-      await fetchData(() => fetchThemeProductData(themeKey));
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeKey]);
-
-  return { themeProducts, loading, error };
+export const useInfiniteThemeProducts = (themeKey: string) => {
+  return useInfiniteQuery({
+    queryKey: ['themeProducts', themeKey],
+    queryFn: ({ pageParam }) => fetchThemeProductData(themeKey, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.length ? allPages.length : undefined;
+    },
+  });
 };

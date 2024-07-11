@@ -4,9 +4,13 @@ import { ProductData } from '@/types/productType';
 
 import { GetProductsRequest, GetProductsResponse } from './types';
 
-export const fetchThemeProductData = async (themeKey: string) => {
+export const fetchThemeProductData = async (
+  themeKey: string,
+  pageParam: number
+) => {
   try {
     const params: GetProductsRequest = {
+      pageToken: pageParam.toString(),
       maxResults: 20,
     };
 

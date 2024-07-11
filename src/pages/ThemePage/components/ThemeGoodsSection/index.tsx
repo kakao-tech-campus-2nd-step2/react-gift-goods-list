@@ -1,4 +1,7 @@
-import { useThemeProductData } from '@/pages/ThemePage/hooks/useThemeProductData';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+
+import { useInfiniteThemeProducts } from '@/pages/ThemePage/hooks/useThemeProductData';
 import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
@@ -14,17 +17,28 @@ type ThemeGoodsSectionProps = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
-  const { themeProducts, loading, error } = useThemeProductData(themeKey);
+  const { ref, inView } = useInView();
 
-  if (error) {
-    return <OneTextContainer>{error}</OneTextContainer>;
+  const { data, status, error, fetchNextPage, hasNextPage } =
+    useInfiniteThemeProducts(themeKey);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
+
+  if (status === 'error') {
+    return <OneTextContainer>{error.message}</OneTextContainer>;
   }
 
-  if (loading) {
+  if (status === 'pending') {
     return <LoadingDots />;
   }
 
-  if (!themeProducts?.length) {
+  const themeProducts = data?.pages.flatMap((page) => page);
+
+  if (!themeProducts.length) {
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
   }
 
@@ -38,16 +52,20 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
         }}
         css={gridStyle}
       >
-        {themeProducts?.map(
-          ({ id, imageURL, brandInfo, name, price }: ProductData) => {
+        {themeProducts.map(
+          ({ id, imageURL, brandInfo, name, price }: ProductData, index) => {
             return (
-              <GoodsItem
+              <div
                 key={id}
-                imageSrc={imageURL}
-                subtitle={brandInfo.name}
-                title={name}
-                amount={price.sellingPrice}
-              />
+                ref={themeProducts.length === index + 1 ? ref : undefined}
+              >
+                <GoodsItem
+                  imageSrc={imageURL}
+                  subtitle={brandInfo.name}
+                  title={name}
+                  amount={price.sellingPrice}
+                />
+              </div>
             );
           }
         )}

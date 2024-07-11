@@ -8,6 +8,7 @@ import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { Theme } from '@/types/types';
+import { url } from '@/utils/url/url';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
@@ -18,7 +19,7 @@ export const ThemeCategorySection = () => {
     const fetchThemes = async () => {
       try {
         const response = await axios.get(
-          'https://react-gift-mock-api-ten.vercel.app/api/v1/themes',
+          `${url}/api/v1/themes`,
         );
         setThemes(response.data.themes);
       } catch (error) {

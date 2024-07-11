@@ -6,6 +6,7 @@ import { Container } from '@/components/common/layouts/Container/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types/types';
 import type { product } from '@/types/types';
+import { url } from '@/utils/url/url';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -21,15 +22,12 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          'https://react-gift-mock-api-ten.vercel.app/api/v1/ranking/products',
-          {
-            params: {
-              targetType: filterOption.targetType,
-              rankType: filterOption.rankType,
-            },
+        const response = await axios.get(`${url}/api/v1/ranking/products`, {
+          params: {
+            targetType: filterOption.targetType,
+            rankType: filterOption.rankType,
           },
-        );
+        });
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching themes:', error);

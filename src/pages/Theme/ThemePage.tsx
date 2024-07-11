@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection/ThemeHeroSection';
 import type { ThemeData } from '@/types/types';
+import { url } from '@/utils/url/url';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
@@ -15,7 +16,7 @@ export const ThemePage = () => {
     const fetchThemes = async () => {
       try {
         const response = await axios.get(
-          'https://react-gift-mock-api-ten.vercel.app/api/v1/themes',
+          `${url}/api/v1/themes`,
         );
         setThemes(response.data.themes);
       } catch (error) {

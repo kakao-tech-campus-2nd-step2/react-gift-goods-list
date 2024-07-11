@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { fetchData } from '@/components/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -13,19 +13,26 @@ type Props = {
   themeKey: string;
 };
 
+type QueryParams = Record<string, string | number>;
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchThemeData = async () => {
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const fetchThemeData = useCallback(
+    async (pageToken?: string) => {
       setLoading(true);
       try {
         const maxResults = 20;
-        const queryParams = { maxResults };
+        const queryParams: QueryParams = pageToken ? { maxResults, pageToken } : { maxResults };
 
         const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
-        setCurrentGoods(data.products);
+        setCurrentGoods((prevGoods) => [...prevGoods, ...data.products]);
+        setNextPageToken(data.nextPageToken || null);
       } catch (error: unknown) {
         if (error instanceof Error) {
           console.error('Error fetching theme data:', error.message);
@@ -35,13 +42,38 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [themeKey],
+  );
 
+  useEffect(() => {
+    setCurrentGoods([]);
+    setNextPageToken(null);
     fetchThemeData();
-  }, [themeKey]);
+  }, [themeKey, fetchThemeData]);
+
+  useEffect(() => {
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && nextPageToken) {
+        fetchThemeData(nextPageToken);
+      }
+    });
+
+    if (loadMoreRef.current) {
+      observer.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [nextPageToken, fetchThemeData]);
 
   const renderContent = () => {
-    if (loading) {
+    if (currentGoods.length === 0 && loading) {
       return (
         <LoadingWrapper>
           <Loading />
@@ -49,7 +81,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       );
     }
 
-    if (currentGoods.length === 0) {
+    if (currentGoods.length === 0 && !loading) {
       return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
     }
 
@@ -76,7 +108,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   return (
     <Wrapper>
-      <Container>{renderContent()}</Container>
+      <Container>
+        {renderContent()}
+        <div ref={loadMoreRef} />
+      </Container>
     </Wrapper>
   );
 };

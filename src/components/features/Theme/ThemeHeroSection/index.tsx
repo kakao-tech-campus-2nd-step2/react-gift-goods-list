@@ -1,22 +1,26 @@
 import styled from '@emotion/styled';
 
+//import { useState } from 'react';
+//import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 import { ThemeMockList } from '@/types/mock';
+
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
+
   const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
 
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  const { backgroundColor = '#333', label, title, description } = currentTheme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -83,6 +87,6 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

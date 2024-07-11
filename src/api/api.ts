@@ -14,7 +14,7 @@ export interface GetRankingProductsResponse {
 }
 
 export interface GetThemesResponse {
-  hemes: ThemeData[];
+  themes: ThemeData[];
 }
 
 export interface GetThemeProductsRequest {

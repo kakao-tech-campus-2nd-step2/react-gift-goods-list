@@ -73,6 +73,10 @@ export const ThemeCategorySection = () => {
   if (themes.length === 0) {
     return <NoDataWrapper>No themes available</NoDataWrapper>;
   }
+  
+  {themes.map((theme) => {
+    console.log(getDynamicPath.theme(theme.key))
+  })}
 
   return (
     <Wrapper>

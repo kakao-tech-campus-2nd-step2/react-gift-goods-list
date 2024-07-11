@@ -26,6 +26,7 @@ export interface ProductData {
     id: number;
     key: string;
     label: string;
+    imageURL: string;
     title: string;
     description: string;
     backgroundColor: string;
@@ -44,3 +45,12 @@ export interface ProductData {
     };
   }
   
+  export interface Theme {
+    id: number;
+    key: string;
+    label: string;
+    imageURL: string;
+    title: string;
+    description: string;
+    backgroundColor: string;
+  }

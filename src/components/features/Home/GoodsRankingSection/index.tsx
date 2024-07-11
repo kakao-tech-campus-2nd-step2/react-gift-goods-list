@@ -16,6 +16,7 @@ export const GoodsRankingSection = () => {
   });
 
   const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([])
+  const [loading, setLoading] = useState(true)
 
   // filterOption 에 변화가 생길 때 마다 실행
   useEffect(() => {
@@ -25,15 +26,31 @@ export const GoodsRankingSection = () => {
         const data = await fetchData(
           `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         )
-        setRankingProducts(data.products)
-        console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)
+
+        // 의도적으로 지연 시간을 추가
+        setTimeout(() => {
+          setRankingProducts(data.products)
+          setLoading(false)
+          console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)
+        }, 2000) 
+        
       }
       catch (error) {
         console.error('[GoodsRankingSection] Fetch Goods Ranking Data Fail: ', error)
+        setLoading(false)
       }
     }
     fetchRankingProductData()
   }, [filterOption]);
+
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
 
   return (
     <Wrapper>
@@ -67,4 +84,32 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
 `;

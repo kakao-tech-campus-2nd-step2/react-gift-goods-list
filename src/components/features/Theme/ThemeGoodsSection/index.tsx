@@ -6,6 +6,8 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 
 import { useFetchProductsByTheme } from '@/api/customHook';
+import Loading from '@/components/Loading';
+import ErrorMessage from '@/components/ErrorMessage';
 
 type Props = {
   themeKey: string;
@@ -14,21 +16,21 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  if (loading) return <Loading />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {products &&
-            products.map(({ id, imageURL, name, price, brandInfo }) => (
+        {products && products.length > 0 ? (
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {products.map(({ id, imageURL, name, price, brandInfo }) => (
               <DefaultGoodsItems
                 key={id}
                 imageSrc={imageURL}
@@ -37,7 +39,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
                 subtitle={brandInfo.name}
               />
             ))}
-        </Grid>
+          </Grid>
+        ) : (
+          <NoProductsMessage>상품이 없어요.</NoProductsMessage>
+        )}
       </Container>
     </Wrapper>
   );
@@ -50,4 +55,10 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const NoProductsMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
 `;

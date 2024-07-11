@@ -9,12 +9,14 @@ import { breakpoints } from '@/styles/variants';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 import { useFetchThemes } from '@/api/customHook';
+import Loading from '@/components/Loading';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export const ThemeCategorySection = () => {
   const { data: themes, loading, error } = useFetchThemes();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  if (loading) return <Loading />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Wrapper>

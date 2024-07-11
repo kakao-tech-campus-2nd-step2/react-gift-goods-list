@@ -47,6 +47,16 @@ interface ResponsiveContainerProps extends ContainerProps { // padding은 어떻
   sizeLg?: ContainerSize;
 }
 
+interface ProportionalSkeletonProps {
+  ratio: number | 'full-square';
+  radius?: string;
+}
+
+interface SizedSkeletonProps {
+  elementSize: FixedSize;
+  radius?: string;
+}
+
 export interface FixedSize {
   width: string,
   height: string,

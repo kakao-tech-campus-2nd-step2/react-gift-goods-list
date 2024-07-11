@@ -3,15 +3,18 @@ import { useCallback, useState } from 'react';
 import Container from '@components/atoms/container/Container';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
-import TargetFilterArea from '@components/organisms/main/ranking/TargetFilterArea';
+import TargetFilterArea
+  from '@components/organisms/main/ranking/TargetFilterArea';
 import RankFilterArea from '@components/organisms/main/ranking/RankFilterArea';
 import Button from '@components/atoms/button/Button';
 import {
-  RankingSectionTitle, RankingSectionTitleContainer,
+  RankingSectionTitle,
+  RankingSectionTitleContainer,
 } from '@components/organisms/main/ranking/RankingSection.styles';
 import FetchStatusBoundary
   from '@components/atoms/container/FetchStatusBoundary';
-import { TargetFilter, RankFilter } from '@/types';
+import FetchStatus from '@constants/FetchStatus';
+import { RankFilter, TargetFilter } from '@/types';
 
 function RankingSection() {
   const [targetFilter, setTargetFilter] = useState<TargetFilter>('ALL');
@@ -23,8 +26,8 @@ function RankingSection() {
   const DISPLAY_COUNT_WHEN_FOLDED = 6;
 
   const isButtonEnabled = useCallback(
-    () => products.length >= DISPLAY_COUNT_WHEN_FOLDED,
-    [products],
+    () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
+    [products, fetchStatus],
   );
 
   return (

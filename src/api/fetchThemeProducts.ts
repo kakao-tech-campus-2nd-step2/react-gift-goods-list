@@ -2,7 +2,7 @@ import type { GoodsData } from '@/types';
 
 import instance from './api';
 
-interface FetchThemeProductsResponse {
+export interface FetchThemeProductsResponse {
   products: GoodsData[];
   nextPageToken: string | null;
   pageInfo: {

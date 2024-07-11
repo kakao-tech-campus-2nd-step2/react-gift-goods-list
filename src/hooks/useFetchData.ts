@@ -37,6 +37,8 @@ export const useFetchData = <T>({ fetchData }: UseFetchDataProps<T>): UseFetchDa
         } else {
           setError(err.response?.data);
         }
+      } else {
+        setError('네트워크 오류가 발생했습니다.');
       }
     } finally {
       setLoading(false);
@@ -45,6 +47,7 @@ export const useFetchData = <T>({ fetchData }: UseFetchDataProps<T>): UseFetchDa
 
   useEffect(() => {
     fetchDataCallback();
+    console.log('ddd');
   }, [fetchDataCallback]);
 
   return { data, loading, error };

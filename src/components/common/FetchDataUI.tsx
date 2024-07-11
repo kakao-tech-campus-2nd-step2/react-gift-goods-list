@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-interface FetchDataUIProps {
-  data: [];
+interface FetchDataUIProps<T> {
   loading: boolean;
   error: string | null;
+  data: T[];
   children: React.ReactNode;
 }
 
-export const FetchDataUI: React.FC<FetchDataUIProps> = ({ data, loading, error, children }) => {
+export const FetchDataUI = <T,>({ loading, error, data, children }: FetchDataUIProps<T>) => {
   if (loading) {
     return <LoadingMsg>Loading...</LoadingMsg>;
   }

@@ -10,7 +10,7 @@ const objectToQueryParams = (params: QueryParams): string => {
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value.toString())}`)
     .join('&');
 
-  return queryParams;
+  return `?${queryParams}`;
 };
 
 export const fetchData = async (endpoint: string, queryParams?: QueryParams) => {

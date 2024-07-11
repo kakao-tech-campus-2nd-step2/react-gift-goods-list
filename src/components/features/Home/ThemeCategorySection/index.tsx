@@ -13,6 +13,7 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
 
+  const [loading, setLoading] = useState(true);
   const [themeCategory, setThemeCategory] = useState<ThemeData[]>([]);
   useEffect(() => {
     const fetchThemes = async () => {
@@ -21,10 +22,16 @@ export const ThemeCategorySection = () => {
         setThemeCategory(response.data.themes);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchThemes();
   }, []);
+
+  if (loading) {
+    return <LoadingScreen>Loading...</LoadingScreen>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -56,4 +63,11 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
+`;
+
+const LoadingScreen = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;

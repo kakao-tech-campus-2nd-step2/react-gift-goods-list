@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import type { AxiosError } from 'axios';
+import { useCallback, useEffect, useState } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 import { getRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
@@ -19,34 +21,61 @@ export const GoodsRankingSection = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  useEffect(() => {
-    const fetchRankingProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getRankingProducts(filterOption.targetType, filterOption.rankType);
+  const fetchRankingProducts = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await getRankingProducts(filterOption.targetType, filterOption.rankType);
+      if (response.products.length === 0) {
+        setErrorMessage('상품이 없습니다.');
+      } else {
         setGoodsList(response.products);
-      } catch (error: unknown) {
-        setErrorMessage('Failed to fetch products');
-      } finally {
-        setIsLoading(false);
       }
-    };
-
-    fetchRankingProducts();
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        switch (axiosError.response.status) {
+          case 404:
+            setErrorMessage('데이터를 찾을 수 없습니다.');
+            break;
+          case 500:
+            setErrorMessage('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+            break;
+          default:
+            setErrorMessage('알 수 없는 오류가 발생했습니다.');
+        }
+      } else {
+        setErrorMessage('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }, [filterOption]);
+
+  useEffect(() => {
+    fetchRankingProducts();
+  }, [fetchRankingProducts, filterOption]);
+
+  const GoodRankingListView = useCallback(() => {
+    if (errorMessage) {
+      return <TextView>{errorMessage}</TextView>;
+    }
+    if (isLoading) {
+      return (
+        <LoadingContainer>
+          <ClipLoader color="#36d7b7" loading={isLoading} size={50} />
+          <LoadingText>로딩중</LoadingText>
+        </LoadingContainer>
+      );
+    }
+    return <GoodsRankingList goodsList={goodsList} />;
+  }, [isLoading, goodsList, errorMessage]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {isLoading ? (
-          <TextView>로딩중</TextView>
-        ) : errorMessage ? (
-          <TextView>{errorMessage}</TextView>
-        ) : (
-          <GoodsRankingList goodsList={goodsList} />
-        )}
+        <GoodRankingListView />
       </Container>
     </Wrapper>
   );
@@ -82,4 +111,19 @@ const TextView = styled.div`
   align-items: center;
   padding: 40px 16px 60px;
   font-size: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+`;
+
+const LoadingText = styled.p`
+  margin-top: 10px;
+  font-size: 16px;
+  color: #36d7b7;
 `;

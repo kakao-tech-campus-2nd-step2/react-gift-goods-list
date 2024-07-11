@@ -12,13 +12,17 @@ import { ThemeData } from '@/types';
 import { getData } from '@/api';
 import { useEffect, useState } from 'react';
 
+interface ThemeResponse {
+  themes: ThemeData[];
+}
+
 export const ThemeCategorySection = () => {
   const [themeData, setThemeData] = useState<ThemeData[]>([]);
 
   useEffect(() => {
     const getThemeData = async () => {
       try {
-        const data = await getData('/api/v1/themes');
+        const data = await getData<ThemeResponse>('/api/v1/themes');
         setThemeData(data.themes);
       } catch (error) {
         console.error('Error fetching theme data:', error);

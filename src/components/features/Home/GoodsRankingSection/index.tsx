@@ -11,6 +11,10 @@ import { GoodsRankingList } from './List';
 import { GoodsData } from '@/types';
 import { getData } from '@/api';
 
+interface ProductsResponse {
+  products: GoodsData[];
+}
+
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
@@ -22,7 +26,7 @@ export const GoodsRankingSection = () => {
     const getRankingProducts = async () => {
       try {
         const { targetType, rankType } = filterOption;
-        const data = await getData(
+        const data = await getData<ProductsResponse>(
           `/api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         );
         setRankingProducts(data.products);

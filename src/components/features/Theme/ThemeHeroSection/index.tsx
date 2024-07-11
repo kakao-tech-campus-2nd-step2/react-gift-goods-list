@@ -12,6 +12,10 @@ type Props = {
   themeKey: string;
 };
 
+interface ThemeResponse {
+  themes: ThemeData[];
+}
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData>()
   const [redirect, setRedirect] = useState(false);
@@ -19,7 +23,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const getThemeData = async () => {
       try {
-        const data = await getData(`/api/v1/themes`);
+        const data = await getData<ThemeResponse>(`/api/v1/themes`);
         const theme = getCurrentTheme(themeKey, data.themes);
         if (!theme) {
           setRedirect(true);

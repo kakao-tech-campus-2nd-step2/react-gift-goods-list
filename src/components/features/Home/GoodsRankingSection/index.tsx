@@ -3,18 +3,14 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
+import type { FetchState } from '@/types';
 import { BASE_URL, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
-
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-}
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -28,7 +24,7 @@ export const GoodsRankingSection = () => {
     data: null,
   });
 
-  const [isData, setIsData] = useState(true);
+  const [isData, setIsData] = useState(false);
 
   // filterOption 마다 API 요청 다르게
   useEffect(() => {
@@ -37,7 +33,7 @@ export const GoodsRankingSection = () => {
         const queryParams = `?targetType=${filterOption.targetType}&rankType=${filterOption.rankType}`;
         const res = await axios.get(`${BASE_URL}/api/v1/ranking/products${queryParams}`);
         setFetchState({ isLoading: false, isError: false, data: res.data.products });
-        setIsData(res.data.products.length > 0);
+        setIsData(res.data.products.length > 0); // 데이터가 있다면 true
       } catch (err) {
         console.error('Error Fetching GoodsData', err);
         setFetchState({ isLoading: false, isError: true, data: null });
@@ -65,13 +61,13 @@ export const GoodsRankingSection = () => {
 
   const renderList = () => {
     if (fetchState.isError) {
-      return <div>데이터를 불러오는 중에 문제가 발생했습니다.</div>;
-    }
-    if (!isData) {
-      return <div>보여줄 상품이 없습니다!</div>;
+      return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
     }
     if (fetchState.isLoading) {
-      return <div>로딩 중</div>;
+      return <Message>로딩 중...</Message>;
+    }
+    if (!isData) {
+      return <Message>보여줄 상품이 없습니다!</Message>;
     }
     return <GoodsRankingList goodsList={fetchState.data} />;
   };

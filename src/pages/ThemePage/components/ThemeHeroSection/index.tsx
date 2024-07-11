@@ -19,24 +19,20 @@ type ThemeHeroSectionProps = {
 export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const navigate = useNavigate();
 
-  const { themeHero, loading, error } = useThemeHeroData(themeKey);
+  const { data: themeHero, status, error } = useThemeHeroData(themeKey);
 
   useEffect(() => {
-    if (error === ERROR_MESSAGES.DATA_NOT_FOUND) {
+    if (error?.message === ERROR_MESSAGES.DATA_NOT_FOUND) {
       navigate(ROUTES.HOME);
     }
   }, [error, navigate]);
 
-  if (error === ERROR_MESSAGES.FETCH_ERROR) {
-    return <OneTextContainer>{error}</OneTextContainer>;
+  if (error?.message) {
+    return <OneTextContainer>{error.message}</OneTextContainer>;
   }
 
-  if (loading) {
+  if (status === 'pending') {
     return <Skeleton width="100vw" height="13rem" />;
-  }
-
-  if (!themeHero) {
-    return <OneTextContainer>{error}</OneTextContainer>;
   }
 
   const { backgroundColor, label, title, description } =

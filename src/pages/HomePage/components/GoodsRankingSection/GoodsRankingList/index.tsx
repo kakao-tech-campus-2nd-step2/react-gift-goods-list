@@ -15,7 +15,7 @@ type GoodsRankingListProps = {
 };
 
 export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
-  const { rankProducts, loading, error } = useRankProductData(filter);
+  const { data: rankProducts, status, error } = useRankProductData(filter);
 
   const { visibleItems, visibleItemCount, setVisibleItemCount } =
     useVisibleList(rankProducts || [], filter);
@@ -27,10 +27,10 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
   );
 
   if (error) {
-    return <OneTextContainer>{error}</OneTextContainer>;
+    return <OneTextContainer>{error.message}</OneTextContainer>;
   }
 
-  if (loading) {
+  if (status === 'pending') {
     return <LoadingDots />;
   }
 

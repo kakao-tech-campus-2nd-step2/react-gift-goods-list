@@ -12,13 +12,13 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 import { gridStyle, itemContainerStyle } from './styles';
 
 export const ThemeCategorySection = () => {
-  const { themeCategoryList, loading, error } = useThemeCategoryData();
+  const { data: themeCategoryList, status, error } = useThemeCategoryData();
 
   if (error) {
-    return <OneTextContainer>{error}</OneTextContainer>;
+    return <OneTextContainer>{error.message}</OneTextContainer>;
   }
 
-  if (loading) {
+  if (status === 'pending') {
     return <LoadingDots />;
   }
 

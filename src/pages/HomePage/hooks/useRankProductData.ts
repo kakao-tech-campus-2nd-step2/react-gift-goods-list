@@ -1,23 +1,11 @@
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-import { useFetchData } from '@/hooks/useFetchData';
 import { fetchRankingProductData } from '@/services/rankingProductData';
-import { ProductData, RankingFilter } from '@/types/productType';
+import { RankingFilter } from '@/types/productType';
 
 export const useRankProductData = (filter: RankingFilter) => {
-  const {
-    data: rankProducts,
-    loading,
-    error,
-    fetchData,
-  } = useFetchData<ProductData[]>();
-
-  useEffect(() => {
-    (async () => {
-      await fetchData(() => fetchRankingProductData(filter));
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
-
-  return { rankProducts, loading, error };
+  return useQuery({
+    queryKey: ['rankProducts', filter],
+    queryFn: () => fetchRankingProductData(filter),
+  });
 };

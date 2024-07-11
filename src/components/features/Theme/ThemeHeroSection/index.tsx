@@ -25,12 +25,9 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         const data = await fetchData(`api/v1/themes`)
         const theme = getCurrentTheme(themeKey, data.themes)
 
-        // 의도적으로 지연 시간을 추가
-        setTimeout(() => {
-          setCurrentTheme(theme)
-          setLoading(false)
-          console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
-        }, 2000)
+        setCurrentTheme(theme)
+        setLoading(false)
+        console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
       }
       catch (error) {
         console.error('[ThemeHeroSection] Fetch Theme Data Fail: ', error)

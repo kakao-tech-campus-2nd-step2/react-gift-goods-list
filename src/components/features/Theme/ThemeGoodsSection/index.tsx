@@ -24,12 +24,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const queryParams = `?maxItems=${MaxItems}`
         const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`)
 
-        // 의도적으로 지연 시간을 추가
-        setTimeout(() => {
-          setCurrentGoods(data.products)
-          setLoading(false)
-          console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
-        }, 2000)
+        setCurrentGoods(data.products)
+        setLoading(false)
+        console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
       }
       catch (error) {
         console.error('[ThemeGoodsSection] Fetch Theme Goods Data Fail: ', error)
@@ -45,6 +42,14 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         <Spinner />
         <LoadingText>Loading...</LoadingText>
       </LoadingWrapper>
+    )
+  }
+
+  if (currentGoods.length === 0) {
+    return (
+      <NoDataWrapper>
+        <NoDataText>No data available</NoDataText>
+      </NoDataWrapper>
     )
   }
   
@@ -108,4 +113,16 @@ const LoadingText = styled.div`
   margin-top: 10px;
   font-size: 1.2rem;
   color: #555;
+`;
+
+const NoDataWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const NoDataText = styled.div`
+  font-size: 1.5rem;
+  color: #999;
 `;

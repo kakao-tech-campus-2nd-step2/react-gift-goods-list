@@ -27,13 +27,9 @@ export const GoodsRankingSection = () => {
           `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         )
 
-        // 의도적으로 지연 시간을 추가
-        setTimeout(() => {
-          setRankingProducts(data.products)
-          setLoading(false)
-          console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)
-        }, 2000) 
-        
+        setRankingProducts(data.products)
+        setLoading(false)
+        console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)        
       }
       catch (error) {
         console.error('[GoodsRankingSection] Fetch Goods Ranking Data Fail: ', error)
@@ -43,21 +39,23 @@ export const GoodsRankingSection = () => {
     fetchRankingProductData()
   }, [filterOption]);
 
-  if (loading) {
-    return (
-      <LoadingWrapper>
-        <Spinner />
-        <LoadingText>Loading...</LoadingText>
-      </LoadingWrapper>
-    )
-  }
-
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={rankingProducts} />
+        {loading ? (
+          <LoadingWrapper>
+            <Spinner />
+            <LoadingText>Loading...</LoadingText>
+          </LoadingWrapper>
+        ) : rankingProducts.length === 0 ? (
+          <NoDataWrapper>
+            <NoDataText>No ranking products available</NoDataText>
+          </NoDataWrapper>
+        ) : (
+          <GoodsRankingList goodsList={rankingProducts} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -92,6 +90,7 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 500px;
+  width: 100%;
 `;
 
 const Spinner = styled.div`
@@ -112,4 +111,18 @@ const LoadingText = styled.div`
   margin-top: 10px;
   font-size: 1.2rem;
   color: #555;
+`;
+
+const NoDataWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  width: 100%;
+`;
+
+const NoDataText = styled.div`
+  font-size: 1.5rem;
+  color: #999;
+  text-align: center;
 `;

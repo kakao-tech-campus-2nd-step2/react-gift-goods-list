@@ -29,12 +29,9 @@ export const ThemeCategorySection = () => {
       try {
         const data = await fetchData('api/v1/themes')
 
-        // 의도적으로 지연 시간을 추가
-        setTimeout(() => {
-          setThemeFromAPI(data.themes)
-          setLoading(false)
-          console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
-        }, 2000) 
+        setThemeFromAPI(data.themes)
+        setLoading(false)
+        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
       }
       catch (error) {
         console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error)

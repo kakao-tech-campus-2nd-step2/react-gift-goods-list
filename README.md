@@ -24,7 +24,7 @@
 
 - [x] 데이터가 없는 경우에 대한 UI 대응
 
-- [ ] HTTP Status에 따라 Error를 다르게 처리
+- [x] HTTP Status에 따라 Error를 다르게 처리
 
 <br>
 

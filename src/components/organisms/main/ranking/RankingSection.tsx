@@ -30,7 +30,6 @@ function RankingSection() {
     () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && fetchStatus === FetchStatus.FETCH_SUCCESS,
     [products, fetchStatus],
   );
-  console.log(errorCode);
 
   return (
     <Container elementSize="full-width" justifyContent="center">

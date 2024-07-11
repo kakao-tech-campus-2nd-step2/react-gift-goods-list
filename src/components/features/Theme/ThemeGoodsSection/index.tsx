@@ -14,6 +14,7 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([])
+  const [loading, setLoading] = useState(true)
 
   // themeKey 가 변할 때마다 실행
   useEffect(() => {
@@ -22,17 +23,31 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const MaxItems = 20
         const queryParams = `?maxItems=${MaxItems}`
         const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`)
-        setCurrentGoods(data.products)
-        console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
+
+        // 의도적으로 지연 시간을 추가
+        setTimeout(() => {
+          setCurrentGoods(data.products)
+          setLoading(false)
+          console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
+        }, 2000)
       }
       catch (error) {
         console.error('[ThemeGoodsSection] Fetch Theme Goods Data Fail: ', error)
+        setLoading(false)
       }
     }
     fetchThemeData()
   }, [themeKey])
-  
 
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+  
   return (
     <Wrapper>
       <Container>
@@ -65,4 +80,32 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
 `;

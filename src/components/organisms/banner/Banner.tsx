@@ -2,12 +2,11 @@ import Container from '@components/atoms/container/Container';
 import { backgroundColors } from '@styles/colors';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import { useContext } from 'react';
-import { ThemeKey } from '@/types';
 import { ThemeName, ThemeSubtitle, ThemeTitle } from './Banner.styles';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 interface BannerProps {
-  themeKey: ThemeKey;
+  themeKey: string;
 }
 
 function Banner({ themeKey }: BannerProps) {

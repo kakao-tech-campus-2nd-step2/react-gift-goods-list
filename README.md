@@ -10,7 +10,7 @@
 
 https://kakao-tech-week3-goods-list.pages.dev/
 
-<h3>📝 요구사항</h3>
+<h3>📝 STEP 1 요구사항</h3>
 
 - [x] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.
 
@@ -41,3 +41,11 @@ https://kakao-tech-week3-goods-list.pages.dev/
   - [x] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현해요.
 
   - [x] API 요청 시 한번에 20개의 상품 목록이 내려오도록 해요.
+
+<h3>📝 STEP 2 요구사항</h3>
+
+- [x] 각 API에서 Loading 상태에 대한 UI 대응하기
+
+- [x] 데이터가 없는 경우에 대한 UI 대응하기
+
+- [x] Http Status 에 따라 Error를 다르게 처리해요.

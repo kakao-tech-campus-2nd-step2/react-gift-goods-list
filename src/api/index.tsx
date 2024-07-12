@@ -21,3 +21,13 @@ export const getRankingProducts = async (targetType: string, rankType: string) =
     throw error;
   }
 };
+
+export const getThemeProducts = async (themeKey: string) => {
+  try {
+    const response = await fetchInstance.get(`/v1/themes/${themeKey}/products`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching theme products (getThemeProducts): ', error);
+    throw error;
+  }
+};

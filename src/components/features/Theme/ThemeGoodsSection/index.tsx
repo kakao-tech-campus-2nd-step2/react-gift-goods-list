@@ -1,16 +1,51 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { getThemeProducts } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/DefaultGoodsItems';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  // console.log('themeKey: ', themeKey);
+
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchThemeProducts = async () => {
+      try {
+        const response = await getThemeProducts(themeKey);
+        const products: GoodsData[] = response.products;
+
+        if (products) {
+          setGoodsList(products);
+          // console.log('products: ', products);
+        } else {
+          console.error(`No products found for key: ${themeKey}`);
+          setIsError(true);
+        }
+      } catch (error) {
+        setIsError(true);
+        console.error('Error fetching theme products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchThemeProducts();
+  }, [themeKey]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError || !goodsList) return <p>Error loading theme products.</p>;
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +56,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

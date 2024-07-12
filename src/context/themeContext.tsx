@@ -13,6 +13,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['themes'],
     queryFn: getThemes,
+    retry: 5,
   });
 
   if (isLoading || isError) {

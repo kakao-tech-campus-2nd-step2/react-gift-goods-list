@@ -8,14 +8,27 @@ interface StatusHanlderProps {
   isLoading: boolean;
   isError: boolean;
   isEmpty: boolean;
+  isFetchingNextPage?: boolean;
   error?: AxiosError | null;
   children: ReactNode;
 }
 
-export default function StatusHandler({ isLoading, isError, isEmpty, error, children }: StatusHanlderProps) {
+export default function StatusHandler({
+  isLoading,
+  isError,
+  isEmpty,
+  error,
+  isFetchingNextPage,
+  children,
+}: StatusHanlderProps) {
   if (isLoading) return <Spinner />;
   if (isError && error) return <ErrorMessage message={error.message} />;
   if (isEmpty) return <ErrorMessage message={ERROR.NO_PRODUCTS} />;
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      {children}
+      {isFetchingNextPage && <Spinner />}
+    </div>
+  );
 }

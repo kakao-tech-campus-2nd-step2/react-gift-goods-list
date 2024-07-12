@@ -25,3 +25,10 @@
 - 각 API에서 Loading 상태에 대한 UI대응
 - 데이터가 없는 경우에 대한 UI 대응
 - Http Status에 따라 Error를 다르게 처리
+
+# Step3
+
+### Requirements
+
+- 스크롤을 내리면 추가로 데이터를 요청하여 보여지게 구현
+- 1단계에서 구현한 API를 react-query를 사용하여 구현

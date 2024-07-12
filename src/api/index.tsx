@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const BASE_URL = 'https://react-gift-mock-api-hyunaeri.vercel.app/'
+import { BASE_URL } from "@/constants"
 
 const fetchData = async (target: string) => {
   try {
@@ -9,7 +9,6 @@ const fetchData = async (target: string) => {
   } 
   catch (error) {
     console.error(`Error fetching data from ${target}`, error)
-    throw error
   }
 }
 

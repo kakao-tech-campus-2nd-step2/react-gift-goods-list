@@ -40,11 +40,11 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }
 
   if (isError) {
-    return <div>GoodsData 불러오기 실패</div>;
+    return <div>상품을 불러오는 중 문제가 발생하였습니다.</div>;
   }
 
   if (!data || data.pages[0].products.length === 0) {
-    return <div>상품이 없습니다.</div>;
+    return <div>보여드릴 상품이 없습니다.</div>;
   }
 
   return (
@@ -73,7 +73,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             })
           )}
         </Grid>
-        {isFetchingNextPage && <div>로딩 more...</div>}
+        {isFetchingNextPage && <div>추가 로딩...</div>}
       </Container>
     </Wrapper>
   );

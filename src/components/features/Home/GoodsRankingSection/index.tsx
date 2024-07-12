@@ -30,7 +30,7 @@ export const GoodsRankingSection = () => {
     }
 
     if (!data || data.length === 0) {
-      return <NoDataView>데이터가 없습니다.</NoDataView>;
+      return <NoDataView>보여드릴 상품이 없습니다.</NoDataView>;
     }
 
     return <GoodsRankingList goodsList={data} />;

@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 
+import { fetchRankingProducts } from '@/api/ranking';
+import { DataWrapper } from '@/components/common/DataWrapper';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { RankingFilterOption, RankingProductsResponse } from '@/types';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +18,24 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data, error, isLoading } = useQuery<RankingProductsResponse, Error>(
+    ['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption),
+  );
+  const errorMessage = error ? getErrorMessage(error) : null;
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <DataWrapper isLoading={isLoading} errorMessage={errorMessage}>
+          {data?.products.length === 0 ? (
+            <Message>보여줄 상품이 없어요!</Message>
+          ) : (
+            data && <GoodsRankingList goodsList={data.products} />
+          )}
+        </DataWrapper>
       </Container>
     </Wrapper>
   );
@@ -49,4 +62,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Message = styled.p`
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
 `;

@@ -13,6 +13,7 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { ErrorMessage } from '@/components/features/Error/ErrorMessage';
 import { Loading } from '@/components/features/Loading/Loading';
+
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { breakpoints } from '@/styles/variants';
 import { handleApiError } from '@/utils/errorHandler/errorHandler';
@@ -78,6 +79,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     return <ErrorMessage message={errorMessage} />;
   }
 
+  if (isLoading) {
+    return <Loading message="ë¡œë”© ì¤‘" />;
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -100,7 +105,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         </Grid>
         {hasMore && <LoadingTrigger ref={ref} />}
       </Container>
-      {isLoading && <Loading message="·Îµù Áß..." />}
+      {isLoading && <Loading message="ë¡œë”© ì¤‘..." />}
     </Wrapper>
   );
 };

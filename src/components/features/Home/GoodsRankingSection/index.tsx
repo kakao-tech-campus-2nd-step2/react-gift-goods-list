@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import apiClient from '@/api';
-import type { GetRankingProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
+import { useRankingProducts } from '@/hooks/useRankingProducts';
 import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
@@ -12,33 +11,22 @@ import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
 export const GoodsRankingSection = () => {
-  const [loading, setLoading] = useState(true);
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [rankingProducts, setRankingProducts] = useState<ProductData[]>([]);
-  useEffect(() => {
-    const fetchRankingProducts = async () => {
-      try {
-        const response = await apiClient.get<GetRankingProductsResponse>('/api/v1/ranking/products', {
-          params: {
-            targetType: filterOption.targetType,
-            rankType: filterOption.rankType,
-          },
-        });
-        setRankingProducts(response.data.products);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRankingProducts();
-  }, [filterOption]);
+  const [rankingProducts, { isLoading, isError }] = useRankingProducts(filterOption);
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />
+  }
+
+  if (isError || !rankingProducts) {
+    return (
+      <div>
+        에러가 발생했습니다.
+      </div>
+    )
   }
 
   return (

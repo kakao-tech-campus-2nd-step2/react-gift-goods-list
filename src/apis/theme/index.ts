@@ -1,9 +1,13 @@
 import type { Theme } from '@/types/product';
 
 import instance from '../instance';
-import API from '../path';
+import API from '../path.constants';
 
-export const getThemes = async (): Promise<Theme[]> => {
-  const res = await instance.get(API.THEMES);
-  return res.data!.themes;
+interface ThemesResponse {
+  themes: Theme[];
+}
+
+export const getThemes = async () => {
+  const { data } = await instance.get<ThemesResponse>(API.THEMES);
+  return data.themes;
 };

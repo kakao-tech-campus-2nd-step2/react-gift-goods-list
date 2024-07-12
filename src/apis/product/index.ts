@@ -1,32 +1,27 @@
 import type { ProductWithInfo } from '@/types/product';
 
 import instance from '../instance';
-import API from '../path';
+import API from '../path.constants';
+
+interface ThemeProductsResponse {
+  products: ProductWithInfo;
+}
 
 export interface GetThemesParams {
   themeKey: string;
   pageToken?: string;
   maxResults?: number;
 }
-export const getProductWithTheme = async ({
-  themeKey,
-  pageToken,
-  maxResults,
-}: GetThemesParams): Promise<ProductWithInfo> => {
-  console.log(maxResults);
-  console.log(themeKey);
+export const getProductWithTheme = async ({ themeKey, pageToken, maxResults }: GetThemesParams) => {
   const params = {
     pageToken,
     maxResults,
+    ...(pageToken && { pageToken }),
   };
 
-  if (pageToken) params.pageToken = pageToken;
-
-  console.log(params);
-
-  const res = await instance.get(API.THEMES_DETAIL(themeKey), {
+  const { data } = await instance.get<ThemeProductsResponse>(API.THEMES_DETAIL(themeKey), {
     params,
   });
-  console.log(res);
-  return res.data!.products;
+
+  return data.products;
 };

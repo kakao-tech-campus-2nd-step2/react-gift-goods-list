@@ -1,26 +1,9 @@
-import { useEffect } from 'react';
-
 import mock from '@/apis/index';
-import type { Theme } from '@/types/product';
 
-import useQueryState from '../useQueryState';
+import useAsyncQuery from '../useAsyncQuery';
 
 export default function useTheme() {
-  const { data, isLoading, error, setData, setIsLoading, setError } = useQueryState<Theme[]>();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const response = await mock.getThemes();
-        setData(response);
-      } catch (e) {
-        setError(e);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [setData, setIsLoading, setError]);
+  const { data, isLoading, error } = useAsyncQuery(mock.getThemes, {});
 
   return {
     data,

@@ -23,7 +23,7 @@ export const GoodsRankingSection = () => {
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {isLoading && <p>Loading...</p>}
-        {Boolean(error) && <p>Error</p>}
+        {Boolean(error) && <p>{error?.message}</p>}
         {data && <GoodsRankingList goodsList={data} />}
       </Container>
     </Wrapper>

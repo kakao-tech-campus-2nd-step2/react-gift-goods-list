@@ -18,36 +18,42 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
 
   return (
     <Wrapper>
-      <Grid
-        columns={{
-          initial: 3,
-          sm: 4,
-          md: 6,
-        }}
-        gap={16}
-      >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
-          <RankingGoodsItems
-            key={id}
-            rankingIndex={index + 1}
-            imageSrc={imageURL}
-            title={name}
-            amount={price.sellingPrice}
-            subtitle={brandInfo.name}
-          />
-        ))}
-      </Grid>
-      <ButtonWrapper>
-        <Button
-          theme="outline"
-          style={{ maxWidth: '480px' }}
-          onClick={() => {
-            setHasMore((prev) => !prev);
-          }}
-        >
-          {hasMore ? '접기' : '더보기'}
-        </Button>
-      </ButtonWrapper>
+      {goodsList.length === 0 ? (
+        <p>데이터가 없습니다. 🥲</p>
+      ) : (
+        <>
+          <Grid
+            columns={{
+              initial: 3,
+              sm: 4,
+              md: 6,
+            }}
+            gap={16}
+          >
+            {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+              <RankingGoodsItems
+                key={id}
+                rankingIndex={index + 1}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
+          </Grid>
+          <ButtonWrapper>
+            <Button
+              theme="outline"
+              style={{ maxWidth: '480px' }}
+              onClick={() => {
+                setHasMore((prev) => !prev);
+              }}
+            >
+              {hasMore ? '접기' : '더보기'}
+            </Button>
+          </ButtonWrapper>
+        </>
+      )}
     </Wrapper>
   );
 };

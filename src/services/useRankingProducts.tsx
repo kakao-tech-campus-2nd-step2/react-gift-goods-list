@@ -2,19 +2,17 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 import { axiosInstance } from '.';
-import type { ProductResponseData } from './useThemeProducts';
+import type { Product } from './types';
 
 import type { RankingProductType } from '@/components/Home/GiftRanking';
 
 export const useRankingProducts = ({ targetType, rankType }: RankingProductType) =>
-  useQuery({
+  useQuery<Product[]>({
     queryKey: ['rankingProducts', targetType, rankType],
     queryFn: async () => {
       try {
-        const response = await axiosInstance.get<ProductResponseData>(
-          `v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
-        );
-        return response.data;
+        const response = await axiosInstance.get(`v1/ranking/products?targetType=${targetType}&rankType=${rankType}`);
+        return response.data.products;
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response?.status === 404) {

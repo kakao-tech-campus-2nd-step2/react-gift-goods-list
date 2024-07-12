@@ -2,23 +2,14 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 import { axiosInstance } from '.';
-import type { Product } from './types';
-
-export type ProductResponseData = {
-  products: Product[];
-  nextPageToken?: string;
-  pageInfo: {
-    resultsPerPage: number;
-    totalResults: number;
-  };
-};
+import type { ProductWithPageData } from './types';
 
 export const useThemeProducts = (themeKey: string) =>
-  useInfiniteQuery<ProductResponseData>({
+  useInfiniteQuery<ProductWithPageData>({
     queryKey: ['themeProducts', themeKey],
     queryFn: async ({ pageParam = 0 }) => {
       try {
-        const response = await axiosInstance.get<ProductResponseData>(`v1/themes/${themeKey}/products`, {
+        const response = await axiosInstance.get<ProductWithPageData>(`v1/themes/${themeKey}/products`, {
           params: {
             pageToken: pageParam,
             maxResults: 20,

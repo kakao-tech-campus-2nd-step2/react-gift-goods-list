@@ -19,3 +19,12 @@ export interface Product {
     basicPrice: number;
   };
 }
+
+export interface ProductWithPageData {
+  products: Product[];
+  nextPageToken?: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}

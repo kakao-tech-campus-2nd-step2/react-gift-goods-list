@@ -4,17 +4,13 @@ import { AxiosError } from 'axios';
 import { axiosInstance } from '.';
 import type { Theme } from './types';
 
-export type ThemeResponseData = {
-  themes: Theme[];
-};
-
 export const useThemes = () =>
-  useQuery({
+  useQuery<Theme[]>({
     queryKey: ['themes'],
     queryFn: async () => {
       try {
-        const response = await axiosInstance.get<ThemeResponseData>('v1/themes');
-        return response.data;
+        const response = await axiosInstance.get('v1/themes');
+        return response.data.themes;
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response?.status === 404) {

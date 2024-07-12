@@ -24,7 +24,7 @@ export const GiftRanking = () => {
   };
 
   const { data, isLoading, error } = useRankingProducts(filter);
-  const filterdList = data?.products ?? [];
+  const filterdList = data ?? [];
 
   const HandleFilteredList = () => {
     if (isLoading) {

@@ -9,7 +9,7 @@ import { useThemes } from '@/services/useThemes';
 
 export const ThemeCategory = () => {
   const { isLoading, error, data } = useThemes();
-  const ThemeCategoryList = data?.themes ?? [];
+  const ThemeCategoryList = data ?? [];
 
   if (isLoading || error) {
     return null;

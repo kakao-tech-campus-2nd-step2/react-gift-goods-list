@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import apiClient from '@/api';
 import type { GetRankingProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
+import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -37,7 +38,7 @@ export const GoodsRankingSection = () => {
   }, [filterOption]);
 
   if (loading) {
-    return <LoadingScreen>Loading...</LoadingScreen>;
+    return <Loading />
   }
 
   return (
@@ -74,9 +75,3 @@ const Title = styled.h2`
   }
 `;
 
-const LoadingScreen = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;

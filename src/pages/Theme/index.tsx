@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -6,6 +5,7 @@ import apiClient from '@/api';
 import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
+import Loading from '@/styles/Loading';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
@@ -26,7 +26,7 @@ export const ThemePage = () => {
   }, []);
 
   if (loading) {
-    return <LoadingScreen>Loading...</LoadingScreen>;
+    return <Loading />
   }
 
   return (
@@ -36,10 +36,3 @@ export const ThemePage = () => {
     </>
   );
 };
-
-const LoadingScreen = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;

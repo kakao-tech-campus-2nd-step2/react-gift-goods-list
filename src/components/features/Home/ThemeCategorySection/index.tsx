@@ -7,6 +7,7 @@ import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
+import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
@@ -30,7 +31,7 @@ export const ThemeCategorySection = () => {
   }, []);
 
   if (loading) {
-    return <LoadingScreen>Loading...</LoadingScreen>;
+    return <Loading />;
   }
   return (
     <Wrapper>
@@ -63,11 +64,4 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
-`;
-
-const LoadingScreen = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 `;

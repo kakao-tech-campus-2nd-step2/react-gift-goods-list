@@ -1,7 +1,7 @@
 import { Container } from '@/components/common/layouts/Container';
+import { useThemeContext } from '@/provider/Theme/ThemeProvider';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 import styled from '@emotion/styled';
 
 type Props = {
@@ -9,7 +9,9 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { themes } = useThemeContext();
+
+  const currentTheme = getCurrentTheme(themeKey, themes);
   if (!currentTheme) {
     return null;
   }

@@ -14,19 +14,18 @@ import { breakpoints } from '@/styles/variants';
 export const ThemeGoodsSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
 
-  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery(
-      ['themeGoods', themeKey],
-      ({ pageParam = 1 }) => getTheme(themeKey, pageParam * 20),
-      {
-        getNextPageParam: (lastPage, pages) => {
-          if (!lastPage || !lastPage.products || lastPage.products.length < 20) {
-            return undefined;
-          }
-          return pages.length + 1;
-        },
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
+    ['themeGoods', themeKey],
+    ({ pageParam = 1 }) => getTheme(themeKey, pageParam * 20),
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (!lastPage.products || lastPage.products.length < 20) {
+          return undefined;
+        }
+        return pages.length + 1;
       },
-    );
+    },
+  );
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastGoodsElementRef = useCallback(
@@ -46,15 +45,6 @@ export const ThemeGoodsSection = () => {
   if (isLoading) {
     return <LoadingSpinner />;
   }
-
-  if (error) {
-    return (
-      <CenteredContent>
-        <ErrorMessage message="데이터를 가져오는 중 오류가 발생했습니다." />
-      </CenteredContent>
-    );
-  }
-
   if (!data || !data.pages) {
     return (
       <CenteredContent>
@@ -64,6 +54,20 @@ export const ThemeGoodsSection = () => {
   }
 
   const goods = data.pages.flatMap((page) => page.products) ?? [];
+  if (typeof data?.pages[0] === 'string') {
+    return (
+      <CenteredContent>
+        <ErrorMessage message={data?.pages[0]} />
+      </CenteredContent>
+    );
+  }
+  if (goods.length === 0) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message="표시할 상품이 없습니다." />
+      </CenteredContent>
+    );
+  }
 
   return (
     <Wrapper>
@@ -76,12 +80,7 @@ export const ThemeGoodsSection = () => {
           gap={16}
         >
           {goods.map((good, index) => {
-            if (!good)
-              return (
-                <CenteredContent>
-                  <ErrorMessage message="에러가 발생했습니다." />
-                </CenteredContent>
-              ); // good이 undefined인지 확인
+            if (!good) return null; // good이 undefined인지 확인
             const { id, imageURL, name, price, brandInfo } = good;
             if (goods.length === index + 1) {
               return (

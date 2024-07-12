@@ -14,7 +14,14 @@ type Props = {
 export const GoodsRankingList = ({ goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+  // 더보기 버튼을 표시할 아이템 개수
+  const displayCount = 6;
+
+  // 현재 보여줄 아이템 리스트
+  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, displayCount);
+
+  // 더보기 버튼을 표시할 조건
+  const showMoreButton = goodsList.length > displayCount;
 
   return (
     <Wrapper>
@@ -37,17 +44,19 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
           />
         ))}
       </Grid>
-      <ButtonWrapper>
-        <Button
-          theme="outline"
-          style={{ maxWidth: '480px' }}
-          onClick={() => {
-            setHasMore((prev) => !prev);
-          }}
-        >
-          {hasMore ? '접기' : '더보기'}
-        </Button>
-      </ButtonWrapper>
+      {showMoreButton && (
+        <ButtonWrapper>
+          <Button
+            theme="outline"
+            style={{ maxWidth: '480px' }}
+            onClick={() => {
+              setHasMore((prev) => !prev);
+            }}
+          >
+            {hasMore ? '접기' : '더보기'}
+          </Button>
+        </ButtonWrapper>
+      )}
     </Wrapper>
   );
 };

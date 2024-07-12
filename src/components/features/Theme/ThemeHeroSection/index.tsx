@@ -3,20 +3,17 @@ import styled from '@emotion/styled';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
-  themeKey: string;
+  theme: ThemeData;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
-
-  if (!currentTheme) {
+const ThemeHeroSection = ({ theme }: Props) => {
+  if (!theme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  const { backgroundColor, label, title, description } = theme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -83,6 +80,4 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+export default ThemeHeroSection;

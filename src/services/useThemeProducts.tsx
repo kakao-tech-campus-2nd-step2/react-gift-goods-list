@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { instantAxios } from '.';
+import { axiosInstance } from '.';
 import type { Product } from './types';
 
 export type ProductResponseData = {
@@ -18,7 +18,7 @@ export const useThemeProducts = (themeKey: string) => {
     let ignore = false;
     const getThemeProducts = async (pageToken?: string) => {
       try {
-        const response = await instantAxios.get<ProductResponseData>(`v1/themes/${themeKey}/products`, {
+        const response = await axiosInstance.get<ProductResponseData>(`v1/themes/${themeKey}/products`, {
           params: {
             pageToken,
             maxResults: 20,

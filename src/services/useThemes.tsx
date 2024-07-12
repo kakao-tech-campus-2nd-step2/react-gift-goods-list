@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { instantAxios } from '.';
+import { axiosInstance } from '.';
 import type { Theme } from './types';
 
 export type ThemeResponseData = {
@@ -14,7 +14,7 @@ export const useThemes = () => {
     let ignore = false;
     const getThemes = async () => {
       try {
-        const response = await instantAxios.get<ThemeResponseData>('v1/themes');
+        const response = await axiosInstance.get<ThemeResponseData>('v1/themes');
         if (!ignore) {
           setData(response.data);
         }

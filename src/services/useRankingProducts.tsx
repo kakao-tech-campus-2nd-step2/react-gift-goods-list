@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { instantAxios } from '.';
+import { axiosInstance } from '.';
 import type { ProductResponseData } from './useThemeProducts';
 
 import type { RankingProductType } from '@/components/Home/GiftRanking';
@@ -12,7 +12,7 @@ export const useRankingProducts = ({ targetType, rankType }: RankingProductType)
     let ignore = false;
     const getRankingProducts = async () => {
       try {
-        const response = await instantAxios.get<ProductResponseData>(
+        const response = await axiosInstance.get<ProductResponseData>(
           `v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
         );
         if (!ignore) {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { getThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import ThemeHeroSection from '@/components/features/Theme/ThemeHeroSection';
+import { RouterPath } from '@/routes/path'; // 추가된 부분
 import type { ThemeData } from '@/types/response';
 
 export const ThemePage = () => {
@@ -31,7 +32,7 @@ export const ThemePage = () => {
   }
 
   if (!currentTheme) {
-    return <p>Theme not found</p>;
+    return <Navigate to={RouterPath.home} />;
   }
 
   console.log('Rendering ThemePage with themeKey:', themeKey);

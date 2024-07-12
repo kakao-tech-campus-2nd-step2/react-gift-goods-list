@@ -1,17 +1,67 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { fetchData } from '@/components/common/API/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+
+interface ThemeData {
+  id: number;
+  key: string;
+  label: string;
+  title: string;
+  description: string;
+  backgroundColor: string;
+}
+
+interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+const ThemeHeroSection: React.FC<Props> = ({ themeKey }) => {
+  const [fetchState, setFetchState] = useState<FetchState<ThemeData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTheme = async (key: string) => {
+      setFetchState({ isLoading: true, isError: false, data: null });
+      try {
+        const data = await fetchData('/api/v1/themes', { key });
+        setFetchState({ isLoading: false, isError: false, data: data.themes });
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+        setFetchState({ isLoading: false, isError: true, data: null });
+      }
+    };
+
+    if (themeKey) {
+      fetchTheme(themeKey);
+    }
+  }, [themeKey]);
+
+  useEffect(() => {
+    if (!fetchState.isLoading && !fetchState.isError && !fetchState.data?.find((theme) => theme.key === themeKey)) {
+      console.log('Invalid theme key, redirecting...');
+      navigate('/');
+    }
+  }, [fetchState, themeKey, navigate]);
+
+  if (fetchState.isLoading)return <p>Loading...</p>;
+  if (fetchState.isError) return <p>데이터를 불러오는 중에 문제가 발생했습니다.</p>;
+
+  const currentTheme = fetchState.data?.find((theme) => theme.key === themeKey);
   if (!currentTheme) {
     return null;
   }
@@ -83,6 +133,4 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+export default ThemeHeroSection;

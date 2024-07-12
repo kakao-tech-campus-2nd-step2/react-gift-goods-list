@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { fetchRankingProducts } from '@/api/ranking';
+import { DataWrapper } from '@/components/common/DataWrapper';
 import { Container } from '@/components/common/layouts/Container';
-import { Loader } from '@/components/common/Loader';
 import { breakpoints } from '@/styles/variants';
-import type { ProductData, RankingFilterOption, RankingProductsResponse } from '@/types';
+import type { RankingFilterOption, RankingProductsResponse } from '@/types';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -16,57 +17,25 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [goodsList, setGoodsList] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadRankingProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data: RankingProductsResponse = await fetchRankingProducts(filterOption);
-        setGoodsList(data.products);
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response) {
-          switch (err.response.status) {
-            case 400:
-              setError('잘못된 요청입니다.');
-              break;
-            case 404:
-              setError('상품을 찾을 수 없습니다.');
-              break;
-            case 500:
-              setError('서버 오류가 발생했습니다.');
-              break;
-            default:
-              setError('오류가 발생했습니다.');
-          }
-        } else {
-          setError('네트워크 오류가 발생했습니다.');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRankingProducts();
-  }, [filterOption]);
+  const { data, error, isLoading } = useQuery<RankingProductsResponse, Error>(
+    ['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption),
+  );
+  const errorMessage = error ? getErrorMessage(error) : null;
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message>{error}</Message>
-        ) : goodsList.length === 0 ? (
-          <Message>보여줄 상품이 없어요!</Message>
-        ) : (
-          <GoodsRankingList goodsList={goodsList} />
-        )}
+        <DataWrapper isLoading={isLoading} errorMessage={errorMessage}>
+          {data?.products.length === 0 ? (
+            <Message>보여줄 상품이 없어요!</Message>
+          ) : (
+            data && <GoodsRankingList goodsList={data.products} />
+          )}
+        </DataWrapper>
       </Container>
     </Wrapper>
   );

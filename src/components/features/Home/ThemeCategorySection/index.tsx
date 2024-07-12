@@ -1,43 +1,39 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/theme';
+import { DataWrapper } from '@/components/common/DataWrapper';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
+import type { ThemesResponse } from '@/types/index';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-
-  useEffect(() => {
-    const loadThemes = async () => {
-      const data = await fetchThemes();
-      setThemes(data.themes);
-    };
-
-    loadThemes();
-  }, []);
+  const { data, error, isLoading } = useQuery<ThemesResponse, Error>('themes', fetchThemes);
+  const errorMessage = error ? getErrorMessage(error) : null;
 
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 4,
-            md: 6,
-          }}
-        >
-          {themes.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>
-          ))}
-        </Grid>
+        <DataWrapper isLoading={isLoading} errorMessage={errorMessage}>
+          <Grid
+            columns={{
+              initial: 4,
+              md: 6,
+            }}
+          >
+            {data?.themes.map((theme) => (
+              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+              </Link>
+            ))}
+          </Grid>
+        </DataWrapper>
       </Container>
     </Wrapper>
   );

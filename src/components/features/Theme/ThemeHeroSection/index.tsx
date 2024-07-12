@@ -1,48 +1,41 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Navigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/theme';
+import { DataWrapper } from '@/components/common/DataWrapper';
 import { Container } from '@/components/common/layouts/Container';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
+import type { ThemeData, ThemesResponse } from '@/types';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, error, isLoading } = useQuery<ThemesResponse, Error>('themes', fetchThemes);
+  const errorMessage = error ? getErrorMessage(error) : null;
 
-  useEffect(() => {
-    const loadTheme = async () => {
-      const data = await fetchThemes();
-      const findTheme = data.themes.find((theme) => theme.key === themeKey);
-      setCurrentTheme(findTheme || null);
-      setIsLoading(false);
-    };
-
-    loadTheme();
-  }, [themeKey]);
+  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
 
   if (!isLoading && !currentTheme) {
     return <Navigate to={RouterPath.home} />;
   }
 
-  if (isLoading || !currentTheme) {
-    return null;
-  }
-
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme?.backgroundColor || '#fff'}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <DataWrapper isLoading={isLoading} errorMessage={errorMessage}>
+          {currentTheme && (
+            <>
+              <Label>{currentTheme.label}</Label>
+              <Title>{currentTheme.title}</Title>
+              {currentTheme.description && <Description>{currentTheme.description}</Description>}
+            </>
+          )}
+        </DataWrapper>
       </Container>
     </Wrapper>
   );

@@ -17,10 +17,10 @@ export const ThemeCategorySection = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getThemes = async () => {
+    const fetchData = async () => {
       try {
-        const themesData = await fetchThemes(); // API 호출로 테마 데이터를 가져옴
-        setThemes(themesData); // 테마 데이터를 상태에 설정
+        const data = await fetchThemes(setError); // API 호출로 테마 데이터를 가져옴
+        setThemes(data); // 테마 데이터를 상태에 설정
         setError(null); // 에러 상태 초기화
       } catch (err) {
         console.error(err); // 에러 발생 시 콘솔에 출력
@@ -30,7 +30,7 @@ export const ThemeCategorySection = () => {
       }
     };
 
-    getThemes();
+    fetchData();
   }, []); // 컴포넌트가 마운트될 때 한 번만 실행
 
   return (

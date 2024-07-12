@@ -21,7 +21,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const getTheme = async () => {
       try {
-        const themes = await fetchThemes(); // API 호출로 테마 데이터를 가져옴
+        const themes = await fetchThemes(setError); // API 호출로 테마 데이터를 가져옴
         const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey) ?? null; // themeKey에 맞는 테마를 찾음
         setCurrentTheme(foundTheme); // 테마를 찾으면 상태에 설정
         setError(null); // 에러 상태 초기화

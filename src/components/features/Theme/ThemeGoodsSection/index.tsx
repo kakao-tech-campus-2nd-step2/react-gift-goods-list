@@ -19,10 +19,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태
 
   useEffect(() => {
-    const getProducts = async () => {
+    const fetchData = async () => {
       try {
-        const products = await fetchThemeProducts(themeKey); // API 호출로 테마 상품 데이터를 가져옴
-        setGoodsList(products); // 상품 데이터를 상태에 설정
+        const data = await fetchThemeProducts(themeKey, setError); // API 호출로 테마 상품 데이터를 가져옴
+        setGoodsList(data); // 상품 데이터를 상태에 설정
         setError(null); // 에러 상태 초기화
       } catch (err) {
         console.error(err);
@@ -32,7 +32,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       }
     };
 
-    getProducts();
+    fetchData();
   }, [themeKey]); // themeKey가 변경될 때마다 데이터 다시 불러옴
 
   return (

@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import apiClient from '@/api';
+import type { GetThemeProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';

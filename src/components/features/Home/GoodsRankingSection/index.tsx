@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import apiClient from '@/api';
+import type { GetRankingProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
 import { useRankingProducts } from '@/hooks/useRankingProducts';
 import ErrorMessage from '@/styles/ErrorMessage';

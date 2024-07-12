@@ -17,7 +17,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>();
 
-  const url = `https://react-gift-mock-api-two.vercel.app/api/v1/themes/${themeKey}/products`;
+  const url = `https://react-gift-mock-api-two.vercel.app/api/v1/themes/${themeKey}/products&page=0&limit=10`;
   useEffect(() => {
     axios
       .get(url)

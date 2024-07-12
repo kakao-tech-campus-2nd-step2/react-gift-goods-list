@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
-import type {ProductData } from '@/api/api';
+import type { GetThemeProductsResponse, ProductData } from '@/api/api';
 import { fetchThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
@@ -13,52 +15,55 @@ type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({ themeKey }: Props) => {
+type FetchProductsParams = {
+  pageParam?: string;
+  themeKey: string;
+};
 
-  const [products, setProducts] = useState<ProductData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+const fetchProducts = async ({ pageParam = '', themeKey }: FetchProductsParams): Promise<GetThemeProductsResponse> => {
+  const response = await fetchThemeProducts({ themeKey, maxResults: 20, pageToken: pageParam });
+  return response;
+};
+
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery<GetThemeProductsResponse, Error>(
+    ['themeProducts', themeKey],
+    ({ pageParam = '' }) => fetchProducts({ pageParam, themeKey }),
+    {
+      getNextPageParam: (lastPage: GetThemeProductsResponse) => lastPage.nextPageToken ?? undefined,
+    }
+  );
+
+  const { ref, inView } = useInView();
 
   useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const response = await fetchThemeProducts({ themeKey, maxResults: 20 })
-        if (response.products.length === 0) {
-          setError('No Products found for this theme')
-        } else {
-          setProducts(response.products)
-        }
-      } catch (err) {
-        if (isAxiosError(err)) {
-          if (err.response?.status === 404) {
-            setError('Products not found')
-          } else if (err.response?.status === 500){
-            setError('Internal server error')
-          } else {
-            setError('An unexpected error')
-          }
-        } else {
-          setError('Failed to load products')
-        }
-      } finally {
-        setLoading(false)
-      }
+    if (inView && hasNextPage) {
+      fetchNextPage();
     }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-    getProducts()
-  }, [themeKey])
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
 
-  if (error) {
-    return <ErrorWrapper>{error}</ErrorWrapper>;
+  if (isError) {
+    const errorMessage = isAxiosError(error)
+      ? error.response?.status === 404
+        ? 'Products not found'
+        : error.response?.status === 500
+        ? 'Internal server error'
+        : 'An unexpected error occurred'
+      : 'Failed to load products';
+    return <ErrorWrapper>{errorMessage}</ErrorWrapper>;
   }
-
-  console.log(products)
 
   return (
     <Wrapper>
@@ -70,16 +75,21 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data?.pages.map((page, pageIndex) =>
+            page.products.map(({ id, imageURL, name, price, brandInfo }: ProductData) => (
+              <DefaultGoodsItems
+                key={`${id}-${pageIndex}`}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))
+          )}
         </Grid>
+        <div ref={ref}>
+          {isFetchingNextPage ? <LoadingWrapper>Loading more...</LoadingWrapper> : null}
+        </div>
       </Container>
     </Wrapper>
   );
@@ -104,3 +114,4 @@ const ErrorWrapper = styled.div`
   text-align: center;
   color: red;
 `;
+

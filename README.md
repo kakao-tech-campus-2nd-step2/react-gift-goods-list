@@ -1,5 +1,5 @@
 # 3️⃣ 3주차 API
-## 📄 1단계 - API 적용하기
+## 📡 1단계 - API 적용하기
 ### ✅ 기능 목록
 - [x] `oas.yaml` 파일을 토대로 Request, Response Type을 정의
 - [x] axios 설치
@@ -16,3 +16,8 @@
   - Theme 페이지 - 상품 목록 섹션
     - [x] `/api/v1/themes/{themeKey}/products` API를 사용하여 상품 목록을 구현
     - [x] API 요청 시 한번에 20개의 상품 목록이 내려오도록 구현
+
+## ⚠️ 2단계 - Error, Loading Status 핸들링 하기
+### ✅ 기능 목록
+- [] 데이터가 없는 경우에 대한 UI 대응
+- [] Http Status에 따라 Error를 다르게 처리

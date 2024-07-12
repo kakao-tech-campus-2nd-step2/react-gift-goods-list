@@ -27,7 +27,7 @@ export const GoodsRankingSection = () => {
   };
 
   const { data, error, isLoading } = useQuery<GoodsData[]>({
-    queryKey: ['products', filterOption.targetType, filterOption.rankType],
+    queryKey: ['ranking/products', filterOption.targetType, filterOption.rankType],
     queryFn: fetchGoodsRanking,
   });
 

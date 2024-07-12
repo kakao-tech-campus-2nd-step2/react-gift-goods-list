@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
   data: T | null;
+  error: AxiosError | null;
 }
 
 export default function useFetch<T, P = undefined>(
@@ -15,6 +16,7 @@ export default function useFetch<T, P = undefined>(
   const [fetchState, setFetchState] = useState<FetchState<T>>({
     isLoading: true,
     isError: false,
+    error: null,
     data: null,
   });
 
@@ -23,13 +25,14 @@ export default function useFetch<T, P = undefined>(
 
   useEffect(() => {
     const fetchData = async () => {
-      setFetchState({ isLoading: true, isError: false, data: null });
+      setFetchState({ isLoading: true, isError: false, data: null, error: null });
       try {
         const data = await memoizedApiCall(apiParams);
-        setFetchState({ isLoading: false, isError: false, data });
+        setFetchState({ isLoading: false, isError: false, data, error: null });
       } catch (error) {
+        const axiosError = error as AxiosError;
         console.error('Error fetching data: ', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
+        setFetchState({ isLoading: false, isError: true, data: null, error: axiosError });
       }
     };
 

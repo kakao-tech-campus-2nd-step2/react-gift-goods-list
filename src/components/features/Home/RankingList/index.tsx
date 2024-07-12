@@ -15,7 +15,7 @@ const GRID_COLUMNS = 6;
 export default function RankingList() {
   const [showAll, toggleShowAll] = useToggle(false);
   const { selectedTarget, selectedWish } = useFilter();
-  const { isLoading, isError, data } = useFetch<
+  const { isLoading, isError, data, error } = useFetch<
     RankingProductsResponse,
     { targetType: TargetType; rankType: WishType }
   >(getRankingProducts, { targetType: selectedTarget, rankType: selectedWish });
@@ -24,7 +24,7 @@ export default function RankingList() {
 
   return (
     <RankingListContainer>
-      <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0}>
+      <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0} error={error}>
         <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
           {displayedProducts?.map((product, index) => (
             <GoodsItem

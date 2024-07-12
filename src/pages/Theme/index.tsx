@@ -1,4 +1,6 @@
 import { css } from '@emotion/css';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -10,10 +12,14 @@ import useData from '@/hooks/useData';
 
 import DefaultList from './DefaultList';
 import ThemeHeader from './ThemeHeader';
-
+// useQuery(['todos', id], () => axios.get(`http://.../${id}`));
 export default () => {
     const themeKey = useParams().themeKey ?? '';
-    const products = useData<Products>(`/themes/${themeKey}/products?maxResults=20`);
+    const { data, isLoading, error } = useQuery<Products>({
+        queryKey: ['productsByTheme', themeKey],
+        queryFn: () =>
+            axios.get(`/themes/${themeKey}/products?maxResults=20`).then((res) => res.data),
+    });
     const themes = useData<Themes>('/themes');
     const [theme, setTheme] = useState<ThemeData>();
     const navigate = useNavigate();
@@ -21,14 +27,13 @@ export default () => {
     useEffect(() => {
         if (themes?.httpStatusCode !== 200)
             navigate(`/error/${themes?.httpStatusCode}/themes_${themeKey}`, { replace: true });
-        if (products?.httpStatusCode !== 200)
-            navigate(`/error/${products?.httpStatusCode}/themes_${themeKey}`, { replace: true });
+        if (error) navigate(`/error/${error.name}/themes_${themeKey}`, { replace: true });
         if (themes?.isLoading) return;
         const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
         if (index === -1) navigate('/error/404', { replace: true });
 
         setTheme(themes?.data?.themes[index]);
-    }, [navigate, themes, themeKey, products?.httpStatusCode]);
+    }, [navigate, themes, themeKey, error]);
 
     return (
         <div>
@@ -58,34 +63,7 @@ export default () => {
                     margin-bottom: 100px;
                 `}
             >
-                {products?.isLoading ? (
-                    <LoadingUI />
-                ) : (
-                    <DefaultList items={products?.data?.products ?? []} />
-                )}
-            </section>
-        </div>
-    );
-    return (
-        <div>
-            <Header />
-            {/* theme header section */}
-            <section>
-                <ThemeHeader
-                    label={theme?.label ?? ''}
-                    title={theme?.title ?? ''}
-                    description={theme?.description ?? ''}
-                    backgroundColor={theme?.backgroundColor ?? '#000000'}
-                />
-            </section>
-            {/* goods list */}
-            <section
-                className={css`
-                    margin-top: 50px;
-                    margin-bottom: 100px;
-                `}
-            >
-                <DefaultList items={products?.data?.products ?? []} />
+                {isLoading ? <LoadingUI /> : <DefaultList items={data?.products ?? []} />}
             </section>
         </div>
     );

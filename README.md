@@ -52,7 +52,7 @@
 ### 3단계
 
 - [x]  프로젝트에 React Query 추가
-- [ ]  (pages/Theme/index) React Query 적용
+- [x]  (pages/Theme/index) React Query 적용
 - [ ]  (pages/Theme/index)페이지네이션 구현
 
 ## page

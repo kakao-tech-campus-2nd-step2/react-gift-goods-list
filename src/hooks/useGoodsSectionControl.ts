@@ -84,7 +84,11 @@ export function useGoodsSectionControl(themeKey: string) {
   const [isLoading, setIsLoading] = useState<LoadingState>(defaultLoadState);
 
   const handleThemeProductsResponse = (data: Theme.ThemeProductsResponse) => {
-    const { products, nextPageToken: ResponseNextPageToken, pageInfo: ResponsePageInfo } = data;
+    const {
+      products,
+      nextPageToken: ResponseNextPageToken = null,
+      pageInfo: ResponsePageInfo,
+    } = data;
     setPageinfo(ResponsePageInfo);
     setNextPageToken(ResponseNextPageToken);
     setGoodsList((prevGoods) => {
@@ -114,27 +118,34 @@ export function useGoodsSectionControl(themeKey: string) {
 
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
-
-    if (loaderRef.current) {
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && nextPageToken === undefined) {
-          fetchThemeProducts().then(() => setIsLoading((prev) => ({ ...prev, isInit: false })));
-        } else if (entries[0].isIntersecting && nextPageToken) {
-          const fetchNextThemeProducts: () => Promise<void> = makeFetchRetryOnError(
-            getThemeProducts,
-            { themeKey, pageToken: nextPageToken, maxResults: 20 },
-            handleThemeProductsResponse,
-            handleError,
-          );
-
-          setIsLoading((prev) => ({ ...prev, loadingMore: true }));
-          fetchNextThemeProducts().then(() =>
-            setIsLoading((prev) => ({ ...prev, loadingMore: false })),
-          );
-        }
-      });
-      observerRef.current.observe(loaderRef.current);
+    if (!loaderRef.current) return;
+    if (nextPageToken === null) {
+      observerRef?.current?.disconnect();
+      return;
     }
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+
+      if (nextPageToken === undefined) {
+        fetchThemeProducts().then(() => setIsLoading((prev) => ({ ...prev, isInit: false })));
+        return;
+      }
+
+      const fetchNextThemeProducts: () => Promise<void> = makeFetchRetryOnError(
+        getThemeProducts,
+        { themeKey, pageToken: nextPageToken, maxResults: 20 },
+        handleThemeProductsResponse,
+        handleError,
+      );
+
+      setIsLoading((prev) => ({ ...prev, loadingMore: true }));
+      fetchNextThemeProducts().then(() =>
+        setIsLoading((prev) => ({ ...prev, loadingMore: false })),
+      );
+    });
+
+    observerRef.current.observe(loaderRef.current);
 
     return () => {
       if (observerRef.current) observerRef.current.disconnect();

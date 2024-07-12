@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 
 import { getThemes } from '@/apis/themes/themes';
 import { SetThemeContext } from '@/context/themeContext';
+import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
 
 import { Footer } from './Footer';
 import { Header, HEADER_HEIGHT } from './Header';
@@ -20,7 +21,9 @@ export const Layout = () => {
           isInit = false;
           setThemes(data.themes);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          handleStatusCode(err);
+        });
     }
   }, [setThemes]);
 

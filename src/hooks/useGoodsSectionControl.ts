@@ -72,7 +72,7 @@ export const handleStatusCode = (error: AxiosError) => {
 
 export function useGoodsSectionControl(themeKey: string) {
   const [goodsList, setGoodsList] = useState<Home.ProductData[]>([]);
-  const [pageInfo, setPageinfo] = useState<Theme.PageInfo>(); // windowing 하는 용도?
+  const [pageInfo, setPageinfo] = useState<Theme.PageInfo | undefined | null>(undefined); // windowing 하는 용도?
   const [pageToken, setPageToken] = useState<string | null>();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -113,7 +113,7 @@ export function useGoodsSectionControl(themeKey: string) {
 
     if (loaderRef.current) {
       observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !pageToken) {
+        if (entries[0].isIntersecting && pageToken === undefined) {
           fetchThemeProducts().then(() => setIsLoading((prev) => ({ ...prev, isInit: false })));
         } else if (entries[0].isIntersecting && pageToken) {
           const fetchNextThemeProducts: () => Promise<void> = makeFetchRetryOnError(

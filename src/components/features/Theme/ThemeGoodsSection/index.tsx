@@ -15,6 +15,7 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [productFetchError, setProductFetchError] = useState(false); // error 변수명을 productFetchError로 변경
 
   useEffect(() => {
     console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`);
@@ -25,9 +26,11 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 10 });
         console.log('Fetched products:', response);
         setProducts(response.products || []);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching products:', error);
+      } catch (err) {
+        // 변수명을 err로 변경
+        console.error('Error fetching products:', err);
+        setProductFetchError(true);
+      } finally {
         setLoading(false);
       }
     };
@@ -37,6 +40,11 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   if (loading) {
     return <p>Loading...</p>;
+  }
+
+  if (productFetchError) {
+    // 여기도 productFetchError로 변경
+    return <p>An error occurred while fetching data.</p>;
   }
 
   if (products.length === 0) {

@@ -83,6 +83,7 @@ export interface GetThemesResponse {
 
 export interface GetThemeProductsResponse {
   products: ProductData[];
+  nextPageToken?: string;
   pageInfo: {
     totalResults: number;
     resultsPerPage: number;

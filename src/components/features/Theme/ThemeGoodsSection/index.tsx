@@ -17,14 +17,14 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`); // 디버깅 코드 추가
+    console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`);
 
     const fetchProducts = async () => {
-      console.log('Starting fetchProducts'); // 디버깅 코드 추가
+      console.log('Starting fetchProducts');
       try {
         const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 10 });
-        console.log('Fetched products:', response.products); // 디버깅 코드 추가
-        setProducts(response.products);
+        console.log('Fetched products:', response);
+        setProducts(response.products || []);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);

@@ -83,8 +83,10 @@ export interface GetThemesResponse {
 
 export interface GetThemeProductsResponse {
   products: ProductData[];
-  nextPageToken?: string;
-  pageInfo: PageInfo;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
 }
 
 export interface GetProductDetailResponse extends ProductDetailData {}

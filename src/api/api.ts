@@ -42,12 +42,12 @@ export const getThemes = async (): Promise<GetThemesResponse> => {
 export const getThemeProducts = async (
   params: GetThemeProductsRequest,
 ): Promise<GetThemeProductsResponse> => {
-  console.log('API call to getThemeProducts with params:', params); // 디버깅 코드 추가
+  console.log('API call to getThemeProducts with params:', params);
   const response = await axios.get<GetThemeProductsResponse>(
     `${API_BASE_URL}/api/v1/themes/${params.themeKey}/products`,
     { params: { pageToken: params.pageToken, maxResults: params.maxResults } },
   );
-  console.log('API response:', response); // 디버깅 코드 추가
+  console.log('API response:', response);
   return response.data;
 };
 

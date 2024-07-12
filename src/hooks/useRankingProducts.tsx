@@ -2,7 +2,7 @@ import type { AxiosError } from 'axios';
 import { useEffect,useState } from 'react';
 
 import apiClient from '@/api';
-import type { GetRankingProductsResponse, ProductData } from '@/api/types/apiTypes';
+import type { ProductData,RankingProductsResponse } from '@/types';
 import type { RankingFilterOption } from '@/types';
 
 interface FetchState<T> {
@@ -23,7 +23,7 @@ export const useRankingProducts = (filterOption: RankingFilterOption): [ProductD
   useEffect(() => {
     const fetchRankingProducts = async () => {
       try {
-        const response = await apiClient.get<GetRankingProductsResponse>('/api/v1/ranking/products', {
+        const response = await apiClient.get<RankingProductsResponse>('/api/v1/ranking/products', {
           params: {
             targetType: filterOption.targetType,
             rankType: filterOption.rankType,

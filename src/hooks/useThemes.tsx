@@ -2,7 +2,7 @@ import type { AxiosError } from 'axios';
 import { useEffect,useState } from 'react';
 
 import apiClient from '@/api/index';
-import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
+import type { ThemeData,ThemesResponse } from '@/types';
 
 interface FetchState<T> {
   isLoading: boolean;
@@ -22,7 +22,7 @@ export const useThemes = (): [ThemeData[] | null, { isLoading: boolean; isError:
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await apiClient.get<GetThemesResponse>('/api/v1/themes');
+        const response = await apiClient.get<ThemesResponse>('/api/v1/themes');
         setFetchState({ isLoading: false, isError: false, data: response.data.themes, errorMessage: null});
       } catch (err) {
 		const error = err as AxiosError;

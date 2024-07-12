@@ -2,7 +2,7 @@ import type { AxiosError } from 'axios';
 import { useEffect,useState } from 'react';
 
 import apiClient from '@/api';
-import type { GetThemeProductsResponse, ProductData } from '@/api/types/apiTypes';
+import type { ProductData,ThemeProductsResponse } from '@/types';
 
 interface FetchState<T> {
   isLoading: boolean;
@@ -22,7 +22,7 @@ export const useThemeProducts = (themeKey: string): [ProductData[] | null, { isL
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await apiClient.get<GetThemeProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
+        const response = await apiClient.get<ThemeProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
           params: {
             maxResults: 20,
           },

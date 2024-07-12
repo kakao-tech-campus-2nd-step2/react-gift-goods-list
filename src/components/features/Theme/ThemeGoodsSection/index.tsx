@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useInfiniteQuery } from 'react-query';
 
 import { fetchData } from '@/components/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -13,77 +14,61 @@ type Props = {
   themeKey: string;
 };
 
-type QueryParams = Record<string, string | number>;
-
 const generateRandomId = (): string => {
   return Math.random().toString(36).substr(2, 9);
 };
 
+const fetchThemeData = async ({ pageParam = '' }: { pageParam?: string }, themeKey: string) => {
+  const maxResults = 20;
+  const queryParams: Record<string, string | number> = pageParam
+    ? { maxResults, pageToken: pageParam }
+    : { maxResults };
+
+  const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
+  return {
+    products: data.products.map((product: GoodsData) => ({
+      ...product,
+      id: generateRandomId(),
+    })),
+    nextPageToken: data.nextPageToken || null,
+  };
+};
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  const fetchThemeData = useCallback(
-    async (pageToken?: string) => {
-      setLoading(true);
-      try {
-        const maxResults = 20;
-        const queryParams: QueryParams = pageToken ? { maxResults, pageToken } : { maxResults };
-
-        const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
-        setCurrentGoods((prevGoods) => [
-          ...prevGoods,
-          ...data.products.map((product: GoodsData) => ({
-            ...product,
-            id: generateRandomId(),
-          })),
-        ]);
-        setNextPageToken(data.nextPageToken || null);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error fetching theme data:', error.message);
-        } else {
-          console.error('An unknown error occurred while fetching theme data.');
-        }
-      } finally {
-        setLoading(false);
-      }
+  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ['themeGoods', themeKey],
+    ({ pageParam }) => fetchThemeData({ pageParam }, themeKey),
+    {
+      getNextPageParam: (lastPage) => lastPage.nextPageToken,
     },
-    [themeKey],
   );
 
   useEffect(() => {
-    setCurrentGoods([]);
-    setNextPageToken(null);
-    fetchThemeData();
-  }, [themeKey, fetchThemeData]);
-
-  useEffect(() => {
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && nextPageToken) {
-        fetchThemeData(nextPageToken);
-      }
-    });
-
-    if (loadMoreRef.current) {
-      observer.current.observe(loadMoreRef.current);
+    if (!hasNextPage || isFetching) return;
+    const currentLoadMoreRef = loadMoreRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {
+        threshold: 1.0,
+      },
+    );
+    if (currentLoadMoreRef) {
+      observer.observe(currentLoadMoreRef);
     }
-
     return () => {
-      if (observer.current) {
-        observer.current.disconnect();
+      if (currentLoadMoreRef) {
+        observer.unobserve(currentLoadMoreRef);
       }
     };
-  }, [nextPageToken, fetchThemeData]);
+  }, [hasNextPage, isFetching, fetchNextPage]);
 
   const renderContent = () => {
-    if (currentGoods.length === 0 && loading) {
+    if (isLoading) {
       return (
         <LoadingWrapper>
           <Loading />
@@ -91,9 +76,15 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       );
     }
 
-    if (currentGoods.length === 0 && !loading) {
+    if (isError) {
+      return <div>Error fetching data</div>;
+    }
+
+    if (!data || data.pages[0].products.length === 0) {
       return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
     }
+
+    const allProducts = data.pages.flatMap((page) => page.products);
 
     return (
       <Grid
@@ -103,7 +94,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         }}
         gap={16}
       >
-        {currentGoods.map((goods) => (
+        {allProducts.map((goods) => (
           <DefaultGoodsItems
             key={goods.id}
             imageSrc={goods.imageURL}

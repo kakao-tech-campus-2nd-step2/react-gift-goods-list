@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 
@@ -21,13 +22,13 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
         const themes = await fetchThemes();
         const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
         if (!foundTheme) {
-          navigate('/');
+          navigate(RouterPath.home);
           return;
         }
         setCurrentTheme(foundTheme);
       } catch (error) {
         console.error('Failed to fetch themes:', error);
-        navigate('/');
+        navigate(RouterPath.home);
       }
     };
 

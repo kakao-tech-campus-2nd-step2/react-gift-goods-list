@@ -29,6 +29,7 @@ export const GoodsRankingSection = () => {
         setError(null);
         const data = await fetchRankingProducts(filterOption);
         setRankingProducts(data.products || []);
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching ranking products: ', err);
         setLoading(false);

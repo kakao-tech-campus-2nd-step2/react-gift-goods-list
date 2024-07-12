@@ -19,6 +19,7 @@ const RETRY_DELAY_MS = 1000;
 /**
  * axios-interceptor를 사용할 수도 있다.
  * react-query를 사용한 방법은?
+ * useInfinityQuery 통해 구현할 수 있지만, react-interaction-observer의 useView와 결합해 만든 예시 코드가 이미 주어짐.
  */
 const makeFetchRetryOnError =
   (

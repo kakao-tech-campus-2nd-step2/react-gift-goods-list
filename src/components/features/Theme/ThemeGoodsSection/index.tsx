@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -32,16 +33,6 @@ interface ApiResponse {
   };
 }
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  errorMessage?: string;
-  errorCode?: string;
-  data: T;
-  hasMore: boolean;
-  nextPageToken: string | null;
-}
-
 interface FetchParams {
   maxResults: number;
   pageToken?: string;
@@ -51,79 +42,65 @@ type Props = {
   themeKey: string;
 };
 
+const fetchProducts = async (themeKey: string, pageParam: string | null): Promise<ApiResponse> => {
+  const params: FetchParams = { maxResults: 20 };
+  if (pageParam)
+    params.pageToken = pageParam;
+
+  return fetchData(`/api/v1/themes/${themeKey}/products`, params);
+};
+
 const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
-  const [fetchState, setFetchState] = useState<FetchState<ProductData[]>>({
-    isLoading: true,
-    isError: false,
-    data: [],
-    hasMore: true,
-    nextPageToken: null,
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<ApiResponse, AxiosError>({
+    queryKey: ['products', themeKey],
+    queryFn: ({ pageParam = null }) => fetchProducts(themeKey, pageParam as string || null),
+    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    initialPageParam: null,
   });
 
-const observerRef = useRef<IntersectionObserver | null>(null);
-const loadMoreRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      if (observerRef.current) observerRef.current.disconnect();
 
-const fetchProducts = useCallback(async (key: string, pageToken: string | null) => {
-  setFetchState(prevState => ({ ...prevState, isLoading: true }));
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            void fetchNextPage();
+          }
+        },
+        {
+          threshold: 1.0,
+        }
+      );
 
-  try {
-    const params: FetchParams = { maxResults: 20 };
-    if (pageToken) params.pageToken = pageToken;
-
-    const data: ApiResponse = await fetchData(`/api/v1/themes/${key}/products`, params);
-    setFetchState(prevState => ({
-      isLoading: false,
-      isError: false,
-      data: [...prevState.data, ...data.products],
-      hasMore: data.products.length > 0,
-      nextPageToken: data.nextPageToken,
-    }));
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    setFetchState({
-      isLoading: false,
-      isError: true,
-      errorMessage: axiosError.message,
-      errorCode: axiosError.code,
-      data: [],
-      hasMore: false,
-      nextPageToken: null,
-    });
-  }
-}, []);
-
-useEffect(() => {
-  if (themeKey) {
-    setFetchState({ isLoading: true, isError: false, data: [], hasMore: true, nextPageToken: null });
-    fetchProducts(themeKey, null);
-  }
-}, [themeKey, fetchProducts]);
-
-useEffect(() => {
-  if (fetchState.hasMore && !fetchState.isLoading) {
-    if (observerRef.current) observerRef.current.disconnect();
-
-    observerRef.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && fetchState.nextPageToken) {
-        fetchProducts(themeKey, fetchState.nextPageToken);
+      if (loadMoreRef.current) {
+        observerRef.current.observe(loadMoreRef.current);
       }
-    }, {
-      threshold: 1.0,
-    });
-
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
     }
-  }
-  return () => observerRef.current?.disconnect();
-}, [fetchState.hasMore, fetchState.isLoading, fetchState.nextPageToken, themeKey, fetchProducts]);
+    return () => observerRef.current?.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-if (fetchState.isLoading && fetchState.data.length === 0)
-  return <Loading />;
-if (fetchState.isError)
-  return <ErrorMessage message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} code={fetchState.errorCode} />;
-if (!fetchState.data || fetchState.data.length === 0)
-  return <EmptyData />;
+  if (isLoading)
+    return <Loading />;
+  if (isError)
+    return <ErrorMessage message={error?.message || '데이터를 불러오는 중에 문제가 발생했습니다.'} code={error?.code} />;
+  if (!data || data.pages[0].products.length === 0)
+    return <EmptyData />;
+
+  const products = data.pages.flatMap(
+    (page) => page.products
+  );
 
   return (
     <Wrapper>
@@ -135,18 +112,19 @@ if (!fetchState.data || fetchState.data.length === 0)
           }}
           gap={16}
         >
-          {fetchState.data.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map((product: ProductData) => (
             <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
+              key={product.id}
+              imageSrc={product.imageURL}
+              title={product.name}
+              amount={product.price.sellingPrice}
+              subtitle={product.brandInfo.name}
             />
           ))}
         </Grid>
       </Container>
       <div ref={loadMoreRef}></div>
+      {isFetchingNextPage && <Loading />}
     </Wrapper>
   );
 };

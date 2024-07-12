@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useCallback, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/fetchRankingProducts';
+import { FetchDataUI } from '@/components/common/FetchDataUI';
 import { Container } from '@/components/common/layouts/Container';
+import { useFetchData } from '@/hooks/useFetchData';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 import type { GoodsData } from '@/types';
@@ -17,25 +18,22 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [products, setProducts] = useState<GoodsData[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchRankingProducts(filterOption.targetType, filterOption.rankType);
-        setProducts(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+  const fetchData = useCallback(() => {
+    return fetchRankingProducts(filterOption.targetType, filterOption.rankType);
   }, [filterOption]);
+
+  const { data, loading, error } = useFetchData<GoodsData[]>({
+    fetchData,
+  });
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={products} />
+        <FetchDataUI loading={loading} error={error} data={data}>
+          <GoodsRankingList goodsList={data} />
+        </FetchDataUI>
       </Container>
     </Wrapper>
   );

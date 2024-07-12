@@ -1,21 +1,21 @@
 import styled from '@emotion/styled';
 
+import type { GetRankingProductsParameters } from '@/api/types';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
 
 import { RankTypeButton } from './RankTypeButton';
 import { TargetTypeButton } from './TargetTypeButton';
 
 type Props = {
-  filterOption: RankingFilterOption;
-  onFilterOptionChange: (option: RankingFilterOption) => void;
+  filterOption: GetRankingProductsParameters;
+  onFilterOptionChange: (option: GetRankingProductsParameters) => void;
 };
 
 export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props) => {
   const handleFilterOption = (
-    key: keyof RankingFilterOption,
-    value: RankingFilterOption[keyof RankingFilterOption],
+    key: keyof GetRankingProductsParameters,
+    value: GetRankingProductsParameters[keyof GetRankingProductsParameters],
   ) => {
     onFilterOptionChange({
       ...filterOption,

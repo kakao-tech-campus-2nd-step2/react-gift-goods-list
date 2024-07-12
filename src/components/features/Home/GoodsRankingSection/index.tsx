@@ -1,28 +1,47 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { ApiService } from '@/api';
+import type { GetRankingProductsParameters, ProductData } from '@/api/types';
+import type { APIError } from '@/api/types';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import { handleApiError } from '@/utils/errorHandler/errorHandler';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
 export const GoodsRankingSection = () => {
-  const [filterOption, setFilterOption] = useState<RankingFilterOption>({
+  const [filterOption, setFilterOption] = useState<GetRankingProductsParameters>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [rankingProducts, setRankingProducts] = useState<ProductData[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRankingProducts = async () => {
+      setErrorMessage(null);
+      try {
+        const response = await ApiService.fetchRankingProducts(filterOption);
+        setRankingProducts(response.products);
+      } catch (error) {
+        if (error as APIError) {
+          setErrorMessage(handleApiError(error as APIError));
+        }
+      }
+    };
+
+    fetchRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={rankingProducts} errorMessage={errorMessage} />
       </Container>
     </Wrapper>
   );

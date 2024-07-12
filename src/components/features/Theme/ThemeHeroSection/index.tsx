@@ -1,16 +1,16 @@
 import styled from '@emotion/styled';
 
 import { Container } from '@/components/common/layouts/Container';
+import { useThemes } from '@/context/ThemeContext';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const currentTheme = useThemes().themes.find((theme) => theme.key === themeKey);
 
   if (!currentTheme) {
     return null;
@@ -29,7 +29,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   );
 };
 
-const Wrapper = styled.section<{ backgroundColor: string }>`
+const Wrapper = styled.section<{ backgroundColor: string | undefined }>`
   padding: 27px 20px 23px;
   width: 100%;
   background-color: ${({ backgroundColor }) => backgroundColor};

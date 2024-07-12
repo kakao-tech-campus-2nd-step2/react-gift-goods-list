@@ -27,7 +27,7 @@ export const GoodsRankingSection = () => {
         setError(null); // 에러 상태 초기화
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch ranking products.');
+        setError('선물 랭킹 데이터를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
       } finally {
         setIsLoading(false);
       }
@@ -45,6 +45,8 @@ export const GoodsRankingSection = () => {
           <Loading /> // 로딩 중일 때 로딩 컴포넌트 표시
         ) : error ? (
           <ErrorMessage>{error}</ErrorMessage>
+        ) : goodsList.length === 0 ? ( // 상품 리스트가 비어있을 때
+          <EmptyMessage>선물 목록이 비어있습니다.</EmptyMessage>
         ) : (
           <GoodsRankingList goodsList={goodsList} /> // 상품 랭킹 리스트 표시
         )}
@@ -76,7 +78,22 @@ const Title = styled.h2`
 
 const ErrorMessage = styled.p`
   color: red;
-  text-align: center;
-  font-size: 16px;
+  text-align: left;
+  font-size: 20px;
   padding: 20px;
+  @media screen and (min-width: ${breakpoints.sm}) {
+    font-size: 35px;
+    padding: 30px;
+  }
+`;
+
+const EmptyMessage = styled.p`
+  color: #555;
+  text-align: left;
+  font-size: 20px;
+  padding: 20px;
+  @media screen and (min-width: ${breakpoints.sm}) {
+    font-size: 35px;
+    padding: 30px;
+  }
 `;

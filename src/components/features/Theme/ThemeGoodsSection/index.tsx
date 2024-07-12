@@ -16,14 +16,17 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태를 관리하는 상태 변수
+  const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         const products = await fetchThemeProducts(themeKey); // API 호출로 테마 상품 데이터를 가져옴
         setGoodsList(products); // 상품 데이터를 상태에 설정
-      } catch (error) {
-        console.error('Error fetching products:', error);
+        setError(null); // 에러 상태 초기화
+      } catch (err) {
+        console.error(err);
+        setError('상품 데이터를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.'); // 에러 메시지 상태 업데이트
       } finally {
         setIsLoading(false);
       }
@@ -37,6 +40,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       <Container>
         {isLoading ? (
           <Loading /> // 로딩 중일 때 로딩 컴포넌트 표시
+        ) : error ? (
+          <ErrorMessage>{error}</ErrorMessage> // 에러 발생 시 에러 메시지 표시
+        ) : goodsList.length === 0 ? (
+          <EmptyMessage>상품 목록이 비어있습니다.</EmptyMessage> // 상품 리스트가 비어있을 때 빈 메시지 표시
         ) : (
           <Grid
             columns={{
@@ -66,5 +73,27 @@ const Wrapper = styled.section`
   padding: 28px 16px 180px;
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: left;
+  font-size: 20px;
+  padding: 20px;
+  @media screen and (min-width: ${breakpoints.sm}) {
+    font-size: 35px;
+    padding: 30px;
+  }
+`;
+
+const EmptyMessage = styled.p`
+  color: #555;
+  text-align: left;
+  font-size: 20px;
+  padding: 20px;
+  @media screen and (min-width: ${breakpoints.sm}) {
+    font-size: 35px;
+    padding: 30px;
   }
 `;

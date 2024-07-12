@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
@@ -12,18 +12,13 @@ import type { ThemeData } from '@/types';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themeCategory, setThemeCategory] = useState<ThemeData[]>();
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await axios.get(process.env.REACT_APP_API_KEY + '/api/v1/themes');
-        setThemeCategory(response.data.themes);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchThemes();
-  }, []);
+  const fetchThemes = async () => {
+    const response = await axios.get(process.env.REACT_APP_API_KEY + '/api/v1/themes');
+    return response.data.themes;
+  };
+
+  const { data } = useQuery<ThemeData[]>({ queryKey: ['themes'], queryFn: fetchThemes });
+
   return (
     <Wrapper>
       <Container>
@@ -33,7 +28,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themeCategory?.map((theme) => (
+          {data?.map((theme) => (
             <Link
               to={getDynamicPath.theme(theme.key)}
               state={{

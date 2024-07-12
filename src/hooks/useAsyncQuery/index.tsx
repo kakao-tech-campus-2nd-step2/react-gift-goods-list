@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { DependencyList, useEffect } from 'react';
 
 import useQueryState from '../useQueryState';
 
-export default function useAsyncQuery<T, P>(queryFn: (params: P) => Promise<T>, params: P) {
+export default function useAsyncQuery<T, P>(
+  queryFn: (params: P) => Promise<T>,
+  params: P,
+  dependencies: DependencyList = [],
+) {
   const { data, isLoading, error, setData, setIsLoading, setError } = useQueryState<T>();
 
   useEffect(() => {
@@ -23,7 +27,7 @@ export default function useAsyncQuery<T, P>(queryFn: (params: P) => Promise<T>, 
     fetchData();
     //params를 의존성 배열에 추가하게 되면 무한 루프에 빠지는 것 같습니다..
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setData, setIsLoading, setError, queryFn]);
+  }, [setData, setIsLoading, setError, queryFn, ...dependencies]);
 
   return { data, isLoading, error };
 }

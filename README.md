@@ -33,7 +33,7 @@
 
 - 질문 3. react query의 주요 특징에 대해 설명하고, queryKey는 어떤 역할을 하는지 설명해주세요.
 
-      내부적으로 useSyncExternalStore 훅을 사용해 리액트 엘리먼트가 아닌 객체를 사용하면서도 리렌더를 발생합니다.
+      내부적으로 useSyncExternalStore 훅을 사용해 리액트 엘리먼트가 아닌 객체를 사용하면서도 리렌더를 발생시킵니다.
       핵심 부품인 QueryClient, QueryCache, QueryObserver, focusManager, onlineManager, notifyManager 모두 클래스입니다.
       QueryClient -> QueryCache를, QueryObserver -> QueryClient를 소유합니다. (내부 객체로 들어감)
       추가적으로 queryKey는 QueryCache에서 아래와 같이 사용됩니다.

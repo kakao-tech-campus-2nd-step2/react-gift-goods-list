@@ -21,7 +21,7 @@ export const ThemePage = () => {
       }
     };
     fetchThemes();
-  }, []);
+  }, [themeKey]);
 
   if (themes.length === 0) {
     return <div>no Data</div>;

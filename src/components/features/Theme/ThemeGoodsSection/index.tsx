@@ -77,7 +77,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     }
 
     if (isError) {
-      return <div>Error fetching data</div>;
+      return <NoItemsMessage>Error fetching data</NoItemsMessage>;
     }
 
     if (!data || data.pages[0].products.length === 0) {

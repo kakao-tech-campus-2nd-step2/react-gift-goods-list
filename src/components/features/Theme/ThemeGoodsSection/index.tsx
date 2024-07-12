@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback,useEffect, useRef, useState } from 'react';
 
 import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -19,26 +19,11 @@ interface ProductData {
   };
 }
 
-interface ApiResponse {
-  products: ProductData[];
-  nextPageToken: string | null;
-  pageInfo: {
-    totalResults: number;
-    resultsPerPage: number;
-  };
-}
-
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
   data: T;
   hasMore: boolean;
-  nextPageToken: string | null;
-}
-
-interface FetchParams {
-  maxResults: number;
-  pageToken?: string;
 }
 
 type Props = {
@@ -51,26 +36,22 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     isError: false,
     data: [],
     hasMore: true,
-    nextPageToken: null,
   });
 
+  const [offset, setOffset] = useState(0);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const fetchProducts = useCallback(async (key: string, pageToken: string | null) => {
+  const fetchProducts = useCallback(async (key: string, currentOffset: number) => {
     setFetchState(prevState => ({ ...prevState, isLoading: true }));
 
     try {
-      const params: FetchParams = { maxResults: 20 };
-      if (pageToken) params.pageToken = pageToken;
-
-      const data: ApiResponse = await fetchData(`/api/v1/themes/${key}/products`, params);
+      const data = await fetchData(`/api/v1/themes/${key}/products`, { maxResults: 20, offset: currentOffset });
       setFetchState(prevState => ({
         isLoading: false,
         isError: false,
         data: [...prevState.data, ...data.products],
         hasMore: data.products.length > 0,
-        nextPageToken: data.nextPageToken,
       }));
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -78,35 +59,40 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     }
   }, []);
 
-  // 초기 로딩 비동기 통신
+//초기 로딩 비동기 통신
   useEffect(() => {
     if (themeKey) {
-      setFetchState({ isLoading: true, isError: false, data: [], hasMore: true, nextPageToken: null });
-      fetchProducts(themeKey, null);
+      setFetchState({ isLoading: true, isError: false, data: [], hasMore: true });
+      setOffset(0); 
+      fetchProducts(themeKey, 0);  
     }
   }, [themeKey, fetchProducts]);
 
-  // ref(스크롤)의 변화를 감지하고 다음 페이지를 불러오는 비동기 처리
+//offset변화를 감지한 후의 비동기 통신
+  useEffect(() => {
+    if (offset > 0) {
+      fetchProducts(themeKey, offset);
+    }
+  }, [offset, fetchProducts, themeKey]);
+
+//ref(스크롤)의 변화를 감지하고 offset을 변경시키는 비동기 처리 
   useEffect(() => {
     if (fetchState.hasMore && !fetchState.isLoading) {
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && fetchState.nextPageToken) {
-          fetchProducts(themeKey, fetchState.nextPageToken);
+        if (entries[0].isIntersecting) {
+          setOffset(prevOffset => prevOffset + 20);
         }
-      }, {
-        threshold: 1.0,
       });
-
       if (loadMoreRef.current) {
         observerRef.current.observe(loadMoreRef.current);
       }
     }
     return () => observerRef.current?.disconnect();
-  }, [fetchState.hasMore, fetchState.isLoading, fetchState.nextPageToken, themeKey, fetchProducts]);
+  }, [fetchState.hasMore, fetchState.isLoading]);
 
-  if (fetchState.isLoading && fetchState.data.length === 0)
+  if (fetchState.isLoading)
     return <LoadingMessage>Loading...</LoadingMessage>;
   if (fetchState.isError)
     return <ErrorMessage>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessage>;
@@ -134,7 +120,6 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
           ))}
         </Grid>
       </Container>
-      <div ref={loadMoreRef}></div>
     </Wrapper>
   );
 };

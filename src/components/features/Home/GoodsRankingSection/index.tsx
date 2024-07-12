@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/Api';
@@ -18,7 +19,7 @@ export const GoodsRankingSection = () => {
   // GoodsMockData를 21번 반복 생성
 
   const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -33,6 +34,22 @@ export const GoodsRankingSection = () => {
         setLoading(false);
         setError(err as Error);
         setRankingProducts([]);
+        if (axios.isAxiosError(err)) {
+          switch (err.response?.status) {
+            case 400:
+              setError(new Error('요청이 잘못되었습니다. 다시 시도해 주세요.'));
+              break;
+            case 404:
+              setError(new Error('요청하신 페이지를 찾을 수 없습니다.'));
+              break;
+            case 500:
+              setError(new Error('서버 에러. 잠시 후 다시 시도해 주세요.'));
+              break;
+            default:
+              setError(new Error('알 수 없는 오류가 발생했습니다. ${err.response?.status}'));
+              break;
+          }
+        }
       }
     };
     fetchRanking();

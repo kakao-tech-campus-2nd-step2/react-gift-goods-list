@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 import { Container } from '@/components/common/layouts/Container';
-import useTheme from '@/hooks/useTheme/indes';
+import useTheme from '@/hooks/querys/useTheme';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 

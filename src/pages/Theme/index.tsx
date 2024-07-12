@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-import { fetchTheme } from '@/api/api';
+import { fetchThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
@@ -15,7 +15,8 @@ export const ThemePage = () => {
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const foundTheme = await fetchTheme(themeKey);
+        const themes = await fetchThemes();
+        const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
         if (!foundTheme) {
           setIsLoading(false);
           return;

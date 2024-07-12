@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { fetchTheme } from '@/api/api';
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
@@ -18,7 +18,8 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const getTheme = async () => {
       try {
-        const foundTheme = await fetchTheme(themeKey);
+        const themes = await fetchThemes();
+        const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
         if (!foundTheme) {
           navigate('/');
           return;

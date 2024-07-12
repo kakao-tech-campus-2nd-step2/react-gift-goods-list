@@ -15,6 +15,7 @@ export type ProductResponseData = {
 export const useThemeProducts = (themeKey: string) => {
   const [data, setData] = useState<ProductResponseData>({ products: [] });
   useEffect(() => {
+    let ignore = false;
     const getThemeProducts = async (pageToken?: string) => {
       try {
         const response = await instantAxios.get<ProductResponseData>(`v1/themes/${themeKey}/products`, {
@@ -23,12 +24,17 @@ export const useThemeProducts = (themeKey: string) => {
             maxResults: 20,
           },
         });
-        setData(response.data);
+        if (!ignore) {
+          setData(response.data);
+        }
       } catch (error) {
         console.error('Error fetching theme product data:', error);
       }
     };
     getThemeProducts();
+    return () => {
+      ignore = true;
+    };
   }, [themeKey]);
 
   return data;

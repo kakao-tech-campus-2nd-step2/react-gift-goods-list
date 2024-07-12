@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useRef, useCallback } from 'react';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
@@ -10,7 +11,29 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { isLoading, goodsList, isError } = useThemeGoods({ themeKey });
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useThemeGoods({ themeKey });
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastGoodsElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isLoading || isFetchingNextPage) return;
+      if (observerRef.current) observerRef.current.disconnect();
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+      if (node) observerRef.current.observe(node);
+    },
+    [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]
+  );
 
   if (isLoading) {
     return <div>로딩중...</div>;
@@ -20,7 +43,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     return <div>GoodsData 불러오기 실패</div>;
   }
 
-  if (!goodsList || goodsList.length === 0) {
+  if (!data || data.pages[0].products.length === 0) {
     return <div>상품이 없습니다.</div>;
   }
 
@@ -34,16 +57,23 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data.pages.map((page, pageIndex) =>
+            page.products.map((goods, goodsIndex) => {
+              const isLastElement = pageIndex === data.pages.length - 1 && goodsIndex === page.products.length - 1;
+              return (
+                <div ref={isLastElement ? lastGoodsElementRef : null} key={goods.id}>
+                  <DefaultGoodsItems
+                    imageSrc={goods.imageURL}
+                    title={goods.name}
+                    amount={goods.price.sellingPrice}
+                    subtitle={goods.brandInfo.name}
+                  />
+                </div>
+              );
+            })
+          )}
         </Grid>
+        {isFetchingNextPage && <div>로딩 more...</div>}
       </Container>
     </Wrapper>
   );

@@ -37,9 +37,7 @@ export const GoodsRankingSection = () => {
             rankType: filterOption.rankType,
           },
         });
-
         const { products } = response.data;
-
         setFetchState({ isLoading: false, isError: false, data: products });
       } catch (error) {
         console.error('Error fetching ranking:', error);

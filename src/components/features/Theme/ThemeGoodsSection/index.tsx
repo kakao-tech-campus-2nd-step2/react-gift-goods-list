@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { axiosInstance } from '@/api';
 import { axiosInstance } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';

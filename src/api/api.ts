@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-import type { GoodsData, ProductsResponse,RankingFilterOption, RankingResponse, ThemesResponse } from '@/types';
+import type {
+  GoodsData,
+  ProductsResponse,
+  RankingFilterOption,
+  RankingResponse,
+  ThemesResponse,
+} from '@/types';
 
 export const api = axios.create({
   baseURL: 'https://react-gift-mock-api-ychy61.vercel.app',
@@ -16,7 +22,9 @@ const getRequest = async <T>(url: string, params?: object): Promise<T> => {
   }
 };
 
-export const fetchRankingProducts = (filterOption: RankingFilterOption): Promise<RankingResponse> => {
+export const fetchRankingProducts = (
+  filterOption: RankingFilterOption,
+): Promise<RankingResponse> => {
   return getRequest<RankingResponse>('/api/v1/ranking/products', {
     targetType: filterOption.targetType,
     rankType: filterOption.rankType,
@@ -24,7 +32,9 @@ export const fetchRankingProducts = (filterOption: RankingFilterOption): Promise
 };
 
 export const fetchThemeProducts = async (themeKey: string, pageSize = 20): Promise<GoodsData[]> => {
-  return getRequest<ProductsResponse>(`/api/v1/themes/${themeKey}/products`, { pageSize }).then((data) => data.products);
+  return getRequest<ProductsResponse>(`/api/v1/themes/${themeKey}/products`, { pageSize }).then(
+    (data) => data.products,
+  );
 };
 
 export const fetchThemes = async (): Promise<ThemesResponse['themes']> => {

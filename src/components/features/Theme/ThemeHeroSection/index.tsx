@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
+import { Loading } from '@/components/common/Loading';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
@@ -14,32 +15,39 @@ type Props = {
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태를 관리하는 상태 변수
   const navigate = useNavigate();
 
   useEffect(() => {
     const getTheme = async () => {
       try {
-        const themes = await fetchThemes();
-        const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
+        const themes = await fetchThemes(); // API 호출로 테마 데이터를 가져옴
+        const foundTheme = themes.find((theme: ThemeData) => theme.key === themeKey); // themeKey에 맞는 테마를 찾음
         if (!foundTheme) {
-          navigate(RouterPath.home);
+          navigate(RouterPath.home); // 테마를 찾지 못하면 홈으로 리다이렉트
           return;
         }
-        setCurrentTheme(foundTheme);
+        setCurrentTheme(foundTheme); // 테마를 찾으면 상태에 설정
       } catch (error) {
         console.error('Failed to fetch themes:', error);
         navigate(RouterPath.home);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getTheme();
   }, [themeKey, navigate]);
 
-  if (!currentTheme) {
-    return null;
+  if (isLoading) {
+    return <Loading />; // 로딩 중일 때는 로딩 컴포넌트를 표시
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (!currentTheme) {
+    return null; // 현재 테마가 없으면 null 반환
+  }
+
+  const { backgroundColor, label, title, description } = currentTheme; // 테마 데이터에서 필요한 정보 추출
 
   return (
     <Wrapper backgroundColor={backgroundColor}>

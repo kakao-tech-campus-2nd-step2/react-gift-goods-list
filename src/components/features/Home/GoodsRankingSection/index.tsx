@@ -1,11 +1,11 @@
-// src/components/GoodsRankingSection/index.tsx
 import styled from '@emotion/styled';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
+import { Loading } from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData,RankingFilterOption } from '@/types';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -16,31 +16,38 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태를 관리하는 상태 변수
+  const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태
 
   useEffect(() => {
     const fetchData = async () => {
-      // setIsLoading(true);
       try {
-        const data = await fetchRankingProducts(filterOption);
-        setGoodsList(data.products);
-        // setError(null);
+        const data = await fetchRankingProducts(filterOption); // API 호출로 상품 랭킹 데이터를 가져옴
+        setGoodsList(data.products); // 상품 데이터를 상태에 설정
+        setError(null); // 에러 상태 초기화
       } catch (err) {
         console.error(err);
+        setError('Failed to fetch ranking products.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [filterOption]);
+  }, [filterOption]); // 필터 옵션이 변경될 때마다 데이터를 다시 불러옴
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {/* {isLoading ? <p>Loading...</p> : error ? <p>Error: {error}</p> : <GoodsRankingList goodsList={goodsList} />} */}
-        <GoodsRankingList goodsList={goodsList} />
+        {isLoading ? (
+          <Loading /> // 로딩 중일 때 로딩 컴포넌트 표시
+        ) : error ? (
+          <ErrorMessage>{error}</ErrorMessage>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} /> // 상품 랭킹 리스트 표시
+        )}
       </Container>
     </Wrapper>
   );
@@ -65,4 +72,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+  font-size: 16px;
+  padding: 20px;
 `;

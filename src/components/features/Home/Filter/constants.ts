@@ -1,5 +1,4 @@
 export type TargetType = 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
-
 export type WishType = 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
 
 export const FILTER_TARGETS: { id: number; icon: string; name: string; targetType: TargetType }[] = [

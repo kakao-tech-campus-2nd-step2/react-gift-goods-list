@@ -18,10 +18,12 @@ export default function GoodsItemList() {
     maxResults: MAX_RESULTS,
   } as ThemeProductsRequest);
 
+  const isEmpty = !data || data?.products.length === 0;
+
   return (
     <GoodsItemListContainer>
       <CenteredContainer maxWidth="md">
-        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0} error={error}>
+        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={isEmpty} error={error}>
           <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
             {data?.products.map((product) => (
               <GoodsItem

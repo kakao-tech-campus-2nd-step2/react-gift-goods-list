@@ -21,10 +21,11 @@ export default function RankingList() {
   >(getRankingProducts, { targetType: selectedTarget, rankType: selectedWish });
 
   const displayedProducts = showAll ? data?.products : data?.products.slice(0, INITIAL_DISPLAY_COUNT);
+  const isEmpty = !data || data?.products.length === 0;
 
   return (
     <RankingListContainer>
-      <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0} error={error}>
+      <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={isEmpty} error={error}>
         <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
           {displayedProducts?.map((product, index) => (
             <GoodsItem

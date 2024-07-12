@@ -12,19 +12,23 @@ export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태를 관리하는 상태 변수
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchThemeData = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         const themes = await fetchThemes(); // API 호출로 테마 데이터를 가져옴
         const foundTheme = themes.find((theme) => theme.key === themeKey); // themeKey에 맞는 테마를 찾음
         if (!foundTheme) {
-          setIsLoading(false); // 테마를 찾지 못하면 로딩 상태를 false로 설정
-          return;
+          setError('테마를 찾을 수 없습니다.');
+        } else {
+          setCurrentTheme(foundTheme); // 테마를 찾으면 상태에 설정
         }
-        setCurrentTheme(foundTheme); // 테마를 찾으면 상태에 설정
-      } catch (error) {
-        console.error('Failed to fetch themes:', error);
+      } catch (err) {
+        console.error('Failed to fetch themes:', err);
+        setError('테마 데이터를 불러오는 데 실패했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -34,6 +38,10 @@ export const ThemePage = () => {
 
   if (isLoading) {
     return <Loading />; // 로딩 중일 때는 로딩 컴포넌트를 표시
+  }
+
+  if (error) {
+    return <Navigate to={RouterPath.notFound} replace />; // 에러 발생 시 404 페이지로 리다이렉트
   }
 
   if (!currentTheme) {

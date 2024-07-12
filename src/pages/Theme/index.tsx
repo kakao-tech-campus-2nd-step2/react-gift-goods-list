@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
@@ -26,7 +27,26 @@ export const ThemePage: React.FC = () => {
         setCurrentTheme(theme);
         setIsLoading(false);
       } catch (error) {
-        setErrorMessage('Failed to load theme data');
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            switch (error.response.status) {
+              case 404:
+                setErrorMessage('상품을 찾을 수 없습니다.');
+                break;
+              case 500:
+                setErrorMessage('서버 오류가 발생했습니다.');
+                break;
+              default:
+                setErrorMessage('예기치 않은 오류가 발생했습니다.');
+            }
+          } else if (error.request) {
+            setErrorMessage('요청이 있지만 응답을 받지 못한 경우');
+          } else {
+            setErrorMessage('오류 설정문제발생');
+          }
+        } else {
+          setErrorMessage('예기치 않은 오류가 발생했습니다.');
+        }
         setIsLoading(false);
       }
     };

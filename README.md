@@ -15,10 +15,10 @@
 - [X] axios를 사용하여 API path 구현
   - [X] axios 설치
   - [X] Base URL 설정
-- [ ] 메인 페이지 
-  - [ ] Theme 카테고리 섹션(/api/v1/themes)
-  - [ ] Trending 선물랭킹 섹션(/api/v1/ranking/products)
-    - [ ] 필터 조건 선택하면 해당 조건에 맞게 API 요청해서 보여지게 함
+- [X] 메인 페이지 
+  - [X] Theme 카테고리 섹션(/api/v1/themes)
+  - [X] Trending 선물랭킹 섹션(/api/v1/ranking/products)
+    - [X] 필터 조건 선택하면 해당 조건에 맞게 API 요청해서 보여지게 함
 - [ ] Theme 페이지
   - [ ] Header 섹션 themekey에 따라 내용 달라지게
   - [ ] Products 섹션 (api/themes/{themeKey}/products)
@@ -28,6 +28,7 @@
   - [ ] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!)
   - [ ] 데이터가 없는 경우에 대한 UI 대응
   - [ ] Http Status에 따라 Error 다르게 처리
+  - [ ] Error 페이지 제작,,
 
 
   ### 프로젝트 링크

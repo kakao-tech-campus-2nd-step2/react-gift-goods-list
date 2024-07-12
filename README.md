@@ -60,6 +60,6 @@ https://kakao-tech-week3-goods-list.pages.dev/
 
   - [x] 테마 페이지 굿즈 리스트 섹션
 
-  - [] 테마 카테고리 섹션
+  - [x] 테마 카테고리 섹션
 
   - [x] 테마 헤더 섹션

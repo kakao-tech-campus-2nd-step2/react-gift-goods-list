@@ -1,10 +1,12 @@
+import React from 'react';
+
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { AiDiscoveryBanner } from '@/components/features/Home/AiDiscoveryBanner';
 import { GoodsRankingSection } from '@/components/features/Home/GoodsRankingSection';
 import { SelectFriendsBanner } from '@/components/features/Home/SelectFriendsBanner';
-import { ThemeCategorySection } from '@/components/features/Home/ThemeCategorySection';
+import ThemeCategorySection from '@/components/features/Home/ThemeCategorySection';
 
-export const HomePage = () => {
+export const HomePage: React.FC = () => {
   return (
     <>
       <SelectFriendsBanner />
@@ -21,3 +23,5 @@ export const HomePage = () => {
     </>
   );
 };
+
+export default HomePage;

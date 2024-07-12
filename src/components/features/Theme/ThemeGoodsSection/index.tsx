@@ -1,15 +1,17 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Loader } from '@/components/common/Spinner';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 import apiClient from '@/utils/api';
 
-const fetchThemeProducts = async (themeKey: string) => {
+const fetchProductsByTheme = async (themeKey: string) => {
   const response = await apiClient.get<{ products: GoodsData[] }>(`/themes/${themeKey}/products`, {
     params: {
       maxResults: 20,
@@ -18,27 +20,35 @@ const fetchThemeProducts = async (themeKey: string) => {
   return response.data.products;
 };
 
-export const GoodsSection = () => {
+export const ThemeProductsSection = () => {
   const { themeKey } = useParams<{ themeKey: string }>();
 
   const {
     data: products,
     isLoading,
     isError,
-  } = useQuery(['themeProducts', themeKey], () => fetchThemeProducts(themeKey!), {
+    error,
+  } = useQuery(['themeProducts', themeKey], () => fetchProductsByTheme(themeKey!), {
     enabled: !!themeKey,
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isError) {
-    return <div>Error loading products</div>;
+    const axiosError = error as AxiosError;
+    const errorMessage =
+      axiosError.response?.status === 404 ? '상품을 찾을 수 없습니다.' : '오류가 발생했습니다.';
+    return <div>{errorMessage}</div>;
+  }
+
+  if (!products || products.length === 0) {
+    return <div>상품이 없어요.</div>;
   }
 
   return (
-    <SectionWrapper>
+    <ProductsWrapper>
       <Container>
         <Grid
           columns={{
@@ -47,7 +57,7 @@ export const GoodsSection = () => {
           }}
           gap={16}
         >
-          {products?.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -58,11 +68,11 @@ export const GoodsSection = () => {
           ))}
         </Grid>
       </Container>
-    </SectionWrapper>
+    </ProductsWrapper>
   );
 };
 
-const SectionWrapper = styled.section`
+const ProductsWrapper = styled.section`
   width: 100%;
   padding: 28px 16px 180px;
 

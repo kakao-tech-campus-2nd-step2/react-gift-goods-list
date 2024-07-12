@@ -1,49 +1,59 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { Navigate, useParams } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Loader } from '@/components/common/Spinner';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 import apiClient from '@/utils/api';
 
-const fetchThemeData = async (themeKey: string) => {
+const fetchThemeInfo = async (themeKey: string) => {
   const response = await apiClient.get<{ themes: ThemeData[] }>('/themes');
   return response.data.themes.find((theme) => theme.key === themeKey);
 };
 
-export const HeroSection = () => {
+export const ThemeHeader = () => {
   const { themeKey } = useParams<{ themeKey: string }>();
 
   const {
     data: theme,
     isLoading,
     isError,
-  } = useQuery(['theme', themeKey], () => fetchThemeData(themeKey!), {
+    error,
+  } = useQuery(['theme', themeKey], () => fetchThemeInfo(themeKey!), {
     enabled: !!themeKey,
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
-  if (isError || !theme) {
+  if (isError) {
+    const axiosError = error as AxiosError;
+    const errorMessage =
+      axiosError.response?.status === 404 ? '테마를 찾을 수 없습니다.' : '오류가 발생했습니다.';
+    return <div>{errorMessage}</div>;
+  }
+
+  if (!theme) {
     return <Navigate to={RouterPath.home} />;
   }
 
   return (
-    <SectionWrapper backgroundColor={theme.backgroundColor}>
+    <HeaderWrapper backgroundColor={theme.backgroundColor}>
       <Container>
-        <Label>{theme.label}</Label>
-        <Title>{theme.title}</Title>
-        {theme.description && <Description>{theme.description}</Description>}
+        <HeaderLabel>{theme.label}</HeaderLabel>
+        <HeaderTitle>{theme.title}</HeaderTitle>
+        {theme.description && <HeaderDescription>{theme.description}</HeaderDescription>}
       </Container>
-    </SectionWrapper>
+    </HeaderWrapper>
   );
 };
 
-const SectionWrapper = styled.section<{ backgroundColor: string }>`
+const HeaderWrapper = styled.section<{ backgroundColor: string }>`
   padding: 27px 20px 23px;
   width: 100%;
   background-color: ${({ backgroundColor }) => backgroundColor};
@@ -53,7 +63,7 @@ const SectionWrapper = styled.section<{ backgroundColor: string }>`
   }
 `;
 
-const Label = styled.p`
+const HeaderLabel = styled.p`
   font-weight: 700;
   font-size: 13px;
   line-height: 16px;
@@ -65,7 +75,7 @@ const Label = styled.p`
   }
 `;
 
-const Title = styled.h1`
+const HeaderTitle = styled.h1`
   font-weight: 700;
   color: #fff;
   font-size: 18px;
@@ -83,7 +93,7 @@ const Title = styled.h1`
   }
 `;
 
-const Description = styled.p`
+const HeaderDescription = styled.p`
   padding-top: 5px;
   font-size: 14px;
   line-height: 20px;

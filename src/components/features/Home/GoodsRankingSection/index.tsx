@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useCallback, useState } from 'react';
+import { useQueryClient } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
@@ -15,6 +16,8 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
+  const queryClient = useQueryClient();
+  
   const { data, isLoading, isError } = useGetRankingGoods(filterOption);
 
   const RenderGoodsRankingList = useCallback(() => {
@@ -37,7 +40,13 @@ export const GoodsRankingSection = () => {
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
+        <GoodsRankingFilter
+          filterOption={filterOption}
+          onFilterOptionChange={(newFilterOption) => {
+            setFilterOption(newFilterOption);
+            queryClient.invalidateQueries('rankingGoods');
+          }}
+        />
         <RenderGoodsRankingList />
       </Container>
     </Wrapper>

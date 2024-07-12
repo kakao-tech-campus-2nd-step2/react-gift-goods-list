@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 
+// import axios from 'axios';
 import { getThemes } from '@/apis/Theme/theme.api';
 import { ThemesResponse } from '@/apis/Theme/theme.response';
 import { useQuery } from '@tanstack/react-query';

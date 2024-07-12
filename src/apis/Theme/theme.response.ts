@@ -45,6 +45,6 @@ interface PageInfo {
 
 export interface ProductsResponse {
   products: Product[];
-  nextPageToken: string;
+  nextPageToken?: string;
   pageInfo: PageInfo;
 }

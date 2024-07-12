@@ -7,11 +7,7 @@ import { useFilter } from '@context/filter/useFilter';
 import { getRankingProducts } from '@apis/ranking';
 import { RankingProductsResponse } from '@/types/responseTypes';
 import { TargetType, WishType } from '../Filter/constants';
-
-const INITIAL_DISPLAY_COUNT = 6;
-const GRID_GAP = 14;
-const GRID_COLUMNS = 6;
-const ERROR_MESSAGE = '데이터를 불러오는 중에 문제가 발생했습니다.';
+import { RANKING_LIST } from './constants';
 
 export default function RankingList() {
   const [showAll, toggleShowAll] = useToggle(false);
@@ -21,14 +17,15 @@ export default function RankingList() {
     { targetType: TargetType; rankType: WishType }
   >(getRankingProducts, { targetType: selectedTarget, rankType: selectedWish });
 
-  const displayedProducts = showAll ? data?.products : data?.products.slice(0, INITIAL_DISPLAY_COUNT);
+  const displayedProducts = showAll ? data?.products : data?.products.slice(0, RANKING_LIST.INITIAL_DISPLAY_COUNT);
 
   if (isLoading) return <Spinner />;
-  if (isError) return <ErrorMessage message={ERROR_MESSAGE} />;
+  if (isError) return <ErrorMessage message={RANKING_LIST.ERROR_MESSAGE} />;
+  if (data?.products.length === 0) return <NoProductsMessage>{RANKING_LIST.NO_PRODUCTS_MESSAGE}</NoProductsMessage>;
 
   return (
     <RankingListContainer>
-      <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
+      <Grid gap={RANKING_LIST.GRID_GAP} columns={RANKING_LIST.GRID_COLUMNS}>
         {displayedProducts?.map((product, index) => (
           <GoodsItem
             key={product.id}
@@ -58,4 +55,10 @@ const ButtonContainer = styled.div`
   padding-top: 30px;
   width: 480px;
   margin: 0 auto;
+`;
+
+const NoProductsMessage = styled.div`
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
 `;

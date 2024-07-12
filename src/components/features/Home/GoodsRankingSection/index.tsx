@@ -1,19 +1,13 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { axiosInstance } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData, RankingFilterOption } from '@/types';
+import useFetch from '@/utils/api';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
-
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-}
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -21,34 +15,12 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-  });
+  const { isLoading, isError, data } = useFetch<{ products: GoodsData[] }>(
+    '/api/v1/ranking/products',
+    filterOption,
+  );
 
-  useEffect(() => {
-    const fetchRanking = async () => {
-      setFetchState({ isLoading: true, isError: false, data: [] });
-      try {
-        const response = await axiosInstance.get('/api/v1/ranking/products', {
-          params: {
-            targetType: filterOption.targetType,
-            rankType: filterOption.rankType,
-          },
-        });
-        const { products } = response.data;
-        setFetchState({ isLoading: false, isError: false, data: products });
-      } catch (error) {
-        console.error('Error fetching ranking:', error);
-        setFetchState({ isLoading: false, isError: true, data: null });
-      }
-    };
-
-    fetchRanking();
-  }, [filterOption]);
-
-  const { isLoading, isError, data } = fetchState;
+  console.log('Fetch state:', { isLoading, isError, data });
 
   return (
     <Wrapper>
@@ -59,8 +31,8 @@ export const GoodsRankingSection = () => {
           <Description>로딩 중</Description>
         ) : isError ? (
           <Description>데이터를 불러오는 중에 문제가 발생했습니다.</Description>
-        ) : data && data.length > 0 ? (
-          <GoodsRankingList goodsList={data} />
+        ) : data && data.products.length > 0 ? (
+          <GoodsRankingList goodsList={data.products} />
         ) : (
           <Description>보여줄 상품이 없어요!</Description>
         )}

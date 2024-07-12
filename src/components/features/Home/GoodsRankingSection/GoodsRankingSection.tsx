@@ -1,12 +1,11 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types/types';
 import type { product } from '@/types/types';
-import { url } from '@/utils/url/url';
+import { fetchData } from '@/utils/api/api';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -22,13 +21,11 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${url}/api/v1/ranking/products`, {
-          params: {
-            targetType: filterOption.targetType,
-            rankType: filterOption.rankType,
-          },
+        const response = await fetchData('/api/v1/ranking/products', {
+          targetType: filterOption.targetType,
+          rankType: filterOption.rankType,
         });
-        setProducts(response.data.products);
+        setProducts(response.products);
       } catch (error) {
         console.error('Error fetching themes:', error);
       }

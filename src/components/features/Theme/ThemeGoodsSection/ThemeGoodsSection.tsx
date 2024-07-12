@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -7,7 +6,7 @@ import { Container } from '@/components/common/layouts/Container/Container';
 import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { product } from '@/types/types';
-import { url } from '@/utils/url/url';
+import { fetchData } from '@/utils/api/api';
 
 type Props = {
   themeKey: string;
@@ -19,8 +18,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await axios.get(`${url}/api/v1/themes/${themeKey}/products`);
-        const showProducts = response.data.products.slice(0, 20);
+        const response = await fetchData(`/api/v1/themes/${themeKey}/products`);
+        const showProducts = response.products.slice(0, 20);
         setProducts(showProducts);
       } catch (error) {
         console.error('Error fetching themes:', error);

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -8,7 +7,7 @@ import { Grid } from '@/components/common/layouts/Grid/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { Theme } from '@/types/types';
-import { url } from '@/utils/url/url';
+import { fetchData } from '@/utils/api/api';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
@@ -18,10 +17,8 @@ export const ThemeCategorySection = () => {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await axios.get(
-          `${url}/api/v1/themes`,
-        );
-        setThemes(response.data.themes);
+        const response = await fetchData(`/api/v1/themes`);
+        setThemes(response.themes);
       } catch (error) {
         console.error('Error fetching themes:', error);
       }

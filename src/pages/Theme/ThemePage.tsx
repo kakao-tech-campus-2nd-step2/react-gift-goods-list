@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection/ThemeHeroSection';
 import type { ThemeData } from '@/types/types';
-import { url } from '@/utils/url/url';
+import { fetchData } from '@/utils/api/api';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
@@ -15,8 +14,8 @@ export const ThemePage = () => {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await axios.get(`${url}/api/v1/themes`);
-        setThemes(response.data.themes);
+        const response = await fetchData('/api/v1/themes');
+        setThemes(response.themes);
       } catch (error) {
         console.error('Error fetching themes:', error);
       }

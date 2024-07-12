@@ -1,16 +1,48 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { getThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { ProductData } from '@/types/response';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [products, setProducts] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`); // 디버깅 코드 추가
+
+    const fetchProducts = async () => {
+      console.log('Starting fetchProducts'); // 디버깅 코드 추가
+      try {
+        const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 10 });
+        console.log('Fetched products:', response.products); // 디버깅 코드 추가
+        setProducts(response.products);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [themeKey]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (products.length === 0) {
+    return <p>No products found for this theme.</p>;
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +53,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

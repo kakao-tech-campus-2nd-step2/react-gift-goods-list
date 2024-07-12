@@ -18,7 +18,7 @@ export const ThemePage = () => {
         const foundTheme = response.themes.find((t: ThemeData) => t.key === themeKey);
         setCurrentTheme(foundTheme || null);
       } catch (error) {
-        console.error('Error to fetch thmeme:', error);
+        console.error('Error fetching theme:', error);
       }
     };
     fetchTheme();
@@ -27,6 +27,8 @@ export const ThemePage = () => {
   if (!currentTheme) {
     return <Navigate to={RouterPath.notFound} />;
   }
+
+  console.log('Rendering ThemePage with themeKey:', themeKey); // 디버깅 코드 추가
 
   return (
     <>

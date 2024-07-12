@@ -31,6 +31,7 @@ module.exports = {
   ],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react-hooks/exhaustive-deps': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     '@typescript-eslint/consistent-type-imports': 'warn',

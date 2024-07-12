@@ -1,0 +1,1 @@
+export const BASE_URL = 'https://react-gift-mock-api-hyunaeri.vercel.app/'

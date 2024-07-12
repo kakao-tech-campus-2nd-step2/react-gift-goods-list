@@ -1,29 +1,45 @@
-import styled from '@emotion/styled';
+import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
 
-import { Container } from '@/components/common/layouts/Container';
-import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import fetchData from '@/api'
+import { Container } from '@/components/common/layouts/Container'
+import { breakpoints } from '@/styles/variants'
+import type { ThemeData } from '@/types'
 
 type Props = {
-  themeKey: string;
-};
+  themeKey: string
+}
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+
+  // themeKey 가 변할 때 마다 실행
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const data = await fetchData(`api/v1/themes`)
+        const theme = getCurrentTheme(themeKey, data.themes)
+        setCurrentTheme(theme)
+        console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
+      }
+      catch (error) {
+        console.error('[ThemeHeroSection] Fetch Theme Data Fail: ', error)
+      }
+    }
+    fetchThemeData()
+  }, [themeKey])
+  
 
   if (!currentTheme) {
-    return null;
+    return null
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import fetchData from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +15,32 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([])
+
+  // filterOption 에 변화가 생길 때 마다 실행
+  useEffect(() => {
+    const fetchRankingProductData = async () => {
+      try {
+        const { targetType, rankType } = filterOption
+        const data = await fetchData(
+          `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
+        )
+        setRankingProducts(data.products)
+        console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)
+      }
+      catch (error) {
+        console.error('[GoodsRankingSection] Fetch Goods Ranking Data Fail: ', error)
+      }
+    }
+    fetchRankingProductData()
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={rankingProducts} />
       </Container>
     </Wrapper>
   );

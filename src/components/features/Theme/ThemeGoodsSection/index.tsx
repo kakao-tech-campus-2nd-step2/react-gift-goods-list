@@ -1,16 +1,38 @@
-import styled from '@emotion/styled';
+import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
 
-import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
-import { Container } from '@/components/common/layouts/Container';
-import { Grid } from '@/components/common/layouts/Grid';
-import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import fetchData from '@/api'
+import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default'
+import { Container } from '@/components/common/layouts/Container'
+import { Grid } from '@/components/common/layouts/Grid'
+import { breakpoints } from '@/styles/variants'
+import type { GoodsData } from '@/types'
 
 type Props = {
-  themeKey: string;
+  themeKey: string
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([])
+  const MaxItems = 20
+  const queryParams = `?maxItems=${MaxItems}`
+
+  // themeKey 가 변할 때마다 실행
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`)
+        setCurrentGoods(data.products)
+        console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
+      }
+      catch (error) {
+        console.error('[ThemeGoodsSection] Fetch Theme Goods Data Fail: ', error)
+      }
+    }
+    fetchThemeData()
+  }, [themeKey])
+  
+
   return (
     <Wrapper>
       <Container>
@@ -21,13 +43,13 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {currentGoods.map((goods) => (
             <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
+              key={goods.id}
+              imageSrc={goods.imageURL}
+              title={goods.name}
+              amount={goods.price.sellingPrice}
+              subtitle={goods.brandInfo.name}
             />
           ))}
         </Grid>

@@ -7,7 +7,6 @@
       "@assets/*": ["./src/assets/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@pages/*": ["./src/pages/*"],
-      "@mocks/*": ["./src/mocks/*"],
       "@routes/*": ["./src/routes/*"],
       "@utils/*": ["./src/utils/*"],
       "@context/*": ["./src/context/*"],

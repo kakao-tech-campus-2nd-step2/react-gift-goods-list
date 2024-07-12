@@ -16,6 +16,10 @@ const defaultLoadState = {
 const MAX_RETRY_COUNT = 5;
 const RETRY_DELAY_MS = 1000;
 
+/**
+ * axios-interceptor를 사용할 수도 있다.
+ * react-query를 사용한 방법은?
+ */
 const makeFetchRetryOnError =
   (
     fetchFunction: ({}: Theme.GetThemeProductsType) => Promise<Theme.ThemeProductsResponse>,

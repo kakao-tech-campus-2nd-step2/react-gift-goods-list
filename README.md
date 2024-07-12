@@ -49,9 +49,19 @@
 - [x] useGetAPI 함수 리턴값에 에러 상태 추가
 - [x] 에러 처리
 
+### 3단계
+
+- [x]  프로젝트에 React Query 추가
+- [ ]  (pages/Theme/index) React Query 적용
+- [ ]  (pages/Theme/index)페이지네이션 구현
+
 ## page
 
-## 과제 3단계
+## 과제 4단계
+
+- [ ]  질문 1. CORS 에러는 무엇이고 언제 발생하는지 설명해주세요. 이를 해결할 수 있는 방법에 대해서도 설명해주세요.
+- [ ]  질문 2. 비동기 처리 방법인 callback, promise, async await에 대해 각각 장단점과 함께 설명해주세요.
+- [ ]  질문 3. react query의 주요 특징에 대해 설명하고, queryKey는 어떤 역할을 하는지 설명해주세요.
 
 ## 🎸
 

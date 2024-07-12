@@ -1,8 +1,8 @@
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { useThemeProductContext } from '@/provider/Theme/ThemeProductProvider';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
 import styled from '@emotion/styled';
 
 type Props = {
@@ -10,6 +10,13 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({}: Props) => {
+  const { products, isLoading } = useThemeProductContext();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  console.log(products);
+
   return (
     <Wrapper>
       <Container>
@@ -20,7 +27,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

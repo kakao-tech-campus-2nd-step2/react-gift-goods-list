@@ -25,10 +25,10 @@
   - [X] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 한다.
 - [ ] Error, Loading Status 핸들링하기
   - [X] Loading 스피너 고르기
-  - [ ] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!)
-  - [ ] 데이터가 없는 경우에 대한 UI 대응
-  - [ ] Http Status에 따라 Error 다르게 처리
-  - [ ] Error 페이지 제작,,
+  - [X] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!(포기,, 걍 Spinner 돌리자)))
+  - [X] 데이터가 없는 경우에 대한 UI 대응
+  - [X] Http Status에 따라 Error 다르게 처리(일단 400, 404만..)
+  - [ ] Error 페이지 제작,,(시간관계상 포기)
 
 
   ### 프로젝트 링크

@@ -26,7 +26,6 @@ export const ItemListWithInfiniteScroll = ({ themeKey }: { themeKey: string }) =
   if (error) {
     return <HandleBox>{error.message}</HandleBox>;
   }
-
   const products = data?.pages.flatMap((page) => page.products) ?? [];
   if (products.length == 0) {
     return <HandleBox>상품이 없어요!</HandleBox>;
@@ -36,9 +35,9 @@ export const ItemListWithInfiniteScroll = ({ themeKey }: { themeKey: string }) =
     <ListWrapper>
       <Container justifyContent="center" alignItems="center" maxWidth="1024px">
         <Grid columns={{ init: 2, sm: 2, md: 4 }} gap={20}>
-          {products.map((item) => (
+          {products.map((item, index) => (
             <GoodsItem
-              key={item.id}
+              key={index + 1}
               imageSrc={item.imageURL}
               subtitle={item.brandInfo.name}
               title={item.name}

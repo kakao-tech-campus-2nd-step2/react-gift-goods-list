@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/apis/products/products';
 import { Button } from '@/components/common/Button';
@@ -14,13 +14,12 @@ type Props = {
 };
 
 export const GoodsRankingList = ({ filterOption }: Props) => {
-  const { data } = useQuery(
-    ['goodsRanking', filterOption],
-    () => getRankingProducts(filterOption),
-    { suspense: true },
-  );
+  const { data } = useSuspenseQuery({
+    queryKey: ['goodsRanking', filterOption],
+    queryFn: () => getRankingProducts(filterOption),
+  });
   const [hasMore, setHasMore] = useState(false);
-  const products = data?.products ?? [];
+  const products: Home.ProductData[] = data?.products ?? [];
 
   const currentGoodsList = hasMore ? products : products.slice(0, 6);
 

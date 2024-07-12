@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ThemeProvider } from '@/context/themeContext';
 
@@ -8,7 +8,7 @@ import { Routes } from './routes';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      useErrorBoundary: true,
+      retry: 3,
     },
   },
 });

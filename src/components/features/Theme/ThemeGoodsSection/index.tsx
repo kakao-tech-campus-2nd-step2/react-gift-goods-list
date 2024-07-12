@@ -28,7 +28,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             }}
             gap={16}
           >
-            {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
+            {goodsList.map(({ id, imageURL, name, price, brandInfo }: Home.ProductData) => (
               <DefaultGoodsItems
                 key={id}
                 imageSrc={imageURL}

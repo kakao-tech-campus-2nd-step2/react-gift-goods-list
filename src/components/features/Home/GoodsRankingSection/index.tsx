@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { QueryErrorResetBoundary, useQueryClient } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
 import { GoodsRankingFilter } from '@/components/features/Home/GoodsRankingSection/Filter';
@@ -16,18 +16,12 @@ const defaultFilter: RankingFilterOption = {
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
-  const queryClient = useQueryClient();
-
-  const handleFilterChange = (newFilterOption: RankingFilterOption) => {
-    setFilterOption(newFilterOption);
-    queryClient.invalidateQueries(['goodsRanking', newFilterOption]);
-  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={handleFilterChange} />
+        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         <QueryErrorResetBoundary>
           {({ reset }) => (
             <ErrorBoundary

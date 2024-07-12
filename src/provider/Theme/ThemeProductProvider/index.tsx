@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 import { getThemesProducts } from '@/apis/Theme/theme.api';
 import { ProductsResponse } from '@/apis/Theme/theme.response';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 type ThemeProductData = {
   id: number;
@@ -27,6 +27,10 @@ type ThemeProductData = {
 interface ThemeProductContextProps {
   products: ThemeProductData[];
   isLoading: boolean;
+  isError: boolean;
+  errorMsg: string;
+  hasMore: boolean;
+  fetchMore: () => void;
 }
 
 const ThemeProductContext = createContext<ThemeProductContextProps | undefined>(
@@ -36,7 +40,7 @@ const ThemeProductContext = createContext<ThemeProductContextProps | undefined>(
 export const ThemeProductProvider = ({
   children,
   themeKey,
-  pageToken = '1',
+  pageToken = '0',
   maxResults = 20,
 }: {
   children: React.ReactNode;
@@ -44,14 +48,34 @@ export const ThemeProductProvider = ({
   pageToken?: string;
   maxResults?: number;
 }) => {
-  const { data, isLoading } = useQuery<ProductsResponse>({
-    queryKey: ['products'],
-    queryFn: () => getThemesProducts(themeKey, pageToken, maxResults),
-  });
+  const { data, error, isLoading, fetchNextPage, hasNextPage } =
+    useInfiniteQuery<ProductsResponse>(
+      ['products', themeKey],
+      ({ pageParam = pageToken }) =>
+        getThemesProducts(themeKey, pageParam, maxResults),
+      {
+        getNextPageParam: (lastPage) =>
+          lastPage.pageInfo.nextPageToken ?? undefined,
+      }
+    );
+
+  // Flatten the products array
+  const products = data?.pages.flatMap((page) => page.products) || [];
+
+  // Error handling
+  const errorMsg =
+    error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
 
   return (
     <ThemeProductContext.Provider
-      value={{ products: data?.products || [], isLoading }}
+      value={{
+        products,
+        isLoading,
+        isError: !!error,
+        errorMsg,
+        hasMore: hasNextPage || false,
+        fetchMore: fetchNextPage,
+      }}
     >
       {children}
     </ThemeProductContext.Provider>

@@ -1,58 +1,72 @@
 import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
+import axios from 'axios';
+import { useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { useInfiniteQuery } from 'react-query';
 
-import fetchData from '@/api'
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default'
 import { Container } from '@/components/common/layouts/Container'
 import { Grid } from '@/components/common/layouts/Grid'
+import { BASE_URL } from '@/constants';
 import { breakpoints } from '@/styles/variants'
 import type { GoodsData } from '@/types'
 
-type Props = {
+type FetchProps = {
+  pageParam?: number
   themeKey: string
 };
 
-export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([])
-  const [loading, setLoading] = useState(true)
+const fetchGoodsList = async ({ pageParam, themeKey }: FetchProps) => {
+  const maxResults = 20
+  const params: { maxResults: number; pageToken?: number } = { maxResults }
+  if (pageParam) {
+    params.pageToken = pageParam
+  }
+  const response = await axios.get(`${BASE_URL}api/v1/themes/${themeKey}/products`, { params })
+  return response.data
+}
 
-  // themeKey 가 변할 때마다 실행
+export const ThemeGoodsSection = ({ themeKey }: { themeKey: string }) => {
+  const { ref, inView } = useInView()
+
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      ['goodsList', themeKey],
+      ({ pageParam = 0 }) =>
+        fetchGoodsList({ pageParam: pageParam === 0 ? undefined : pageParam, themeKey }),
+      {
+        getNextPageParam: (lastPage, pages) => {
+          if (lastPage.products.length < 20) {
+            return undefined;
+          }
+          return pages.length;
+        },
+      },
+    );
+
   useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const MaxItems = 20
-        const queryParams = `?maxItems=${MaxItems}`
-        const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`)
-
-        setCurrentGoods(data.products)
-        setLoading(false)
-        console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)
-      }
-      catch (error) {
-        console.error('[ThemeGoodsSection] Fetch Theme Goods Data Fail: ', error)
-        setLoading(false)
-      }
+    if (inView && hasNextPage) {
+      fetchNextPage();
     }
-    fetchThemeData()
-  }, [themeKey])
+  }, [inView, hasNextPage, fetchNextPage]);
 
-  if (loading) {
+  if (isLoading && !isFetchingNextPage) {
     return (
       <LoadingWrapper>
         <Spinner />
         <LoadingText>Loading...</LoadingText>
       </LoadingWrapper>
     )
-  }
 
-  if (currentGoods.length === 0) {
+  }
+  if (!data || data.pages[0].products.length === 0) {
     return (
       <NoDataWrapper>
         <NoDataText>No data available</NoDataText>
       </NoDataWrapper>
     )
   }
-  
+
   return (
     <Wrapper>
       <Container>
@@ -63,16 +77,19 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {currentGoods.map((goods) => (
-            <DefaultGoodsItems
-              key={goods.id}
-              imageSrc={goods.imageURL}
-              title={goods.name}
-              amount={goods.price.sellingPrice}
-              subtitle={goods.brandInfo.name}
-            />
-          ))}
+          {data?.pages.map((page) =>
+            page.products.map((goods: GoodsData) => (
+              <DefaultGoodsItems
+                key={goods.id}
+                imageSrc={goods.imageURL}
+                title={goods.name}
+                amount={goods.price.sellingPrice}
+                subtitle={goods.brandInfo.name}
+              />
+            )),
+          )}
         </Grid>
+        <div ref={ref}>{isFetchingNextPage ? '상품 추가로 불러오는 중...' : ''}</div>        
       </Container>
     </Wrapper>
   );
@@ -108,6 +125,7 @@ const Spinner = styled.div`
     100% { transform: rotate(360deg); }
   }
 `;
+
 
 const LoadingText = styled.div`
   margin-top: 10px;

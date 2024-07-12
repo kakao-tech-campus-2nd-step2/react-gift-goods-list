@@ -5,7 +5,6 @@ import { getThemes } from 'src/api/themeApi';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { Theme } from '@/types/api';
 
@@ -46,7 +45,7 @@ export const ThemeCategorySection = () => {
           }}
         >
           {themes.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+            <Link key={theme.id} to={`/theme/${theme.key}`}>
               <ThemeCategoryItem
                 image={theme.imageURL}
                 label={theme.label}

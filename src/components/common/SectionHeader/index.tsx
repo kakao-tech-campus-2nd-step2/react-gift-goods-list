@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { CenteredContainer } from '@components/common';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from '@routes/path';
 
 interface LocationState {
   title: string;
@@ -12,7 +13,16 @@ interface LocationState {
 
 export default function SectionHeader() {
   const location = useLocation();
-  const { title, description, label, backgroundColor } = location.state as LocationState;
+  const navigate = useNavigate();
+  const state = location.state as LocationState | null;
+
+  useEffect(() => {
+    if (!state) navigate(ROUTE_PATH.HOME);
+  }, [state, navigate]);
+
+  if (!state) return null;
+
+  const { title, label, description, backgroundColor } = state;
 
   return (
     <SectionHeaderContainer color={backgroundColor}>

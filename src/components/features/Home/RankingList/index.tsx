@@ -60,5 +60,4 @@ const ButtonContainer = styled.div`
 const NoProductsMessage = styled.div`
   padding: 20px;
   text-align: center;
-  font-size: 18px;
 `;

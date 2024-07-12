@@ -7,7 +7,7 @@ interface FetchState<T> {
   data: T | null;
 }
 
-export default function useFetch<T, P>(
+export default function useFetch<T, P = undefined>(
   apiCall: (params?: P) => Promise<T>,
   apiParams?: P,
   options?: AxiosRequestConfig,

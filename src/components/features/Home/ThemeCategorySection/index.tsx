@@ -5,30 +5,37 @@ import { useGetThemes } from '@/api';
 import type { ThemeData } from '@/api/type';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import ListMapper from '@/components/common/ListMapper';
+import Loading from '@/components/common/Loading';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const { data: themesResponse } = useGetThemes();
+  const { data: themesResponse, loading, error } = useGetThemes();
   const themes = themesResponse?.data?.themes;
 
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 4,
-            md: 6,
-          }}
-        >
-          {themes?.map((theme: ThemeData) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>
-          ))}
-        </Grid>
+        <Loading isLoading={loading} error={error}>
+          <ListMapper<ThemeData>
+            items={themes}
+            ItemComponent={({ item }) => (
+              <Link key={item.id} to={getDynamicPath.theme(item.key)}>
+                <ThemeCategoryItem image={item.imageURL} label={item.label} />
+              </Link>
+            )}
+            Wrapper={Grid}
+            wrapperProps={{
+              columns: {
+                initial: 4,
+                md: 6,
+              },
+            }}
+          />
+        </Loading>
       </Container>
     </Wrapper>
   );

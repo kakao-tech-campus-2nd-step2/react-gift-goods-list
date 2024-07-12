@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { useGetRankingProducts } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
+import Loading from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -16,7 +17,12 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const { data: rankingProducts, refetch: refetchRankingProducts } = useGetRankingProducts({
+  const {
+    data: rankingProducts,
+    refetch: refetchRankingProducts,
+    loading,
+    error,
+  } = useGetRankingProducts({
     targetType: filterOption.targetType,
     rankType: filterOption.rankType,
   });
@@ -32,7 +38,9 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goodsList} />
+        <Loading isLoading={loading} error={error}>
+          <GoodsRankingList goodsList={goodsList} />
+        </Loading>
       </Container>
     </Wrapper>
   );

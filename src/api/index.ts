@@ -17,24 +17,26 @@ axios.defaults.baseURL = 'https://react-gift-mock-api-jasper200207.vercel.app';
 export type UseAxiosReturn<T> = {
   data: AjaxResult<T>;
   loading: boolean;
+  error: boolean;
   refetch: () => void;
 };
 
 function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
   const [data, setData] = useState<AjaxResult<T>>({ success: false, data: null });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [state, setState] = useState<'Wait' | 'Loading' | 'Success' | 'Error'>('Wait');
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
+    setState('Loading');
     const result = await axios(options)
       .then((response) => {
+        setState('Success');
         return { success: true, data: response.data } as AjaxResult<T>;
       })
       .catch((error) => {
+        setState('Error');
         return { success: false, data: error } as AjaxResult<T>;
       });
     setData(result);
-    setLoading(false);
   }, [options]);
 
   useEffect(() => {
@@ -43,7 +45,8 @@ function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
 
   return {
     data,
-    loading,
+    loading: state === 'Loading' || state === 'Wait',
+    error: state === 'Error',
     refetch: fetchData,
   };
 }

@@ -21,7 +21,7 @@ FE 카카오 선물하기 3주차 과제: API
 
 ## step2
 
-- [ ] 각 API에서 Loading 상태에 대한 UI 대응을 해요.
+- [x] 각 API에서 Loading 상태에 대한 UI 대응을 해요.
 - [ ] 데이터가 없는 경우에 대한 UI 대응을 해요.
 - [ ] Http Status에 따라 Error를 다르게 처리해요.
 

@@ -14,7 +14,7 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,8 +25,6 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       // eslint-disable-next-line @typescript-eslint/no-shadow
       } catch (error) {
         setError('Error fetching products');
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -34,11 +32,21 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }, [themeKey]);
 
   if (loading) {
-    return <Loading>Loading...</Loading>;
+    return (
+      <LoaderWrapper>
+        <Loader />
+      </LoaderWrapper>
+    );
   }
-
+  
   if (error) {
-    return <Error>{error}</Error>;
+    return (
+      <Wrapper>
+        <Container>
+          <ErrorMessage>Error fetching products</ErrorMessage>
+        </Container>
+      </Wrapper>
+    );
   }
 
   if (products.length === 0) {
@@ -79,15 +87,34 @@ const Wrapper = styled.section`
   }
 `;
 
-const Loading = styled.div`
-  text-align: center;
-  padding: 20px;
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 18px;
 `;
 
-const Error = styled.div`
-  text-align: center;
-  padding: 20px;
-  color: red;
+const LoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+`;
+
+const Loader = styled.div`
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const NoProducts = styled.div`

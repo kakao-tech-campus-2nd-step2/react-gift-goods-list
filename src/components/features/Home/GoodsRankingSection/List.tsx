@@ -1,20 +1,39 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import type { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 
+import { getRankingProducts } from '@/apis/products/products';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
+import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { RankingFilterOption } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  filterOption: RankingFilterOption;
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ filterOption }: Props) => {
+  const [products, setProducts] = useState<Home.ProductData[]>([]);
+  const [error, setError] = useState<AxiosError>();
+  useEffect(() => {
+    getRankingProducts(filterOption)
+      .then((data) => {
+        setProducts(data.products);
+      })
+      .catch((err) => {
+        handleStatusCode(err);
+        setError(err);
+      });
+  }, [filterOption]);
   const [hasMore, setHasMore] = useState(false);
 
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+  const currentGoodsList = hasMore ? products : products.slice(0, 6);
+
+  if (error) {
+    throw error;
+  }
 
   return (
     <Wrapper>
@@ -67,3 +86,5 @@ const ButtonWrapper = styled.div`
 
   padding-top: 30px;
 `;
+
+// export default GoodsRankingList;

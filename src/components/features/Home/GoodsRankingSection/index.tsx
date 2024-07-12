@@ -1,55 +1,37 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 
-import { getRankingProducts } from '@/apis/products/products';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { Container } from '@/components/common/layouts/Container';
-import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
+import { GoodsRankingFilter } from '@/components/features/Home/GoodsRankingSection/Filter';
+import { GoodsRankingList } from '@/components/features/Home/GoodsRankingSection/List';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-
-import { GoodsRankingFilter } from './Filter';
-import { GoodsRankingList } from './List';
 
 const defaultFilter: RankingFilterOption = {
   targetType: 'ALL',
   rankType: 'MANY_WISH',
 };
 
+// const GoodsRankingList = lazy(() => import('./List'));
+
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
-  const [products, setProducts] = useState<Home.ProductData[]>([]);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    getRankingProducts(filterOption)
-      .then((data) => {
-        setProducts(data.products);
-      })
-      .catch((err) => {
-        handleStatusCode(err);
-        setIsError(true);
-      })
-      .finally(() => setIsLoading(false));
-  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter
-          filterOption={filterOption}
-          onFilterOptionChange={setFilterOption}
-          setIsError={setIsError}
-          setIsLoading={setIsLoading}
-        />
-        {isLoading ? (
-          <Container alignItems="center">로딩중</Container>
-        ) : isError ? (
-          <Container alignItems="center">데이터를 불러오는 중에 문제가 발생했습니다.</Container>
-        ) : (
-          <GoodsRankingList goodsList={products} />
-        )}
+        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
+        <ErrorBoundary
+          fallback={
+            <Container alignItems="center">데이터를 불러오는 중에 문제가 발생했습니다.</Container>
+          }
+        >
+          <Suspense fallback={<Container>로딩중</Container>}>
+            <GoodsRankingList filterOption={filterOption} />
+          </Suspense>
+        </ErrorBoundary>
       </Container>
     </Wrapper>
   );

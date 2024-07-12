@@ -1,35 +1,49 @@
 import styled from '@emotion/styled';
+import { useQuery } from 'react-query';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import apiClient from '@/utils/api';
 
-type Props = {
-  themeKey: string;
+const fetchThemeData = async (themeKey: string) => {
+  const response = await apiClient.get<{ themes: ThemeData[] }>('/themes');
+  return response.data.themes.find((theme) => theme.key === themeKey);
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const HeroSection = () => {
+  const { themeKey } = useParams<{ themeKey: string }>();
 
-  if (!currentTheme) {
-    return null;
+  const {
+    data: theme,
+    isLoading,
+    isError,
+  } = useQuery(['theme', themeKey], () => fetchThemeData(themeKey!), {
+    enabled: !!themeKey,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (isError || !theme) {
+    return <Navigate to={RouterPath.home} />;
+  }
 
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <SectionWrapper backgroundColor={theme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{theme.label}</Label>
+        <Title>{theme.title}</Title>
+        {theme.description && <Description>{theme.description}</Description>}
       </Container>
-    </Wrapper>
+    </SectionWrapper>
   );
 };
 
-const Wrapper = styled.section<{ backgroundColor: string }>`
+const SectionWrapper = styled.section<{ backgroundColor: string }>`
   padding: 27px 20px 23px;
   width: 100%;
   background-color: ${({ backgroundColor }) => backgroundColor};
@@ -82,7 +96,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

@@ -14,13 +14,13 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([])
+  const MaxItems = 20
+  const queryParams = `?maxItems=${MaxItems}`
 
   // themeKey 가 변할 때마다 실행
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const MaxItems = 20
-        const queryParams = `?maxItems=${MaxItems}`
         const data = await fetchData(`api/v1/themes/${themeKey}/products${queryParams}`)
         setCurrentGoods(data.products)
         console.log('[ThemeGoodsSection] Fetch Theme Goods Data Success: ', data.products)

@@ -114,11 +114,12 @@ export const getThemes = async (): Promise<ThemeData[]> => {
 };
 
 // 특정 테마의 선물 목록
-export const getThemeProducts = async (themeKey: string, maxResults: number = 20): Promise<ThemeProductsResponse> => {
+export const getThemeProducts = async (themeKey: string, pageToken: number = 1, maxResults: number = 20): Promise<ThemeProductsResponse> => {
   try {
     const response = await api.get(`/themes/${themeKey}/products`, {
       params: {
         maxResults,
+        pageToken,
       },
     });
     return response.data;

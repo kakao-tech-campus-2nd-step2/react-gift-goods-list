@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
+import type { RankingFilterOption } from '@/types/types';
 
 type Props = {
   label: string;

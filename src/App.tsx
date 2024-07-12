@@ -1,5 +1,5 @@
-import { AuthProvider } from './provider/Auth';
-import { Routes } from './routes';
+import { AuthProvider } from './provider/Auth/Auth';
+import { Routes } from './routes/Routes';
 
 const App = () => {
   return (

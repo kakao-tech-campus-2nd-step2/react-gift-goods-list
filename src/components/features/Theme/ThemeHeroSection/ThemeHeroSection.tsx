@@ -1,29 +1,29 @@
 import styled from '@emotion/styled';
+import { Navigate } from 'react-router-dom';
 
-import { Container } from '@/components/common/layouts/Container';
+import { Container } from '@/components/common/layouts/Container/Container';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import type { ThemeData } from '@/types/types';
 
 type Props = {
+  themes: ThemeData[];
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const ThemeHeroSection = ({ themes, themeKey }: Props) => {
+  const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {
-    return null;
+    return <Navigate to={RouterPath.home} />;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -84,5 +84,5 @@ const Description = styled.p`
 `;
 
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
+  return themeList.find((theme) => themeKey === theme.key);
 };

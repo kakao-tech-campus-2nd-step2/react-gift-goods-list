@@ -31,3 +31,32 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+//ThemeCategorySection
+export type Theme = {
+  id: number;
+  key: string;
+  label: string;
+  imageURL: string;
+};
+export type ThemeProps = {
+  label: string;
+  imageURL: string;
+};
+
+// GoodsRankingSection
+export type product = {
+  id: number;
+  imageURL: string;
+  name: string;
+  price: {
+    sellingPrice: number;
+  };
+  brandInfo: {
+    name: string;
+  };
+};
+
+export type ProductsListProps = {
+  productsList: product[];
+};

@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-import { Spacing } from '@/components/common/layouts/Spacing';
+import { Spacing } from '@/components/common/layouts/Spacing/Spacing';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
+import type { RankingFilterOption } from '@/types/types';
 
 import { RankTypeButton } from './RankTypeButton';
 import { TargetTypeButton } from './TargetTypeButton';

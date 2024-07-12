@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
-import { Button } from '@/components/common/Button';
-import { Spacing } from '@/components/common/layouts/Spacing';
-import { useAuth } from '@/provider/Auth';
+import { Button } from '@/components/common/Button/Button';
+import { Spacing } from '@/components/common/layouts/Spacing/Spacing';
+import { useAuth } from '@/provider/Auth/Auth';
 import { RouterPath } from '@/routes/path';
-import { authSessionStorage } from '@/utils/storage';
+import { authSessionStorage } from '@/utils/storage/storage';
 
 export const MyAccountPage = () => {
   const authInfo = useAuth();

@@ -1,16 +1,12 @@
 import styled from '@emotion/styled';
 
-import { Image } from '@/components/common/Image';
+import { Image } from '@/components/common/Image/Image';
 import { breakpoints } from '@/styles/variants';
+import type { ThemeProps } from '@/types/types';
 
-type Props = {
-  image: string;
-  label: string;
-} & React.HTMLAttributes<HTMLDivElement>;
-
-export const ThemeCategoryItem = ({ image, label, ...props }: Props) => (
+export const ThemeCategoryItem = ({ imageURL, label, ...props }: ThemeProps) => (
   <Wrapper {...props}>
-    <CategoryImage src={image} alt={label} />
+    <CategoryImage src={imageURL} alt={label} />
     <Label>{label}</Label>
   </Wrapper>
 );

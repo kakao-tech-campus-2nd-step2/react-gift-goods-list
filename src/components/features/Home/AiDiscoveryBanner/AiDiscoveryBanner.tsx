@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { Container } from '@/components/common/layouts/Container';
+import { Container } from '@/components/common/layouts/Container/Container';
 import { breakpoints } from '@/styles/variants';
 
 export const AiDiscoveryBanner = () => {

@@ -29,6 +29,7 @@ export const RankedImage = ({ rank, imageSrc, alt }: RankedImageProps) => {
         alt={alt}
         ratio={GOODS_IMAGE_DEFAULT_RATIO}
         radius={GOODS_IMAGE_DEFAULT_RADIUS}
+        isLazy
       />
     </div>
   );

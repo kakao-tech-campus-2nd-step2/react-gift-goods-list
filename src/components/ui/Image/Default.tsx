@@ -1,14 +1,15 @@
-import { ImgHTMLAttributes } from 'react';
+import { ImgHTMLAttributes, useState } from 'react';
 
 import { Radius, Ratio } from '@/types/uiTypes';
 
-import { imageStyle } from './styles';
+import { backgroundStyle, imageStyle } from './styles';
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   ratio?: Ratio;
   radius?: Radius;
   width?: string;
   src: string;
+  isLazy?: boolean;
 }
 
 export const Image = ({
@@ -17,14 +18,20 @@ export const Image = ({
   width = '100%',
   src,
   alt,
+  isLazy = false,
   ...props
 }: ImageProps) => {
+  const [isLoad, setIsLoad] = useState(false);
+
   return (
-    <img
-      css={imageStyle(ratio, radius, width)}
-      alt={alt}
-      src={src}
-      {...props}
-    />
+    <div css={backgroundStyle(isLazy, isLoad)}>
+      <img
+        css={imageStyle(isLoad, ratio, radius, width, isLazy)}
+        alt={alt}
+        src={src}
+        onLoad={() => setIsLoad(true)}
+        {...props}
+      />
+    </div>
   );
 };

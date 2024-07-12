@@ -34,6 +34,7 @@ export const GoodsItem = ({
         src={imageSrc}
         ratio={GOODS_IMAGE_DEFAULT_RATIO}
         radius={GOODS_IMAGE_DEFAULT_RADIUS}
+        isLazy
       />
       <GoodsItemDetail subtitle={subtitle} title={title} amount={amount} />
     </Container>

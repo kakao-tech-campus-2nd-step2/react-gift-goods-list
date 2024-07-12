@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
-import useRanking from '@/hooks/useRanking';
+import useRanking from '@/hooks/querys/useRanking';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 

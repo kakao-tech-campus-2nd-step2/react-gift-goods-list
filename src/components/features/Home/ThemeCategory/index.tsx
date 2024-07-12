@@ -13,12 +13,12 @@ const GRID_GAP = 0;
 const GRID_COLUMNS = 6;
 
 export default function ThemeCategory() {
-  const { isLoading, isError, data } = useFetch<ThemesResponse>(getThemes);
+  const { isLoading, isError, data, error } = useFetch<ThemesResponse>(getThemes);
 
   return (
     <ThemeCategoryContainer>
       <CenteredContainer maxWidth="md">
-        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.themes.length === 0}>
+        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.themes.length === 0} error={error}>
           <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
             {data?.themes.map((theme) => (
               <Link

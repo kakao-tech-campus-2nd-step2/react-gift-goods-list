@@ -13,7 +13,7 @@ const MAX_RESULTS = 20;
 
 export default function GoodsItemList() {
   const { themeKey } = useParams<{ themeKey: string }>();
-  const { isLoading, isError, data } = useFetch<ThemeProductsResponse, ThemeProductsRequest>(getThemesProducts, {
+  const { isLoading, isError, data, error } = useFetch<ThemeProductsResponse, ThemeProductsRequest>(getThemesProducts, {
     themeKey,
     maxResults: MAX_RESULTS,
   } as ThemeProductsRequest);
@@ -21,7 +21,7 @@ export default function GoodsItemList() {
   return (
     <GoodsItemListContainer>
       <CenteredContainer maxWidth="md">
-        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0}>
+        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={data?.products.length === 0} error={error}>
           <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
             {data?.products.map((product) => (
               <GoodsItem

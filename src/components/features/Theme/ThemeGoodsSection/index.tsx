@@ -1,6 +1,9 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import type { QueryFunctionContext } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import type { ProductData } from '@/api';
 import { getThemeProducts } from '@/api';
@@ -13,6 +16,11 @@ type Props = {
   themeKey: string;
 };
 
+export type ThemeProductsResponse = {
+  products: ProductData[];
+  nextPageToken: number | null;
+};
+
 const spin = keyframes`
   to {
     transform: rotate(360deg);
@@ -21,44 +29,50 @@ const spin = keyframes`
 
 export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [hasError, setHasError] = useState<boolean>(false);
-  const [errorCode, setErrorCode] = useState<number | null>(null);
+  const { ref, inView } = useInView();
+
+  const fetchThemeProducts = async ({ pageParam = 1 }: QueryFunctionContext): Promise<ThemeProductsResponse> => {
+    const response = await getThemeProducts(themeKey, pageParam as number);
+    
+    // Convert the nextPageToken to the expected type
+    return {
+      products: response.products,
+      nextPageToken: response.nextPageToken ? Number(response.nextPageToken) : null,
+    };
+  };
+
+  const {
+    data,
+    fetchNextPage,
+    isLoading: loading,
+    isFetchingNextPage,
+    isError: hasError,
+  } = useInfiniteQuery<ThemeProductsResponse, Error>({
+    queryKey: ['themeProducts', themeKey],
+    queryFn: fetchThemeProducts,
+    getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
+    initialPageParam: 1,
+  });
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
+    if (data) {
+      const allProducts = data.pages.flatMap((page) => page.products);
+      setProducts(allProducts);
+    }
+  }, [data]);
 
-      try {
-        const response = await getThemeProducts(themeKey);
-        setProducts(response.products);
-        setHasError(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        setHasError(true);
-        setErrorCode(error.response?.status || 500);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [themeKey]);
+  useEffect(() => {
+    if (inView && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetchingNextPage, fetchNextPage]);
 
   if (loading) {
     return <LoadingWrapper><LoadingSpinner /></LoadingWrapper>;
   }
 
   if (hasError) {
-    if (errorCode === 404) {
-      return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
-    } else {
-      return <ErrorWrapper>에러가 발생했습니다.</ErrorWrapper>;
-    }
-  }
-
-  if (products.length === 0) {
-    return <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>;
+    return <ErrorWrapper>에러가 발생했습니다.</ErrorWrapper>;
   }
 
   return (
@@ -81,7 +95,10 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
             />
           ))}
         </Grid>
+        {isFetchingNextPage && <LoadingWrapper><LoadingSpinner /></LoadingWrapper>}
+        <div ref={ref} />
       </Container>
+      {!loading && products.length === 0 && <NoProductsWrapper>상품이 없어요.</NoProductsWrapper>}
     </Wrapper>
   );
 };
@@ -100,6 +117,7 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100px;
+  width: 100%; 
 `;
 
 const LoadingSpinner = styled.div`

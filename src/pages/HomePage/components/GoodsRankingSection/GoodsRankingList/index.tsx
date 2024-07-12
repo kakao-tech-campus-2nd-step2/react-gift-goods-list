@@ -1,5 +1,5 @@
+import { useRankProducts } from '@/api/hooks/useRankProducts';
 import { useExpansionControl } from '@/pages/HomePage/hooks/useExpansionControl';
-import { useRankProductData } from '@/pages/HomePage/hooks/useRankProductData';
 import { useVisibleList } from '@/pages/HomePage/hooks/useVisibleList';
 import { RankingFilter } from '@/types/productType';
 
@@ -15,7 +15,7 @@ type GoodsRankingListProps = {
 };
 
 export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
-  const { data: rankProducts, status, error } = useRankProductData(filter);
+  const { data: rankProducts, status, error } = useRankProducts(filter);
 
   const { visibleItems, visibleItemCount, setVisibleItemCount } =
     useVisibleList(rankProducts || [], filter);

@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchThemeData } from '@/services/themeData';
+import { fetchThemes } from '@/api/services/themes';
 
-export const useThemeHeroData = (themeKey: string) => {
+export const useThemeHero = (themeKey: string) => {
   const { data, status, error } = useQuery({
     queryKey: ['themeData', themeKey],
-    queryFn: () => fetchThemeData(),
+    queryFn: () => fetchThemes(),
   });
 
   const themeHero = data?.themes.find((theme) => theme.key === themeKey);

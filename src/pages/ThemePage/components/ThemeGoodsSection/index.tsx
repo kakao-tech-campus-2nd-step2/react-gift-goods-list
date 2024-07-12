@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { useInfiniteThemeProducts } from '@/pages/ThemePage/hooks/useThemeProductData';
+import { useInfiniteThemeProducts } from '@/api/hooks/useInfiniteThemeProducts';
 import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
@@ -19,7 +19,7 @@ type ThemeGoodsSectionProps = {
 export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
   const { ref, inView } = useInView();
 
-  const { data, status, error, fetchNextPage, hasNextPage } =
+  const { themeProducts, status, error, fetchNextPage, hasNextPage } =
     useInfiniteThemeProducts(themeKey);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
-  if (status === 'error') {
+  if (error) {
     return <OneTextContainer>{error.message}</OneTextContainer>;
   }
 
@@ -36,9 +36,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
     return <LoadingDots />;
   }
 
-  const themeProducts = data?.pages.flatMap((page) => page);
-
-  if (!themeProducts.length) {
+  if (!themeProducts?.length) {
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
   }
 

@@ -1,10 +1,10 @@
+import { BACKEND_API } from '@/api/instance';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
-import { BACKEND_API } from '@/services/api';
 import { ProductData } from '@/types/productType';
 
 import { GetProductsRequest, GetProductsResponse } from './types';
 
-export const fetchThemeProductData = async (
+export const fetchThemeProduct = async (
   themeKey: string,
   pageParam: number
 ) => {

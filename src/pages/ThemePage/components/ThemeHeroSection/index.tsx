@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useThemeHero } from '@/api/hooks/useThemeHero';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
-import { useThemeHeroData } from '@/pages/ThemePage/hooks/useThemeHeroData';
 import { ThemeHeroData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
@@ -19,7 +19,7 @@ type ThemeHeroSectionProps = {
 export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const navigate = useNavigate();
 
-  const { themeHero, status, error } = useThemeHeroData(themeKey);
+  const { themeHero, status, error } = useThemeHero(themeKey);
 
   useEffect(() => {
     if (error?.message === ERROR_MESSAGES.DATA_NOT_FOUND) {

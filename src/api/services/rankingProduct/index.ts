@@ -1,10 +1,10 @@
+import { BACKEND_API } from '@/api/instance';
 import { ERROR_MESSAGES } from '@/constants/errorMessage';
-import { BACKEND_API } from '@/services/api';
 import { RankingFilter } from '@/types/productType';
 
 import { GetProductRankingRequest, GetProductRankingResponse } from './types';
 
-export const fetchRankingProductData = async (filter: RankingFilter) => {
+export const fetchRankingProduct = async (filter: RankingFilter) => {
   try {
     const params: GetProductRankingRequest = {
       targetType: filter.targetType,

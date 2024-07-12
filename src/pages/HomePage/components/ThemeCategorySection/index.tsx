@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { useThemeCategoryData } from '@/pages/HomePage/hooks/useThemeCategoryData';
+import { useThemeCategory } from '@/api/hooks/useThemeCategory';
 import { ThemeCategoryData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
@@ -12,7 +12,7 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 import { gridStyle, itemContainerStyle } from './styles';
 
 export const ThemeCategorySection = () => {
-  const { themeCategoryList, status, error } = useThemeCategoryData();
+  const { themeCategoryList, status, error } = useThemeCategory();
 
   if (error) {
     return <OneTextContainer>{error.message}</OneTextContainer>;

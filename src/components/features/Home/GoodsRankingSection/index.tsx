@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { getRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { Loading } from '@/components/ui/Loading';
 import { NoDataMessage } from '@/components/ui/NoDataMessage';
 import { breakpoints } from '@/styles/variants';
@@ -20,15 +22,31 @@ export const GoodsRankingSection = () => {
 
   const [goodsList, setGoodsList] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRankingProduts = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await getRankingProducts(filterOption);
         setGoodsList(data.products);
-      } catch (error) {
-        console.log('Error fetching ranking products:', error);
+      } catch (err) {
+        console.log('Error fetching ranking products:', err);
+        if (axios.isAxiosError(err) && err.response) {
+          switch (err.response.status) {
+            case 404:
+              setError('Ranking products not found.');
+              break;
+            case 500:
+              setError('Server error. Please try again later.');
+              break;
+            default:
+              setError('An error occurred while fetching data.');
+          }
+        } else {
+          setError('An unexpected error occurred.');
+        }
       } finally {
         setLoading(false);
       }
@@ -44,6 +62,8 @@ export const GoodsRankingSection = () => {
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {loading ? (
           <Loading />
+        ) : error ? (
+          <ErrorMessage message="No ranking products found" />
         ) : goodsList.length === 0 ? (
           <NoDataMessage message="No ranking products found." />
         ) : (

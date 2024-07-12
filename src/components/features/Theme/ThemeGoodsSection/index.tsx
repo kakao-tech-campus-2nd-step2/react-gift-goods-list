@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { getThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { Loading } from '@/components/ui/Loading';
 import { NoDataMessage } from '@/components/ui/NoDataMessage';
 import { breakpoints } from '@/styles/variants';
@@ -17,17 +19,31 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [productFetchError, setProductFetchError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 20 });
         setProducts(response.products || []);
       } catch (err) {
         console.error('Error fetching products:', err);
-        setProductFetchError(true);
+        if (axios.isAxiosError(err) && err.response) {
+          switch (err.response.status) {
+            case 404:
+              setError('Products not found.');
+              break;
+            case 500:
+              setError('Server error. Please try again later.');
+              break;
+            default:
+              setError('An error occurred while fetching data.');
+          }
+        } else {
+          setError('An unexpected error occurred.');
+        }
       } finally {
         setLoading(false);
       }
@@ -40,8 +56,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     return <Loading />;
   }
 
-  if (productFetchError) {
-    return <p>An error occurred while fetching data.</p>;
+  if (error) {
+    return <ErrorMessage message={error} />;
   }
 
   if (products.length === 0) {

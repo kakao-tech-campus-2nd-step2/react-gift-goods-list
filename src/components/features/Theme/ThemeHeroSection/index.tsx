@@ -1,67 +1,38 @@
 import styled from '@emotion/styled';
-import { isAxiosError } from 'axios';
-import { useEffect,useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
+import type { GetThemesResponse,ThemeData } from '@/api/api';
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
+  const navigate = useNavigate();
 
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null> (null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const navigate = useNavigate()
+  const { data, error, isLoading } = useQuery<GetThemesResponse, Error>({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
 
-  useEffect(() => {
-    const getTheme = async () => {
-      try {
-        const response = await fetchThemes()
-        const theme = getCurrentTheme(themeKey, response.themes)
-        if (!theme) {
-          setError('The requested theme does not exist')
-          navigate('/')
-        } else {
-          setCurrentTheme(theme)
-        }
-      } catch(err) {
-        if (isAxiosError(err)) {
-          if (err.response?.status === 404) {
-            setError('Theme not found')
-          } else if (err.response?.status === 500) {
-            setError('Internal server error')
-          } else {
-            setError('An unexpected error')
-          }
-        } else {
-          setError('Failed to load themes')
-          console.error('Failed to load themes', err)
-        }
-        navigate('/')
-      } finally {
-        setLoading(false)
-      }
-    }
-    getTheme()
-  }, [themeKey, navigate])
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
 
   if (error) {
-    return <ErrorWrapper>{error}</ErrorWrapper>;
+    return <ErrorWrapper>{error.message}</ErrorWrapper>;
   }
 
+
+  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
+
   if (!currentTheme) {
-    return null;
+    navigate('/');
+    return <ErrorWrapper>The requested theme does not exist</ErrorWrapper>;
   }
 
   const { backgroundColor = '#333', label, title, description } = currentTheme;
@@ -142,6 +113,7 @@ const ErrorWrapper = styled.div`
   color: red;
 `;
 
+// Utility function to get the current theme (can be defined in the same file or imported from a utils file)
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

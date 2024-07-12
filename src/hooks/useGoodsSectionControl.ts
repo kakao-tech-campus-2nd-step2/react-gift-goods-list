@@ -72,17 +72,17 @@ export const handleStatusCode = (error: AxiosError) => {
 
 export function useGoodsSectionControl(themeKey: string) {
   const [goodsList, setGoodsList] = useState<Home.ProductData[]>([]);
-  const [pageInfo, setPageinfo] = useState<Theme.PageInfo | undefined | null>(undefined); // windowing 하는 용도?
-  const [pageToken, setPageToken] = useState<string | null>();
+  const [pageInfo, setPageinfo] = useState<Theme.PageInfo | null>(); // windowing 하는 용도?
+  const [nextPageToken, setNextPageToken] = useState<undefined | string | null>();
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState<LoadingState>(defaultLoadState);
 
   const handleThemeProductsResponse = (data: Theme.ThemeProductsResponse) => {
-    const { products, nextPageToken, pageInfo: ResponsePageInfo } = data;
+    const { products, nextPageToken: ResponseNextPageToken, pageInfo: ResponsePageInfo } = data;
     setPageinfo(ResponsePageInfo);
-    setPageToken(nextPageToken);
+    setNextPageToken(ResponseNextPageToken);
     setGoodsList((prevGoods) => {
       /**
        * 다른 탭 보고 오면 useEffect 실행 되는데 와이??
@@ -113,12 +113,12 @@ export function useGoodsSectionControl(themeKey: string) {
 
     if (loaderRef.current) {
       observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && pageToken === undefined) {
+        if (entries[0].isIntersecting && nextPageToken === undefined) {
           fetchThemeProducts().then(() => setIsLoading((prev) => ({ ...prev, isInit: false })));
-        } else if (entries[0].isIntersecting && pageToken) {
+        } else if (entries[0].isIntersecting && nextPageToken) {
           const fetchNextThemeProducts: () => Promise<void> = makeFetchRetryOnError(
             getThemeProducts,
-            { themeKey, pageToken, maxResults: 20 },
+            { themeKey, pageToken: nextPageToken, maxResults: 20 },
             handleThemeProductsResponse,
             handleError,
           );
@@ -135,7 +135,7 @@ export function useGoodsSectionControl(themeKey: string) {
     return () => {
       if (observerRef.current) observerRef.current.disconnect();
     };
-  }, [themeKey, pageToken]);
+  }, [themeKey, nextPageToken]);
 
   return { goodsList, loaderRef, isError, isLoading: isLoading.isInit || isLoading.loadingMore };
 }

@@ -6,6 +6,7 @@ export const useThemeCategory = () => {
   const { data, status, error } = useQuery({
     queryKey: ['themeData'],
     queryFn: () => fetchThemes(),
+    refetchOnMount: false,
   });
 
   const themeCategoryList = data?.categories;

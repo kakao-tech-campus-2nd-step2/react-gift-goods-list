@@ -7,6 +7,7 @@ export const useThemeHero = (themeKey: string) => {
   const { data, status, error } = useSuspenseQuery({
     queryKey: ['themeData', themeKey],
     queryFn: () => fetchThemes(),
+    refetchOnMount: false,
   });
 
   const themeHero = data?.themes.find((theme) => theme.key === themeKey);

@@ -34,13 +34,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     isFetchingNextPage,
     isLoading,
     isError,
-  } = useInfiniteQuery<GetThemeProductsResponse, Error>(
-    ['themeProducts', themeKey],
-    ({ pageParam = '' }) => fetchProducts({ pageParam, themeKey }),
-    {
-      getNextPageParam: (lastPage: GetThemeProductsResponse) => lastPage.nextPageToken ?? undefined,
-    }
-  );
+  } = useInfiniteQuery({
+    queryKey: ['themeProducts', themeKey],
+    queryFn: ({ pageParam = '' }) => fetchProducts({ pageParam, themeKey }),
+    initialPageParam: '1',
+    getNextPageParam: (lastPage: GetThemeProductsResponse) => lastPage.nextPageToken ?? undefined,
+  })
 
   const { ref, inView } = useInView();
 
@@ -114,4 +113,3 @@ const ErrorWrapper = styled.div`
   text-align: center;
   color: red;
 `;
-

@@ -20,5 +20,10 @@
 
 - [x] 메인페이지 ThemeCategorySection 에러처리
 - [x] 메인페이지 실시간 급상승 Section 에러처리
-- [ ] Theme페이지 헤더부분 에러처리
-- [ ] Tehme페이지 상품부분 에러처리
+- [x] Theme페이지 헤더부분 에러처리
+- [x] Tehme페이지 상품부분 에러처리
+
+### STEP3
+
+- [ ] 스크롤 내리면 추가로 데이터 요청
+- [ ] 1단계 API를 react-query를 사용해서 구현

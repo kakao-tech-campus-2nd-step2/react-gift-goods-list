@@ -31,8 +31,8 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <FetchDataUI<GoodsData> loading={loading} error={error} data={data || []}>
-          <GoodsRankingList goodsList={data || []} />
+        <FetchDataUI loading={loading} error={error} data={data}>
+          <GoodsRankingList goodsList={data} />
         </FetchDataUI>
       </Container>
     </Wrapper>

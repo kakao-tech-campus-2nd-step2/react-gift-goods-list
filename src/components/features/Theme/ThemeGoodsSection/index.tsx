@@ -29,7 +29,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <FetchDataUI loading={loading} error={error} data={data?.products || []}>
+        <FetchDataUI loading={loading} error={error} data={data?.products}>
           <Grid
             columns={{
               initial: 2,
@@ -37,7 +37,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             }}
             gap={16}
           >
-            {data?.products.map(({ id, imageURL, name, price, brandInfo }) => (
+            {data?.products?.map(({ id, imageURL, name, price, brandInfo }) => (
               <DefaultGoodsItems
                 key={id}
                 imageSrc={imageURL}

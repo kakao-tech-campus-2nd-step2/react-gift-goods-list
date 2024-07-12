@@ -9,7 +9,12 @@ interface FetchDataUIProps<T> {
   children: React.ReactNode;
 }
 
-export const FetchDataUI = <T,>({ loading, error, data, children }: FetchDataUIProps<T>) => {
+export const FetchDataUI = <T,>({
+  loading = false,
+  error = null,
+  data = [],
+  children,
+}: FetchDataUIProps<T>) => {
   if (loading) {
     return <Loading></Loading>;
   }

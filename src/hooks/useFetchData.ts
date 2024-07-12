@@ -8,13 +8,13 @@ interface UseFetchDataProps<T> {
 }
 
 interface UseFetchDataResult<T> {
-  data: T | null;
+  data: T;
   loading: boolean;
   error: string | null;
 }
 
 export const useFetchData = <T>({ fetchData }: UseFetchDataProps<T>): UseFetchDataResult<T> => {
-  const [data, setData] = useState<T | null>(null);
+  const [data, setData] = useState<T>(() => [] as unknown as T);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

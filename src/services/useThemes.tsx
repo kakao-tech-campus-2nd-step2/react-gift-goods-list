@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { instantAxios } from '.';
+import { axiosInstance } from '.';
 import type { Theme } from './types';
 
 export type ThemeResponseData = {
@@ -13,7 +13,7 @@ export const useThemes = () =>
     queryKey: ['themes'],
     queryFn: async () => {
       try {
-        const response = await instantAxios.get<ThemeResponseData>('v1/themes');
+        const response = await axiosInstance.get<ThemeResponseData>('v1/themes');
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {

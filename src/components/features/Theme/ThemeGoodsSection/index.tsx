@@ -5,6 +5,7 @@ import { getThemeProducts } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/DefaultGoodsItems';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { ErrorMessageContainer } from '@/styles';
 import { breakpoints } from '@/styles/variants';
 import { GoodsData } from '@/types';
 
@@ -43,8 +44,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     fetchThemeProducts();
   }, [themeKey]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError || !goodsList) return <p>Error loading theme products.</p>;
+  if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
+  if (isError || !goodsList)
+    return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
 
   return (
     <Wrapper>

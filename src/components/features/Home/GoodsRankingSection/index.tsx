@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getRankingProducts } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
+import { ErrorMessageContainer } from '@/styles';
 import { GoodsData, RankingFilterOption } from '@/types';
 import { GoodsRankingFilter } from './GoodsRankingFilter';
 import { GoodsRankingList } from './GoodsRankingList';
@@ -38,7 +39,7 @@ export const GoodsRankingSection = () => {
     setSelectedRank(rankType);
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
 
   return (
     <StyledGoodsRankingSection>

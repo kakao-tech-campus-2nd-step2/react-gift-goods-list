@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/RankingGoodsItem';
 import { Grid } from '@/components/common/layouts/Grid';
+import { ErrorMessageContainer } from '@/styles';
 import { GoodsData } from '@/types';
 
 type Props = {
@@ -15,9 +16,11 @@ export const GoodsRankingList = ({ isError, goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
   if (isError) {
-    return <NoListMessage>데이터를 불러오는 중에 문제가 발생했습니다.</NoListMessage>;
+    return (
+      <ErrorMessageContainer>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorMessageContainer>
+    );
   } else if (goodsList.length === 0) {
-    return <NoListMessage>보여줄 상품이 없어요!</NoListMessage>;
+    return <ErrorMessageContainer>보여줄 상품이 없어요!</ErrorMessageContainer>;
   }
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
@@ -57,15 +60,6 @@ const StyledGoodsRankingList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const NoListMessage = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 16px 60px;
-  font-size: 16px;
 `;
 
 const ButtonWrapper = styled.div`

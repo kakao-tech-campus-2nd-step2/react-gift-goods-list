@@ -7,6 +7,7 @@ import { Image } from '@/components/common/Image';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes';
+import { ErrorMessageContainer } from '@/styles';
 import { ThemeData } from '@/types';
 
 export const ThemeCategorySection = () => {
@@ -29,8 +30,8 @@ export const ThemeCategorySection = () => {
     fetchThemes();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error loading themes.</p>;
+  if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
+  if (isError) return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
 
   return (
     <StyledThemeCategorySection>

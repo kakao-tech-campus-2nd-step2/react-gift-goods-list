@@ -5,6 +5,7 @@ import { getThemes } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import { ThemeData } from '@/types';
+import { ErrorMessageContainer } from '@/styles';
 
 type Props = {
   themeKey: string;
@@ -42,8 +43,9 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
     fetchThemes();
   }, [themeKey]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError || !currentTheme) return <p>Error loading theme.</p>;
+  if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
+  if (isError || !currentTheme)
+    return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
 
   const { backgroundColor, label, title, description } = currentTheme;
 

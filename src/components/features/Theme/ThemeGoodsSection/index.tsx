@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 
 import { useGetThemesProducts } from '@/api';
+import type { ProductData } from '@/api/type';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import ListMapper from '@/components/common/ListMapper';
 import Loading from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
 
@@ -21,23 +23,26 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     <Wrapper>
       <Container>
         <Loading isLoading={loading}>
-          <Grid
-            columns={{
-              initial: 2,
-              md: 4,
-            }}
-            gap={16}
-          >
-            {products?.map(({ id, imageURL, name, price, brandInfo }) => (
+          <ListMapper<ProductData>
+            items={products}
+            ItemComponent={({ item }) => (
               <DefaultGoodsItems
-                key={id}
-                imageSrc={imageURL}
-                title={name}
-                amount={price.sellingPrice}
-                subtitle={brandInfo.name}
+                key={item.id}
+                imageSrc={item.imageURL}
+                title={item.name}
+                amount={item.price.sellingPrice}
+                subtitle={item.brandInfo.name}
               />
-            ))}
-          </Grid>
+            )}
+            Wrapper={Grid}
+            wrapperProps={{
+              columns: {
+                initial: 2,
+                md: 4,
+              },
+              gap: 16,
+            }}
+          />
         </Loading>
       </Container>
     </Wrapper>

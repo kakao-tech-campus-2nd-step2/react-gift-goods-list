@@ -5,6 +5,7 @@ import { useGetThemes } from '@/api';
 import type { ThemeData } from '@/api/type';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import ListMapper from '@/components/common/ListMapper';
 import Loading from '@/components/common/Loading';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
@@ -19,18 +20,21 @@ export const ThemeCategorySection = () => {
     <Wrapper>
       <Container>
         <Loading isLoading={loading}>
-          <Grid
-            columns={{
-              initial: 4,
-              md: 6,
-            }}
-          >
-            {themes?.map((theme: ThemeData) => (
-              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+          <ListMapper<ThemeData>
+            items={themes}
+            ItemComponent={({ item }) => (
+              <Link key={item.id} to={getDynamicPath.theme(item.key)}>
+                <ThemeCategoryItem image={item.imageURL} label={item.label} />
               </Link>
-            ))}
-          </Grid>
+            )}
+            Wrapper={Grid}
+            wrapperProps={{
+              columns: {
+                initial: 4,
+                md: 6,
+              },
+            }}
+          />
         </Loading>
       </Container>
     </Wrapper>

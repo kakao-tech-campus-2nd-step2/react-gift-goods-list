@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/fetchThemes';
@@ -12,18 +12,10 @@ import type { ThemeData } from '@/types';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchThemes();
-        setThemes(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  const { data: themes } = useQuery<ThemeData[]>({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
 
   return (
     <Wrapper>
@@ -34,7 +26,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => (
+          {themes?.map((theme) => (
             <Link to={getDynamicPath.theme(theme.key)} key={theme.id}>
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
             </Link>

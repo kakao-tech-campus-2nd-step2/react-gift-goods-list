@@ -1,3 +1,5 @@
+// src/api/api.ts
+
 import axios from 'axios';
 
 import type {
@@ -8,7 +10,7 @@ import type {
   GetThemeProductsRequest,
   PostOrderRequest,
   PutMyAccountPointRequest,
-} from '../types/request';
+} from '@/types/request';
 import type {
   GetMessageCardTemplatesResponse,
   GetMyAccountInfoResponse,
@@ -18,11 +20,10 @@ import type {
   GetRankingProductsResponse,
   GetThemeProductsResponse,
   GetThemesResponse,
-} from '../types/response';
+} from '@/types/response';
 
 const API_BASE_URL = 'https://react-gift-mock-api-kakao.vercel.app';
 
-// 랭킹 제품 목록 가져오기
 export const getRankingProducts = async (
   params: GetRankingProductsRequest,
 ): Promise<GetRankingProductsResponse> => {
@@ -33,7 +34,6 @@ export const getRankingProducts = async (
   return response.data;
 };
 
-// 테마 목록 가져오기
 export const getThemes = async (): Promise<GetThemesResponse> => {
   const response = await axios.get<GetThemesResponse>(`${API_BASE_URL}/api/v1/themes`);
   return response.data;
@@ -42,16 +42,13 @@ export const getThemes = async (): Promise<GetThemesResponse> => {
 export const getThemeProducts = async (
   params: GetThemeProductsRequest,
 ): Promise<GetThemeProductsResponse> => {
-  console.log('API call to getThemeProducts with params:', params);
   const response = await axios.get<GetThemeProductsResponse>(
     `${API_BASE_URL}/api/v1/themes/${params.themeKey}/products`,
-    { params: { maxResults: params.maxResults } },
+    { params: { maxResults: params.maxResults, pageToken: params.pageToken } },
   );
-  console.log('API response:', response);
   return response.data;
 };
 
-// 제품 상세 정보 가져오기
 export const getProductDetail = async (
   params: GetProductDetailRequest,
 ): Promise<GetProductDetailResponse> => {
@@ -61,7 +58,6 @@ export const getProductDetail = async (
   return response.data;
 };
 
-// 제품 옵션 정보 가져오기
 export const getProductOptions = async (
   params: GetProductOptionsRequest,
 ): Promise<GetProductOptionsResponse> => {
@@ -71,7 +67,6 @@ export const getProductOptions = async (
   return response.data;
 };
 
-// 메시지 카드 템플릿 목록 가져오기
 export const getMessageCardTemplates = async (): Promise<GetMessageCardTemplatesResponse> => {
   const response = await axios.get<GetMessageCardTemplatesResponse>(
     `${API_BASE_URL}/api/v1/message-card/templates`,
@@ -79,7 +74,6 @@ export const getMessageCardTemplates = async (): Promise<GetMessageCardTemplates
   return response.data;
 };
 
-// 내 정보 가져오기
 export const getMyAccountInfo = async (): Promise<GetMyAccountInfoResponse> => {
   const response = await axios.get<GetMyAccountInfoResponse>(
     `${API_BASE_URL}/api/v1/my-account/info`,
@@ -87,7 +81,6 @@ export const getMyAccountInfo = async (): Promise<GetMyAccountInfoResponse> => {
   return response.data;
 };
 
-// 내가 받고 싶어하는 선물 목록 가져오기
 export const getMyAccountWishProducts = async (
   params: GetMyAccountWishProductsRequest,
 ): Promise<GetMyAccountWishProductsResponse> => {
@@ -98,12 +91,10 @@ export const getMyAccountWishProducts = async (
   return response.data;
 };
 
-// 내 포인트 충전하기
 export const putMyAccountPoint = async (params: PutMyAccountPointRequest): Promise<void> => {
   await axios.put(`${API_BASE_URL}/api/v1/my-account/point`, params);
 };
 
-// 주문 요청 보내기
 export const postOrder = async (params: PostOrderRequest): Promise<void> => {
   await axios.post(`${API_BASE_URL}/api/v1/order`, params);
 };

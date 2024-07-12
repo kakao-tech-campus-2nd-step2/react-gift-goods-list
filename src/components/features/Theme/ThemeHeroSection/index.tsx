@@ -1,16 +1,48 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { getThemes } from '@/api/themeApi';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const data = await getThemes();
+        const foundTheme = data.themes.find((theme) => theme.key === themeKey);
+        if (foundTheme) {
+          setCurrentTheme(foundTheme);
+        } else {
+          setError('Theme not found');
+        }
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      } catch (error) {
+        setError('Error fetching themes');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchThemes();
+  }, [themeKey]);
+
+  if (loading) {
+    return <Loading>Loading...</Loading>;
+  }
+
+  if (error) {
+    return <Error>{error}</Error>;
+  }
 
   if (!currentTheme) {
     return null;
@@ -83,6 +115,13 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+const Loading = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+const Error = styled.div`
+  text-align: center;
+  padding: 20px;
+  color: red;
+`;

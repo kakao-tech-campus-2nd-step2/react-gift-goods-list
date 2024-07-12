@@ -25,7 +25,7 @@ export default function useGoodsItemListQuery({ themeKey, rowsPerPage }: useGood
     getNextPageParam: (lastPage) => lastPage.nextPageToken,
   });
 
-  const products = useMemo(() => data?.pages.flatMap((page) => page.products) || [], []);
+  const products = useMemo(() => data?.pages.flatMap((page) => page.products) || [], [data]);
 
   return { products, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage };
 }

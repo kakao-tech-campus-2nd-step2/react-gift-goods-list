@@ -17,13 +17,13 @@ export interface RankingProductType {
 }
 export const GiftRanking = () => {
   const [filter, setFilter] = useState<RankingProductType>({ targetType: 'ALL', rankType: 'MANY_WISH' });
-  
+
   const changeFilter = ({ targetType, rankType }: Partial<RankingProductType>) => {
     setFilter((prev) => ({ targetType: targetType ?? prev.targetType, rankType: rankType ?? prev.rankType }));
   };
-  
+
   const data = useRankingProducts(filter);
-  const filterdList = data?.products ?? [];
+  const filterdList = data ?? [];
 
   return (
     <RankingWrapper>

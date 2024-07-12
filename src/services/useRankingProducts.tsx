@@ -1,22 +1,20 @@
 import { useEffect, useState } from 'react';
 
 import { axiosInstance } from '.';
-import type { ProductResponseData } from './useThemeProducts';
+import type { Product } from './types';
 
 import type { RankingProductType } from '@/components/Home/GiftRanking';
 
 export const useRankingProducts = ({ targetType, rankType }: RankingProductType) => {
-  const [data, setData] = useState<ProductResponseData>({ products: [] });
+  const [data, setData] = useState<Product[]>();
 
   useEffect(() => {
     let ignore = false;
     const getRankingProducts = async () => {
       try {
-        const response = await axiosInstance.get<ProductResponseData>(
-          `v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
-        );
+        const response = await axiosInstance.get(`v1/ranking/products?targetType=${targetType}&rankType=${rankType}`);
         if (!ignore) {
-          setData(response.data);
+          setData(response.data.products);
         }
       } catch (error) {
         console.error('Error fetching ranking product data:', error);

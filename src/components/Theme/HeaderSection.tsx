@@ -5,7 +5,7 @@ import { useThemes } from '@/services/useThemes';
 
 export const HeaderSection = ({ themeKey }: { themeKey: string }) => {
   const data = useThemes();
-  const themes = data?.themes ?? [];
+  const themes = data ?? [];
   const theme = themes.find((themeData) => themeData.key === themeKey);
 
   if (!theme) {

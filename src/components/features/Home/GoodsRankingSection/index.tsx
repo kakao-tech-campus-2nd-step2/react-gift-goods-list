@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/rankingProducts';
@@ -27,7 +28,26 @@ export const GoodsRankingSection = () => {
         const response = await fetchRankingProducts(filterOption);
         setGoodsList(response.products);
       } catch (err) {
-        setError('Failed to fetch ranking products');
+        if (axios.isAxiosError(err) && err.response) {
+          switch (err.response.status) {
+            case 400:
+              setError('잘못된 요청입니다.');
+              break;
+            case 401:
+              setError('인증이 필요합니다.');
+              break;
+            case 404:
+              setError('리소스를 찾을 수 없습니다.');
+              break;
+            case 500:
+              setError('서버 오류가 발생했습니다.');
+              break;
+            default:
+              setError('알 수 없는 오류가 발생했습니다.');
+          }
+        } else {
+          setError('네트워크 오류가 발생했습니다.');
+        }
       } finally {
         setIsLoading(false);
       }

@@ -16,9 +16,8 @@ export const getProductWithTheme = async ({
   const params = {
     pageToken,
     maxResults,
+    ...(pageToken && { pageToken }),
   };
-
-  if (pageToken) params.pageToken = pageToken;
 
   const { data } = await instance.get(API.THEMES_DETAIL(themeKey), {
     params,

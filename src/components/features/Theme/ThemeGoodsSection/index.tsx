@@ -13,7 +13,6 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data, error, isLoading } = useProduct({ themeKey, maxResults: 20 });
 
-  console.log(error);
   return (
     <Wrapper>
       <Container>
@@ -26,6 +25,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         >
           {isLoading && <div>Loading...</div>}
           {Boolean(error) && <div>{(error as Error).toString()}</div>}
+          {data && data.length === 0 && <div>데이터가 없습니다. 🥲</div>}
           {data &&
             data.map(({ id, imageURL, name, price, brandInfo }) => (
               <DefaultGoodsItems

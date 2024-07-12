@@ -74,5 +74,3 @@ const ButtonWrapper = styled.div`
 
   padding-top: 30px;
 `;
-
-// export default GoodsRankingList;

@@ -1,49 +1,44 @@
-import type { ReactNode } from 'react';
-import React from 'react';
+import type { ReactElement } from 'react';
+import { Component } from 'react';
 
-interface ErrorBoundaryProps {
-  fallback: ReactNode;
-  children: ReactNode;
-}
+type ErrorBoundaryProps = {
+  fallback: ReactElement;
+  onReset: () => void;
+  resetKey: unknown;
+  children: ReactElement;
+};
 
-interface ErrorBoundaryState {
+type ErrorBoundaryState = {
   hasError: boolean;
-}
+};
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+const initState = { hasError: false };
+
+export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Initialize state to track error occurrence
-    this.state = { hasError: false };
+    this.state = initState;
   }
 
-  // This lifecycle method is invoked after an error has been thrown by a descendant component.
-  static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
+  resetBoundary = () => {
+    this.props.onReset();
+    this.setState(initState);
+  };
 
-  // This lifecycle method is called after an error is thrown in a descendant component.
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // Example function to log error details, replace with your own implementation.
-    logErrorToMyService(error, errorInfo);
-  }
+  componentDidUpdate = (prevProps: ErrorBoundaryProps) => {
+    if (JSON.stringify(prevProps.resetKey) !== JSON.stringify(this.props.resetKey))
+      this.resetBoundary();
+  };
 
-  // Render method to display UI.
-  render() {
+  static getDerivedStateFromError = (error: Error) => {
+    return { hasError: error !== null, error };
+  };
+
+  render = () => {
     if (this.state.hasError) {
-      // Fallback UI when an error occurs.
       return this.props.fallback;
     }
 
-    // Render children components normally when no error.
     return this.props.children;
-  }
+  };
 }
-
-// Example function to log error details. Replace this with your actual logging implementation.
-function logErrorToMyService(error: Error, errorInfo: React.ErrorInfo): void {
-  console.error('Logged error:', error, errorInfo);
-}
-
-export default ErrorBoundary;

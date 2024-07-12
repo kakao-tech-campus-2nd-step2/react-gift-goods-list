@@ -27,7 +27,6 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         console.log('Fetched products:', response);
         setProducts(response.products || []);
       } catch (err) {
-        // 변수명을 err로 변경
         console.error('Error fetching products:', err);
         setProductFetchError(true);
       } finally {

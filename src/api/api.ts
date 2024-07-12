@@ -45,7 +45,7 @@ export const getThemeProducts = async (
   console.log('API call to getThemeProducts with params:', params);
   const response = await axios.get<GetThemeProductsResponse>(
     `${API_BASE_URL}/api/v1/themes/${params.themeKey}/products`,
-    { params: { pageToken: params.pageToken, maxResults: params.maxResults } },
+    { params: { maxResults: params.maxResults } },
   );
   console.log('API response:', response);
   return response.data;

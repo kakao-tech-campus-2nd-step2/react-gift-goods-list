@@ -1,14 +1,55 @@
-import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { Container } from '@/components/common/layouts/Container';
-import { Grid } from '@/components/common/layouts/Grid';
-import { getDynamicPath } from '@/routes/path';
-import { breakpoints } from '@/styles/variants';
+import fetchData from '@/api'
+import { Container } from '@/components/common/layouts/Container'
+import { Grid } from '@/components/common/layouts/Grid'
+import { getDynamicPath } from '@/routes/path'
+import { breakpoints } from '@/styles/variants'
 
-import { ThemeCategoryItem } from './ThemeCategoryItem';
+import { ThemeCategoryItem } from './ThemeCategoryItem'
+
+interface Theme {
+  id: number
+  key: string
+  label: string
+  imageURL: string
+  title: string
+  description?: string
+}
 
 export const ThemeCategorySection = () => {
+  const [themeFromAPI, setThemeFromAPI] = useState<Theme[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // 최초 렌더링 시 한 번만 실행
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const data = await fetchData('api/v1/themes')
+
+        setThemeFromAPI(data.themes)
+        setLoading(false)
+        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
+      }
+      catch (error) {
+        console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error)
+        setLoading(false) 
+      }
+    }
+    fetchThemeData()
+  }, [])
+  
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+  
   return (
     <Wrapper>
       <Container>
@@ -18,78 +59,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="생일"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="졸업선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="스몰럭셔리"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="명품선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="결혼/집들이"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="따뜻한선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="가벼운선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="팬심저격"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="교환권"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="건강/비타민"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="과일/한우"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="출산/키즈"
-            />
-          </Link>
+          {themeFromAPI.map((theme) => (
+            // 각 Theme Detail Page로 이동할 링크
+            <Link key={theme.id} to={getDynamicPath.theme(theme.key)} >
+              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+            </Link>  
+          ))}
         </Grid>
       </Container>
     </Wrapper>
@@ -102,4 +77,32 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
 `;

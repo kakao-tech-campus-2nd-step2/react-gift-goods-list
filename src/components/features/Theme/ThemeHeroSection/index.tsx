@@ -1,29 +1,61 @@
-import styled from '@emotion/styled';
+import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
 
-import { Container } from '@/components/common/layouts/Container';
-import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import fetchData from '@/api'
+import { Container } from '@/components/common/layouts/Container'
+import { breakpoints } from '@/styles/variants'
+import type { ThemeData } from '@/types'
 
 type Props = {
-  themeKey: string;
+  themeKey: string
+}
+
+export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+  return themeList.find((theme) => theme.key === themeKey);
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+  const [loading, setLoading] = useState(true)
 
-  if (!currentTheme) {
-    return null;
+  // themeKey 가 변할 때 마다 실행
+  useEffect(() => {
+    const fetchThemeData = async () => {
+      try {
+        const data = await fetchData(`api/v1/themes`)
+        const theme = getCurrentTheme(themeKey, data.themes)
+
+        setCurrentTheme(theme)
+        setLoading(false)
+        console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
+      }
+      catch (error) {
+        console.error('[ThemeHeroSection] Fetch Theme Data Fail: ', error)
+        setLoading(false)
+      }
+    }
+    fetchThemeData()
+  }, [themeKey])
+  
+  if (loading) {
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>Loading...</LoadingText>
+      </LoadingWrapper>
+    )
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (!currentTheme) {
+    return null
+  }
 
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -83,6 +115,30 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.div`
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
+`;

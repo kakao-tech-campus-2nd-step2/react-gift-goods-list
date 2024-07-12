@@ -28,3 +28,8 @@
 - Http Status에 따라 Error를 다르게 처리
   - [x] GoodsRanking에서 에러 처리
   - [x] ThemeGoods에서 에러 처리
+
+### 3단계 기능 요구사항
+
+- [ ] 1단계에서 구현한 API를 react-query를 사용해서 구현
+- [ ] 스크롤을 내리면 추가로 데이터를 요청하여 보이기 (무한 스크롤)

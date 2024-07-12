@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useQuery } from "react-query";
 
 import { getThemeProducts } from "@/api";
 import { DefaultGoodsItems } from "@/components/common/GoodsItem/Default";
@@ -14,45 +15,44 @@ type Props = {
   themeKey: string;
 };
 
+type ApiResuts = {
+  products: GoodsData[];
+  pageInfo: {
+    totalResults: number;
+  };
+};
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [themeGoods, setThemeGoods] = useState<GoodsData[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const [isError, setError] = useState<boolean>(false);
-  const [errMessage, setErrMessage] = useState<string>("");
   const [page, setPage] = useState<string>("0");
   const [totalItems, setTotalItems] = useState<number>(0);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const [errMessage, setErrMessage] = useState<string>("");
 
-  const fetchThemeProducts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const products = await getThemeProducts(themeKey, page, 20);
-      setThemeGoods((prevGoods) => [...prevGoods, ...products.products]);
-      setTotalItems(products.pageInfo.totalResults);
-      setError(false);
-    } catch (error) {
-      console.error("Error fetching theme products:", error);
-      setError(true);
-
-      if (axios.isAxiosError(error) && error.response) {
-        switch (error.response.status) {
-          case 400:
-            setErrMessage("에러가 발생했습니다.");
-            break;
-          default:
-            setErrMessage("알 수 없는 오류가 발생했습니다.");
+  const { isLoading, isError } = useQuery<ApiResuts>(
+    ["themeGoods", themeKey, page],
+    () => getThemeProducts(themeKey, page, 20),
+    {
+      onSuccess: (result) => {
+        setThemeGoods((prev) => [...prev, ...(result.products ? result.products : [])]);
+        setTotalItems(result.pageInfo.totalResults);
+      },
+      onError: (error) => {
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.status) {
+            case 400:
+              setErrMessage("에러가 발생했습니다.");
+              break;
+            default:
+              setErrMessage("알 수 없는 오류가 발생했습니다.");
+          }
+        } else {
+          setErrMessage("알 수 없는 오류가 발생했습니다.");
         }
-      } else {
-        setErrMessage("알 수 없는 오류가 발생했습니다.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [themeKey, page]);
+      },
+    },
+  );
 
-  useEffect(() => {
-    fetchThemeProducts();
-  }, [fetchThemeProducts]);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const lastItemRef = useCallback(
     (node: HTMLDivElement | null) => {

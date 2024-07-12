@@ -11,12 +11,12 @@ const apiClient: AxiosInstance = axios.create({
 
 export const getRankingProducts = async (params?: RankingFilterOption) => {
   const response = await apiClient.get("/api/v1/ranking/products", { params });
-  return response.data;
+  return response.data.products;
 };
 
 export const getThemes = async () => {
   const response = await apiClient.get("/api/v1/themes");
-  return response.data;
+  return response.data.themes;
 };
 
 export const getThemeProducts = async (

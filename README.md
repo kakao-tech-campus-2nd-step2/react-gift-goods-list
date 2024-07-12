@@ -19,4 +19,4 @@
 ## 3단계 - 테마 별 선물 추천 API에 페이지네이션 구현하기 & React Query 사용해보기
 
 - [x] Theme 페이지에 페이지네이션 구현
-- [ ] API를 react-query를 사용해 구현
+- [x] API를 react-query를 사용해 구현

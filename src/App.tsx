@@ -1,4 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
+import { useQuery } from "react-query";
 
 import { getThemes } from "@/api";
 import type { ThemeData } from "@/types";
@@ -19,31 +20,12 @@ export const ThemesContext = createContext<ThemeProp>({
 });
 
 const App = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const [isError, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      try {
-        const result = await getThemes();
-        setThemes(result.themes);
-        setError(false);
-      } catch (error) {
-        console.error("Error fetching themes:", error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, []);
-
+  const { data: themes, isLoading, isError } = useQuery<ThemeData[]>("themes", getThemes);
   return (
     <AuthProvider>
-      <ThemesContext.Provider value={{ data: themes, isLoading: isLoading, isError: isError }}>
+      <ThemesContext.Provider
+        value={{ data: themes ? themes : [], isLoading: isLoading, isError: isError }}
+      >
         <Routes />
       </ThemesContext.Provider>
     </AuthProvider>

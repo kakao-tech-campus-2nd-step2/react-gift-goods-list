@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 
 import { getRankingProducts } from "@/api";
 import { Container } from "@/components/common/layouts/Container";
@@ -12,26 +13,22 @@ import { GoodsRankingFilter } from "./Filter";
 import { GoodsRankingList } from "./List";
 
 export const GoodsRankingSection = () => {
-  const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([]);
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: "ALL",
     rankType: "MANY_WISH",
   });
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const [isError, setError] = useState<boolean>(false);
   const [errMessage, setErrMessage] = useState<string>("");
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      try {
-        const products = await getRankingProducts(filterOption);
-        setRankingProducts(products.products);
-        setError(false);
-      } catch (error) {
+  const {
+    data: rankingProducts,
+    isLoading,
+    isError,
+  } = useQuery<GoodsData[]>(
+    ["rankingProducts", filterOption],
+    () => getRankingProducts(filterOption),
+    {
+      onError: (error) => {
         console.error("Error fetching RankingProducts:", error);
-        setRankingProducts([]);
-        setError(true);
 
         if (axios.isAxiosError(error) && error.response) {
           switch (error.response.status) {
@@ -44,13 +41,9 @@ export const GoodsRankingSection = () => {
         } else {
           setErrMessage("알 수 없는 오류가 발생했습니다.");
         }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, [filterOption]);
+      },
+    },
+  );
 
   return (
     <Wrapper>
@@ -61,7 +54,7 @@ export const GoodsRankingSection = () => {
           <MessageDiv>로딩중</MessageDiv>
         ) : isError ? (
           <MessageDiv>{errMessage}</MessageDiv>
-        ) : rankingProducts.length ? (
+        ) : rankingProducts && rankingProducts.length ? (
           <GoodsRankingList goodsList={rankingProducts} />
         ) : (
           <MessageDiv>보여줄 상품이 없어요!</MessageDiv>

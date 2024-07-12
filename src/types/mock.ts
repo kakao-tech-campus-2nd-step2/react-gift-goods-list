@@ -7,6 +7,8 @@ export const ThemeMockData: ThemeData = {
   title: '예산은 가볍게, 감동은 무겁게❤️',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
+  imageURL:
+    'https://st.kakaocdn.net/product/gift/product/20231030175450_53e90ee9708f45ffa45b3f7b4bc01c7c.jpg',
 };
 
 export const ThemeMockList = [ThemeMockData];

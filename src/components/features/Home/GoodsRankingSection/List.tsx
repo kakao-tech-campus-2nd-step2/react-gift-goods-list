@@ -1,12 +1,11 @@
 import styled from '@emotion/styled';
-import type { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/apis/products/products';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
-import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -15,25 +14,15 @@ type Props = {
 };
 
 export const GoodsRankingList = ({ filterOption }: Props) => {
-  const [products, setProducts] = useState<Home.ProductData[]>([]);
-  const [error, setError] = useState<AxiosError>();
-  useEffect(() => {
-    getRankingProducts(filterOption)
-      .then((data) => {
-        setProducts(data.products);
-      })
-      .catch((err) => {
-        handleStatusCode(err);
-        setError(err);
-      });
-  }, [filterOption]);
+  const { data } = useQuery(
+    ['goodsRanking', filterOption],
+    () => getRankingProducts(filterOption),
+    { suspense: true },
+  );
   const [hasMore, setHasMore] = useState(false);
+  const products = data?.products ?? [];
 
   const currentGoodsList = hasMore ? products : products.slice(0, 6);
-
-  if (error) {
-    throw error;
-  }
 
   return (
     <Wrapper>

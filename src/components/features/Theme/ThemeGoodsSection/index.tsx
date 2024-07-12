@@ -43,16 +43,15 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           {isLoading && <div>Loading...</div>}
           {Boolean(error) && <div>{(error as Error).toString()}</div>}
           {data && product?.length === 0 && <div>데이터가 없습니다. 🥲</div>}
-          {product &&
-            product.map(({ id, imageURL, name, price, brandInfo }) => (
-              <DefaultGoodsItems
-                key={id}
-                imageSrc={imageURL}
-                title={name}
-                amount={price.sellingPrice}
-                subtitle={brandInfo.name}
-              />
-            ))}
+          {product?.map(({ id, imageURL, name, price, brandInfo }) => (
+            <DefaultGoodsItems
+              key={id}
+              imageSrc={imageURL}
+              title={name}
+              amount={price.sellingPrice}
+              subtitle={brandInfo.name}
+            />
+          ))}
         </Grid>
       </Container>
       <div ref={ref} />

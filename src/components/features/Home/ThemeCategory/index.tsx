@@ -1,26 +1,30 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { ThemesResponse } from '@/types/responseTypes';
 import { getThemes } from '@apis/themes';
-import useFetch from '@hooks/useFetch';
-import { Grid, CenteredContainer, StatusHanlder } from '@components/common';
+import { Grid, CenteredContainer, StatusHandler } from '@components/common';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ROUTE_PATH } from '@routes/path';
 import { getDynamicPath } from '@utils/getDynamicPath';
+import { ThemesResponse } from '@/types/responseTypes';
+import { AxiosError } from 'axios';
 import ThemeItem from './ThemeItem';
 
 const GRID_GAP = 0;
 const GRID_COLUMNS = 6;
 
 export default function ThemeCategory() {
-  const { isLoading, isError, data, error } = useFetch<ThemesResponse>(getThemes);
+  const { data, error, isError, isLoading } = useQuery<ThemesResponse, AxiosError>({
+    queryKey: ['theme'],
+    queryFn: getThemes,
+  });
 
   const isEmpty = !data || data?.themes.length === 0;
 
   return (
     <ThemeCategoryContainer>
       <CenteredContainer maxWidth="md">
-        <StatusHanlder isLoading={isLoading} isError={isError} isEmpty={isEmpty} error={error}>
+        <StatusHandler isLoading={isLoading} isError={isError} isEmpty={isEmpty} error={error}>
           <Grid gap={GRID_GAP} columns={GRID_COLUMNS}>
             {data?.themes.map((theme) => (
               <Link
@@ -37,7 +41,7 @@ export default function ThemeCategory() {
               </Link>
             ))}
           </Grid>
-        </StatusHanlder>
+        </StatusHandler>
       </CenteredContainer>
     </ThemeCategoryContainer>
   );

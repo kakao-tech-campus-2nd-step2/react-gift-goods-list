@@ -3,7 +3,7 @@ import { ERROR } from '@utils/constants/message';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
-  timeout: 10000,
+  timeout: 5000,
 });
 
 const statusMessages: { [key: number]: string } = {

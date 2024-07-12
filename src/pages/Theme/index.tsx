@@ -4,6 +4,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import { getThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import ThemeHeroSection from '@/components/features/Theme/ThemeHeroSection';
+import { Loading } from '@/components/ui/Loading';
 import { RouterPath } from '@/routes/path'; // 추가된 부분
 import type { ThemeData } from '@/types/response';
 
@@ -28,7 +29,7 @@ export const ThemePage = () => {
   }, [themeKey]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (!currentTheme) {

@@ -5,6 +5,7 @@ import { getThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Loading } from '@/components/ui/Loading'; // 추가된 부분
 import { breakpoints } from '@/styles/variants';
 import type { ProductData } from '@/types/response';
 
@@ -21,7 +22,6 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`);
 
     const fetchProducts = async () => {
-      console.log('Starting fetchProducts');
       try {
         const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 20 });
         console.log('Fetched products:', response);
@@ -38,7 +38,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }, [themeKey]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (productFetchError) {

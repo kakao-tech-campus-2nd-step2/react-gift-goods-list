@@ -1,78 +1,75 @@
 import styled from '@emotion/styled';
-import type { AxiosError } from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { useEffect, useRef } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 
+import { useInfiniteThemeProducts } from '@/api/hooks/useInfiniteThemeProducts';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 
-import { getThemeProducts } from '../../../../api/api';
-
 type Props = {
   themeKey: string;
 };
 
 export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
-  const navigate = useNavigate();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } =
+    useInfiniteThemeProducts(themeKey);
 
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const observerElem = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!themeKey) {
-      navigate('/');
-      return;
-    }
+    if (!observerElem.current || !hasNextPage) return;
 
-    const fetchThemeProducts = async () => {
-      try {
-        const response = await getThemeProducts(themeKey);
-        if (response.products.length === 0) {
-          setError('상품이 없습니다.');
-        } else {
-          setGoodsList(response.products);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
         }
-      } catch (err) {
-        const axiosError = err as AxiosError;
-        if (axiosError.response) {
-          switch (axiosError.response.status) {
-            case 404:
-              setError('데이터를 찾을 수 없습니다.');
-              break;
-            case 500:
-              setError('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
-              break;
-            default:
-              setError('알 수 없는 오류가 발생했습니다.');
-          }
-        } else {
-          setError('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
-        }
-      } finally {
-        setLoading(false);
-      }
+      },
+      {
+        rootMargin: '100px',
+      },
+    );
+
+    observer.observe(observerElem.current);
+
+    return () => {
+      observer.disconnect();
     };
+  }, [fetchNextPage, hasNextPage]);
 
-    fetchThemeProducts();
-  }, [themeKey, navigate]);
-
-  if (loading) {
+  if (isLoading && !data) {
     return (
       <LoadingContainer>
-        <ClipLoader color="#36d7b7" loading={loading} size={50} />
+        <ClipLoader color="#36d7b7" loading={isLoading} size={50} />
         <LoadingText>Loading...</LoadingText>
       </LoadingContainer>
     );
   }
 
-  if (error) {
-    return <TextView>{error}</TextView>;
+  if (isError) {
+    let errorMessage = '알 수 없는 오류가 발생했습니다.';
+    if (error instanceof AxiosError && error.response) {
+      switch (error.response.status) {
+        case 404:
+          errorMessage = '데이터를 찾을 수 없습니다.';
+          break;
+        case 500:
+          errorMessage = '서버 오류가 발생했습니다. 나중에 다시 시도해주세요.';
+          break;
+        default:
+          errorMessage = '알 수 없는 오류가 발생했습니다.';
+      }
+    } else {
+      errorMessage = '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.';
+    }
+    return <TextView>{errorMessage}</TextView>;
   }
+
+  const goodsList: GoodsData[] = data?.pages.flatMap((page) => page.products) || [];
 
   return (
     <Wrapper>
@@ -84,7 +81,7 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
           }}
           gap={16}
         >
-          {goodsList.map((product) => (
+          {goodsList.map((product: GoodsData) => (
             <DefaultGoodsItems
               key={product.id}
               imageSrc={product.imageURL}
@@ -94,6 +91,13 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
             />
           ))}
         </Grid>
+        <div ref={observerElem} />
+        {isFetchingNextPage && (
+          <LoadingContainer>
+            <ClipLoader color="#36d7b7" loading={isFetchingNextPage} size={50} />
+            <LoadingText>Loading more...</LoadingText>
+          </LoadingContainer>
+        )}
       </Container>
     </Wrapper>
   );

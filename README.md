@@ -32,4 +32,4 @@
 
 
   ### 프로젝트 링크
-  https://react-gift-goods-list-git-step1-joshuadesus-projects.vercel.app/
+  https://react-gift-goods-list-mphmos1x2-joshuadesus-projects.vercel.app/

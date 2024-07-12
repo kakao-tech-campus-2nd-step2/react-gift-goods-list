@@ -1,8 +1,10 @@
 import styled from '@emotion/styled'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useQuery } from 'react-query'
 
-import fetchData from '@/api'
 import { Container } from '@/components/common/layouts/Container'
+import { BASE_URL } from '@/constants'
 import { breakpoints } from '@/styles/variants'
 import type { ThemeData } from '@/types'
 
@@ -10,40 +12,41 @@ type Props = {
   themeKey: string
 }
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+const fetchThemeHero = async (): Promise<ThemeData[]> => {
+  const response = await axios.get(`${BASE_URL}api/v1/themes`)
+  return response.data.themes
+}
+
+const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
   return themeList.find((theme) => theme.key === themeKey);
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData>()
-  const [loading, setLoading] = useState(true)
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | undefined>()
+  const { data, isLoading, isError } = useQuery<ThemeData[]>(['ThemeData', themeKey], fetchThemeHero)
 
-  // themeKey 가 변할 때 마다 실행
   useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const data = await fetchData(`api/v1/themes`)
-        const theme = getCurrentTheme(themeKey, data.themes)
-
-        setCurrentTheme(theme)
-        setLoading(false)
-        console.log('[ThemeHeroSection] Fetch Theme Data Success: ', data.themes)
-      }
-      catch (error) {
-        console.error('[ThemeHeroSection] Fetch Theme Data Fail: ', error)
-        setLoading(false)
-      }
+    if (data) {
+      const theme = getCurrentTheme(themeKey, data)
+      setCurrentTheme(theme)
     }
-    fetchThemeData()
-  }, [themeKey])
+  }, [data, themeKey])
   
-  if (loading) {
+  if (isError) {
+    return (
+      <ErrorWrapper>
+        <ErrorText>데이터를 불러오는 중 오류가 발생하였습니다.</ErrorText>
+      </ErrorWrapper>
+    );
+  }
+
+  if (isLoading) {
     return (
       <LoadingWrapper>
         <Spinner />
         <LoadingText>Loading...</LoadingText>
       </LoadingWrapper>
-    )
+    );
   }
 
   if (!currentTheme) {
@@ -120,7 +123,19 @@ const LoadingWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100px;
+  height: 500px;
+`;
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const ErrorText = styled.div`
+  font-size: 1.5rem;
+  color: #ff6347;
 `;
 
 const Spinner = styled.div`
@@ -132,8 +147,12 @@ const Spinner = styled.div`
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 

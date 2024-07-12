@@ -1,60 +1,52 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import fetchData from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { BASE_URL } from '@/constants';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
+import type { ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
-interface Theme {
-  id: number;
-  key: string;
-  label: string;
-  imageURL: string;
-  title: string;
-  description?: string;
+export const fetchThemeCategory = async () => {
+  const response = await axios.get(`${BASE_URL}api/v1/themes`)
+  return response.data.themes
 }
 
+/*
+  useQuery hooks 는 다음과 같은 객체 반환
+  {
+    data?: TData,                // 쿼리 데이터
+    error?: Error,               // 에러 객체 (에러가 없으면 undefined)
+    isError: boolean,            // 에러 여부를 나타내는 불리언 값
+    isLoading: boolean,          // 데이터 로딩 중 여부를 나타내는 불리언 값
+    isSuccess: boolean,          // 데이터 요청 성공 여부를 나타내는 불리언 값
+    refetch: (options?) => void, // 쿼리 재요청 함수
+    remove: () => void,          // 쿼리 제거 함수
+  }
+*/
+
 export const ThemeCategorySection = () => {
-  const [themeFromAPI, setThemeFromAPI] = useState<Theme[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isError, isLoading } = useQuery<ThemeData[]>(['ThemeData'], fetchThemeCategory) 
 
-  // 최초 렌더링 시 한 번만 실행
-  useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const data = await fetchData('api/v1/themes');
-        setThemeFromAPI(data.themes);
-        setLoading(false);
-        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes);
-      } catch (error) {
-        console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error);
-        setError('Failed to fetch themes. Please try again later.');
-        setLoading(false);
-      }
-    };
-    fetchThemeData();
-  }, []);
+  if (isError) {
+    return (
+      <ErrorWrapper>
+        <ErrorText>데이터를 불러오는 중 오류가 발생하였습니다.</ErrorText>
+      </ErrorWrapper>
+    );
+  }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <LoadingWrapper>
         <Spinner />
         <LoadingText>Loading...</LoadingText>
       </LoadingWrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <ErrorWrapper>
-        <ErrorText>{error}</ErrorText>
-      </ErrorWrapper>
     );
   }
 
@@ -67,7 +59,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themeFromAPI.map((theme) => (
+          {data?.map((theme) => (
             // 각 Theme Detail Page로 이동할 링크
             <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
@@ -102,6 +94,11 @@ const ErrorWrapper = styled.div`
   height: 500px;
 `;
 
+const ErrorText = styled.div`
+  font-size: 1.5rem;
+  color: #ff6347;
+`;
+
 const Spinner = styled.div`
   width: 40px;
   height: 40px;
@@ -126,7 +123,4 @@ const LoadingText = styled.div`
   color: #555;
 `;
 
-const ErrorText = styled.div`
-  font-size: 1.5rem;
-  color: #ff6347;
-`;
+

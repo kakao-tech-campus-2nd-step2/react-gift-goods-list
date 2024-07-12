@@ -1,15 +1,24 @@
 import styled from '@emotion/styled';
-import type { AxiosError } from 'axios';
-import axios from 'axios'; // AxiosError를 import
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
-import fetchData from '@/api';
 import { Container } from '@/components/common/layouts/Container';
+import { BASE_URL } from '@/constants';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
+
+const fetchRankingList = async (filterOption: RankingFilterOption) => {
+  const params = {
+    targetType: filterOption.targetType,
+    rankType: filterOption.rankType
+  }
+  const response = await axios.get(`${BASE_URL}api/v1/ranking/products`, { params })
+  return response.data.products
+}
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -17,84 +26,44 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [rankingProducts, setRankingProducts] = useState<GoodsData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const { data, isLoading, isError } = useQuery<GoodsData[]>(['rankingList', filterOption], () =>
+    fetchRankingList(filterOption)
+  )
 
-  // filterOption 에 변화가 생길 때 마다 실행
-  useEffect(() => {
-    const fetchRankingProductData = async () => {
-      try {
-        const { targetType, rankType } = filterOption
-        const data = await fetchData(
-          `api/v1/ranking/products?targetType=${targetType}&rankType=${rankType}`,
-        )
-
-        setRankingProducts(data.products)
-        setLoading(false)
-        setFetchError(null);
-        console.log('[GoodsRankingSection] Fetch Goods Ranking Data Success: ', data.products)        
-      }
-      catch (error: any) {
-        console.error('[GoodsRankingSection] Fetch Goods Ranking Data Fail: ', error)
-        setLoading(false)
-
-        if (axios.isAxiosError(error)) {
-          // AxiosError에서 response 속성을 통해 HTTP 상태 코드를 확인할 수 있음
-          const axiosError = error as AxiosError;
-          if (axiosError.response) {
-            const status = axiosError.response.status;
-            switch (status) {
-              case 400:
-                setFetchError('Bad Request: The server could not understand the request.');
-                break;
-              case 404:
-                setFetchError('Not Found: The requested resource could not be found.');
-                break;
-              case 500:
-                setFetchError('Internal Server Error: Something went wrong on the server.');
-                break;
-              default:
-                setFetchError(`Unexpected Error: ${status}`);
-                break;
-            }
-          } else if (axiosError.request) {
-            // 요청이 만들어졌지만 응답을 받지 못한 경우
-            setFetchError('No response from the server. Please try again later.');
-          } else {
-            // 다른 종류의 에러
-            setFetchError(`Error: ${error.message}`);
-          }
-        } else {
-          // AxiosError가 아닌 다른 종류의 에러
-          setFetchError(`Error: ${error.message}`);
-        }
-      }
+  const renderingFunc = () => {
+    if (isError) {
+      return (
+        <ErrorWrapper>
+          <ErrorText>데이터를 불러오는 중 오류가 발생하였습니다.</ErrorText>
+        </ErrorWrapper>
+      );
     }
-    fetchRankingProductData()
-  }, [filterOption]);
+  
+    if (isLoading) {
+      return (
+        <LoadingWrapper>
+          <Spinner />
+          <LoadingText>Loading...</LoadingText>
+        </LoadingWrapper>
+      );
+    }
+  
+    if (data?.length === 0) {
+      return (
+        <NoDataWrapper>
+          <NoDataText>No data available</NoDataText>
+        </NoDataWrapper>
+      )
+    }
+    return <GoodsRankingList goodsList={data} />
+  }
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading ? (
-          <LoadingWrapper>
-            <Spinner />
-            <LoadingText>Loading...</LoadingText>
-          </LoadingWrapper>
-        ) : fetchError ? (
-          <ErrorWrapper>
-            <ErrorText>{fetchError}</ErrorText>
-          </ErrorWrapper>
-        ) : rankingProducts.length === 0 ? (
-          <NoDataWrapper>
-            <NoDataText>No ranking products available</NoDataText>
-          </NoDataWrapper>
-        ) : (
-          <GoodsRankingList goodsList={rankingProducts} />
-        )}
+        {renderingFunc()}
       </Container>
     </Wrapper>
   );

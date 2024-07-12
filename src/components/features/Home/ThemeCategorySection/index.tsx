@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { Fragment, useContext } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { ThemeContext } from '@/context/themeContext';
+import { useThemes } from '@/context/themeContext';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
@@ -14,7 +14,7 @@ const notFoundImage =
   'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png';
 
 export const ThemeCategorySection = () => {
-  const themes = useContext(ThemeContext);
+  const themes = useThemes();
 
   return (
     <Wrapper>

@@ -1,16 +1,23 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { createContext, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
+import { createContext, Fragment, useContext } from 'react';
 
+import { getThemes } from '@/apis/themes/themes';
 import { ThemeMockData } from '@/types/mock';
 
-export const ThemeContext = createContext<Theme.ThemeData[]>([ThemeMockData]);
-export const SetThemeContext = createContext<Dispatch<SetStateAction<Theme.ThemeData[]>> | null>(null);
+const ThemeContext = createContext<Theme.ThemeData[]>([ThemeMockData]);
+
+export const useThemes = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme.ThemeData[]>([ThemeMockData]);
-  return (
-    <SetThemeContext.Provider value={setTheme}>
-      <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
-    </SetThemeContext.Provider>
-  );
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['themes'],
+    queryFn: getThemes,
+  });
+
+  if (isLoading || isError) {
+    return <Fragment>{children}</Fragment>;
+  }
+
+  return <ThemeContext.Provider value={data?.themes ?? []}>{children}</ThemeContext.Provider>;
 };

@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
-import { useContext } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
-import { ThemeContext } from '@/context/themeContext';
+import { useThemes } from '@/context/themeContext';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const themes = useContext(ThemeContext);
+  const themes = useThemes();
   const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {

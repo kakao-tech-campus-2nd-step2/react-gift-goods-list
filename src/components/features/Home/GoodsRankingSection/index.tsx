@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { Loading } from '@/components/ui/Loading';
+import { NoDataMessage } from '@/components/ui/NoDataMessage';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 import type { ProductData } from '@/types/response';
@@ -41,7 +42,13 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {loading ? <Loading /> : <GoodsRankingList goodsList={goodsList} />}
+        {loading ? (
+          <Loading />
+        ) : goodsList.length === 0 ? (
+          <NoDataMessage message="No ranking products found." />
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );

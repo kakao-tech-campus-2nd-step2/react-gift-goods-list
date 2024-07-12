@@ -5,7 +5,8 @@ import { getThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { Loading } from '@/components/ui/Loading'; // 추가된 부분
+import { Loading } from '@/components/ui/Loading';
+import { NoDataMessage } from '@/components/ui/NoDataMessage';
 import { breakpoints } from '@/styles/variants';
 import type { ProductData } from '@/types/response';
 
@@ -16,15 +17,13 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [productFetchError, setProductFetchError] = useState(false); // error 변수명을 productFetchError로 변경
+  const [productFetchError, setProductFetchError] = useState(false);
 
   useEffect(() => {
-    console.log(`ThemeGoodsSection mounted with themeKey: ${themeKey}`);
-
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 20 });
-        console.log('Fetched products:', response);
         setProducts(response.products || []);
       } catch (err) {
         console.error('Error fetching products:', err);
@@ -42,12 +41,11 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }
 
   if (productFetchError) {
-    // 여기도 productFetchError로 변경
     return <p>An error occurred while fetching data.</p>;
   }
 
   if (products.length === 0) {
-    return <p>No products found for this theme.</p>;
+    return <NoDataMessage message="No products found for this theme." />;
   }
 
   return (

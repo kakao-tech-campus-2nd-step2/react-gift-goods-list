@@ -20,26 +20,22 @@ type FetchProductsParams = {
   themeKey: string;
 };
 
-const fetchProducts = async ({ pageParam = '', themeKey }: FetchProductsParams): Promise<GetThemeProductsResponse> => {
+const fetchProducts = async ({
+  pageParam = '',
+  themeKey,
+}: FetchProductsParams): Promise<GetThemeProductsResponse> => {
   const response = await fetchThemeProducts({ themeKey, maxResults: 20, pageToken: pageParam });
   return response;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery({
-    queryKey: ['themeProducts', themeKey],
-    queryFn: ({ pageParam = '' }) => fetchProducts({ pageParam, themeKey }),
-    initialPageParam: '1',
-    getNextPageParam: (lastPage: GetThemeProductsResponse) => lastPage.nextPageToken ?? undefined,
-  })
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
+    useInfiniteQuery({
+      queryKey: ['themeProducts', themeKey],
+      queryFn: ({ pageParam = '' }) => fetchProducts({ pageParam, themeKey }),
+      initialPageParam: '1',
+      getNextPageParam: (lastPage: GetThemeProductsResponse) => lastPage.nextPageToken ?? undefined,
+    });
 
   const { ref, inView } = useInView();
 
@@ -58,8 +54,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       ? error.response?.status === 404
         ? 'Products not found'
         : error.response?.status === 500
-        ? 'Internal server error'
-        : 'An unexpected error occurred'
+          ? 'Internal server error'
+          : 'An unexpected error occurred'
       : 'Failed to load products';
     return <ErrorWrapper>{errorMessage}</ErrorWrapper>;
   }
@@ -83,7 +79,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
                 amount={price.sellingPrice}
                 subtitle={brandInfo.name}
               />
-            ))
+            )),
           )}
         </Grid>
         <div ref={ref}>

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import type { GetThemesResponse,ThemeData } from '@/api/api';
+import type { GetThemesResponse, ThemeData } from '@/api/api';
 import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
@@ -26,7 +26,6 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   if (error) {
     return <ErrorWrapper>{error.message || 'An unexpected error occurred'}</ErrorWrapper>;
   }
-
 
   const currentTheme = data?.themes?.find((theme) => theme.key === themeKey);
 
@@ -113,7 +112,9 @@ const ErrorWrapper = styled.div`
   color: red;
 `;
 
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {
+export const getCurrentTheme = (
+  themeKey: string,
+  themeList: ThemeData[],
+): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

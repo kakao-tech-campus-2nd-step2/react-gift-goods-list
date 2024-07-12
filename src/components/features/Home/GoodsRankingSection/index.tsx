@@ -23,10 +23,14 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const { data: goodsList, error, isLoading } = useQuery<ProductData[], Error>({
+  const {
+    data: goodsList,
+    error,
+    isLoading,
+  } = useQuery<ProductData[], Error>({
     queryKey: ['rankingProducts', filterOption],
     queryFn: () => fetchRankingProducts(filterOption),
-    staleTime: 5000,  // 5초 동안 이전 데이터를 유지
+    staleTime: 5000, // 5초 동안 이전 데이터를 유지
   });
 
   if (isLoading) {

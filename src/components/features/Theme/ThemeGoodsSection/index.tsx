@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { AxiosError } from 'axios';
-import { useCallback,useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -23,12 +23,28 @@ interface ProductData {
   };
 }
 
+interface ApiResponse {
+  products: ProductData[];
+  nextPageToken: string | null;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+}
+
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
-  errorCode?: string;
   errorMessage?: string;
+  errorCode?: string;
   data: T;
+  hasMore: boolean;
+  nextPageToken: string | null;
+}
+
+interface FetchParams {
+  maxResults: number;
+  pageToken?: string;
 }
 
 type Props = {
@@ -40,45 +56,74 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     isLoading: true,
     isError: false,
     data: [],
-
+    hasMore: true,
+    nextPageToken: null,
   });
 
-  const fetchProducts = useCallback(async (key: string) => {
-    try {
-      const data = await fetchData(`/api/v1/themes/${key}/products?maxResults=20`);
-      setFetchState({
-        isLoading: false,
-        isError: false,
-        data: data.products,
-      });
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      const axiosError = error as AxiosError;
-      setFetchState({
-        isLoading: false,
-        isError: true,
-        data: [],
-        errorMessage: axiosError.message,
-        errorCode: axiosError.code,
-      });
-      
-    }
-  }, []);
+const observerRef = useRef<IntersectionObserver | null>(null);
+const loadMoreRef = useRef<HTMLDivElement>(null);
 
-//초기 로딩 비동기 통신
-  useEffect(() => {
-    if (themeKey) {
-      setFetchState({ isLoading: true, isError: false, data: []});
-      fetchProducts(themeKey);  
-    }
-  }, [themeKey, fetchProducts]);
+const fetchProducts = useCallback(async (key: string, pageToken: string | null) => {
+  setFetchState(prevState => ({ ...prevState, isLoading: true }));
 
-  if (fetchState.isLoading)
-    return <Loading />;
-  if (fetchState.isError)
-    return <ErrorMessage code={fetchState.errorCode} message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} />;
-  if (!fetchState.data || fetchState.data.length === 0)
-    return <EmptyData />;
+  try {
+    const params: FetchParams = { maxResults: 20 };
+    if (pageToken) params.pageToken = pageToken;
+
+    const data: ApiResponse = await fetchData(`/api/v1/themes/${key}/products`, params);
+    setFetchState(prevState => ({
+      isLoading: false,
+      isError: false,
+      data: [...prevState.data, ...data.products],
+      hasMore: data.products.length > 0,
+      nextPageToken: data.nextPageToken,
+    }));
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    setFetchState({
+      isLoading: false,
+      isError: true,
+      errorMessage: axiosError.message,
+      errorCode: axiosError.code,
+      data: [],
+      hasMore: false,
+      nextPageToken: null,
+    });
+  }
+}, []);
+
+useEffect(() => {
+  if (themeKey) {
+    setFetchState({ isLoading: true, isError: false, data: [], hasMore: true, nextPageToken: null });
+    fetchProducts(themeKey, null);
+  }
+}, [themeKey, fetchProducts]);
+
+useEffect(() => {
+  if (fetchState.hasMore && !fetchState.isLoading) {
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && fetchState.nextPageToken) {
+        fetchProducts(themeKey, fetchState.nextPageToken);
+      }
+    }, {
+      threshold: 1.0,
+    });
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+  }
+  return () => observerRef.current?.disconnect();
+}, [fetchState.hasMore, fetchState.isLoading, fetchState.nextPageToken, themeKey, fetchProducts]);
+
+if (fetchState.isLoading && fetchState.data.length === 0)
+  return <Loading />;
+if (fetchState.isError)
+  return <ErrorMessage message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} code={fetchState.errorCode} />;
+if (!fetchState.data || fetchState.data.length === 0)
+  return <EmptyData />;
 
   return (
     <Wrapper>
@@ -101,6 +146,7 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
           ))}
         </Grid>
       </Container>
+      <div ref={loadMoreRef}></div>
     </Wrapper>
   );
 };

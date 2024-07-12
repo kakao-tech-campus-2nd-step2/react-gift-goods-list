@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Meta, StoryObj } from '@storybook/react';
 import { ROUTE_PATH } from '@routes/path';
-import SectionHeader from '.';
+import ThemeHeader from '.';
 
 interface MockUseLocationDecoratorProps {
   state: {
@@ -24,9 +24,9 @@ function MockUseLocationDecorator({ state, children }: MockUseLocationDecoratorP
   );
 }
 
-const meta: Meta<typeof SectionHeader> = {
-  title: 'common/SectionHeader/Default',
-  component: SectionHeader,
+const meta: Meta<typeof ThemeHeader> = {
+  title: 'features/Theme/ThemeHeader',
+  component: ThemeHeader,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
@@ -46,6 +46,6 @@ const meta: Meta<typeof SectionHeader> = {
 
 export default meta;
 
-type Story = StoryObj<typeof SectionHeader>;
+type Story = StoryObj<typeof ThemeHeader>;
 
 export const Default: Story = {};

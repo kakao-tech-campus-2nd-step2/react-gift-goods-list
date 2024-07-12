@@ -11,7 +11,7 @@ interface LocationState {
   backgroundColor: string;
 }
 
-export default function SectionHeader() {
+export default function ThemeHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as LocationState | null;
@@ -25,17 +25,17 @@ export default function SectionHeader() {
   const { title, label, description, backgroundColor } = state;
 
   return (
-    <SectionHeaderContainer color={backgroundColor}>
+    <ThemeHeaderContainer color={backgroundColor}>
       <CenteredContainer maxWidth="md">
         <Label>{label}</Label>
         <Title>{title}</Title>
         <Description>{description}</Description>
       </CenteredContainer>
-    </SectionHeaderContainer>
+    </ThemeHeaderContainer>
   );
 }
 
-const SectionHeaderContainer = styled.section<{ color?: string }>`
+const ThemeHeaderContainer = styled.section<{ color?: string }>`
   margin-top: 60px;
   background-color: ${({ color }) => color};
   padding: 50px 0;

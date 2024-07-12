@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useCallback,useEffect, useRef, useState } from 'react';
+import { useCallback,useEffect, useState } from 'react';
 
 import { fetchData } from '@/components/common/API/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -22,8 +22,7 @@ interface ProductData {
 interface FetchState<T> {
   isLoading: boolean;
   isError: boolean;
-  data: T;
-  hasMore: boolean;
+  data: T | null;
 }
 
 type Props = {
@@ -35,62 +34,29 @@ const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
     isLoading: true,
     isError: false,
     data: [],
-    hasMore: true,
   });
 
-  const [offset, setOffset] = useState(0);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  const fetchProducts = useCallback(async (key: string, currentOffset: number) => {
-    setFetchState(prevState => ({ ...prevState, isLoading: true }));
-
+  const fetchProducts = useCallback(async (key: string) => {
     try {
-      const data = await fetchData(`/api/v1/themes/${key}/products`, { maxResults: 20, offset: currentOffset });
-      setFetchState(prevState => ({
+      const data = await fetchData(`/api/v1/themes/${key}/products`, { maxResults: 20});
+      setFetchState({
         isLoading: false,
         isError: false,
-        data: [...prevState.data, ...data.products],
-        hasMore: data.products.length > 0,
-      }));
+        data: data.products,
+      });
     } catch (error) {
       console.error('Error fetching products:', error);
-      setFetchState(prevState => ({ ...prevState, isLoading: false, isError: true }));
+      setFetchState({ isLoading: false, isError: true, data: null});
     }
   }, []);
 
 //초기 로딩 비동기 통신
   useEffect(() => {
     if (themeKey) {
-      setFetchState({ isLoading: true, isError: false, data: [], hasMore: true });
-      setOffset(0); 
-      fetchProducts(themeKey, 0);  
+      setFetchState({ isLoading: true, isError: false, data: []});
+      fetchProducts(themeKey);  
     }
   }, [themeKey, fetchProducts]);
-
-//offset변화를 감지한 후의 비동기 통신
-  useEffect(() => {
-    if (offset > 0) {
-      fetchProducts(themeKey, offset);
-    }
-  }, [offset, fetchProducts, themeKey]);
-
-//ref(스크롤)의 변화를 감지하고 offset을 변경시키는 비동기 처리 
-  useEffect(() => {
-    if (fetchState.hasMore && !fetchState.isLoading) {
-      if (observerRef.current) observerRef.current.disconnect();
-
-      observerRef.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          setOffset(prevOffset => prevOffset + 20);
-        }
-      });
-      if (loadMoreRef.current) {
-        observerRef.current.observe(loadMoreRef.current);
-      }
-    }
-    return () => observerRef.current?.disconnect();
-  }, [fetchState.hasMore, fetchState.isLoading]);
 
   if (fetchState.isLoading)
     return <LoadingMessage>Loading...</LoadingMessage>;

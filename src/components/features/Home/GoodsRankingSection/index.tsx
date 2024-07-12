@@ -1,28 +1,93 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import type { AxiosError } from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import EmptyData from '@/components/common/Status/emptyData';
+import ErrorMessage from '@/components/common/Status/errorMessage';
+import Loading from '@/components/common/Status/loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
+import { fetchData } from '../../../common/API/api';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-export const GoodsRankingSection = () => {
+interface ProductData {
+  id: number;
+  name: string;
+  imageURL: string;
+  wish: {
+    wishCount: number;
+    isWished: boolean;
+  };
+  price: {
+    basicPrice: number;
+    discountRate: number;
+    sellingPrice: number;
+  };
+  brandInfo: {
+    id: number;
+    name: string;
+    imageURL: string;
+  };
+}
+
+interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  errorCode?: string;
+  errorMessage?: string;
+  data: T | null;
+}
+
+export const GoodsRankingSection: React.FC = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [fetchState, setFetchState] = useState<FetchState<ProductData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
+
+  useEffect(() => {
+    const fetchRankingProducts = async (filters: RankingFilterOption) => {
+      setFetchState({ isLoading: true, isError: false, data: null });
+      try {
+        const response = await fetchData('/api/v1/ranking/products', filters);
+        setFetchState({ isLoading: false, isError: false, data: response.products });
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        setFetchState({
+          isLoading: false,
+          isError: true,
+          data: null,
+          errorMessage: axiosError.message,
+          errorCode: axiosError.code,
+        });
+      }
+    };
+
+    fetchRankingProducts(filterOption);
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {fetchState.isLoading ? (
+          <Loading />
+        ) : fetchState.isError ? (
+          <ErrorMessage code= {fetchState.errorCode} message={fetchState.errorMessage || '데이터를 불러오는 중에 문제가 발생했습니다.'} />
+        ) : fetchState.data && fetchState.data.length > 0 ? (
+          <GoodsRankingList goodsList={fetchState.data} />
+        ) : (
+          <EmptyData />
+        )}
       </Container>
     </Wrapper>
   );
@@ -50,3 +115,5 @@ const Title = styled.h2`
     line-height: 50px;
   }
 `;
+
+export default GoodsRankingSection;

@@ -1,15 +1,51 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { getThemes } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import { ThemeData } from '@/types';
 
 type Props = {
-  theme: ThemeData;
+  themeKey: string;
 };
 
-export const ThemeHeroSection = ({ theme }: Props) => {
-  const { backgroundColor, label, title, description } = theme;
+export const ThemeHeroSection = ({ themeKey }: Props) => {
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await getThemes();
+        const themes: ThemeData[] = response.themes;
+        // console.log('themes:', themes);
+        const matchedTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
+        // console.log('matched theme:', matchedTheme);
+
+        if (matchedTheme) {
+          setCurrentTheme(matchedTheme);
+          // console.log('current theme: ', currentTheme);
+        } else {
+          console.error(`No theme found for key: ${themeKey}`);
+          setIsError(true);
+        }
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchThemes();
+  }, [themeKey]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError || !currentTheme) return <p>Error loading theme.</p>;
+
+  const { backgroundColor, label, title, description } = currentTheme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -75,7 +111,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

@@ -19,5 +19,5 @@
 
 ## ⚠️ 2단계 - Error, Loading Status 핸들링 하기
 ### ✅ 기능 목록
-- [] 데이터가 없는 경우에 대한 UI 대응
+- [x] 데이터가 없는 경우에 대한 UI 대응
 - [] Http Status에 따라 Error를 다르게 처리

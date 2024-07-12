@@ -2,7 +2,7 @@ import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { QueryFunctionContext } from '@tanstack/react-query';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { startTransition, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import type { ProductData } from '@/api';
@@ -33,8 +33,7 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
 
   const fetchThemeProducts = async ({ pageParam = 1 }: QueryFunctionContext): Promise<ThemeProductsResponse> => {
     const response = await getThemeProducts(themeKey, pageParam as number);
-    
-    // Convert the nextPageToken to the expected type
+
     return {
       products: response.products,
       nextPageToken: response.nextPageToken ? Number(response.nextPageToken) : null,
@@ -57,13 +56,19 @@ export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
   useEffect(() => {
     if (data) {
       const allProducts = data.pages.flatMap((page) => page.products);
-      setProducts(allProducts);
+      // Wrap state update in startTransition
+      startTransition(() => {
+        setProducts(allProducts);
+      });
     }
   }, [data]);
 
   useEffect(() => {
     if (inView && !isFetchingNextPage) {
-      fetchNextPage();
+      // Wrap function call in startTransition
+      startTransition(() => {
+        fetchNextPage();
+      });
     }
   }, [inView, isFetchingNextPage, fetchNextPage]);
 

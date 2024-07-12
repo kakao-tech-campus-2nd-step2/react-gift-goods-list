@@ -35,3 +35,8 @@
 ### 코드 작성하면서 어려웠던 점
 
 ### 마무리 및 질문
+
+**1. Unexpected Application Error**
+홈 화면에서 처음 각 테마 중 하나를 눌러서 테마 페이지로 이동하면 Unexpected Application Error가 발생합니다. 다시 이전 화면으로 돌아가서 테마를 누르면 정상적으로 코드가 작동됩니다.
+
+시도1. 오류 페이지에서 동기 입력에 응답하면서 컴포넌트가 중단되었고, startTrannsition을 사용하여 중단을 최소화할 수 있다고 해서 startTransition을 이용했지만 똑같은 오류가 발생합니다.

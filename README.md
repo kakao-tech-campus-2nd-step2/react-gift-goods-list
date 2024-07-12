@@ -23,7 +23,7 @@
   - [X] Header 섹션 themekey에 따라 내용 달라지게
   - [X] Products 섹션 (api/themes/{themeKey}/products)
   - [X] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 한다.
-- [ ] Error, Loading Status 핸들링하기
+- [X] Error, Loading Status 핸들링하기
   - [X] Loading 스피너 고르기
   - [X] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!(포기,, 걍 Spinner 돌리자)))
   - [X] 데이터가 없는 경우에 대한 UI 대응

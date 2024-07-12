@@ -1,13 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
+import { getThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
+import ThemeHeroSection from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
+import type { ThemeData } from '@/types/response';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+
+  useEffect(() => {
+    const fetchTheme = async () => {
+      try {
+        const response = await getThemes();
+        const foundTheme = response.themes.find((t: ThemeData) => t.key === themeKey);
+        setCurrentTheme(foundTheme || null);
+      } catch (error) {
+        console.error('Error to fetch thmeme:', error);
+      }
+    };
+    fetchTheme();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return <Navigate to={RouterPath.notFound} />;
@@ -15,7 +30,7 @@ export const ThemePage = () => {
 
   return (
     <>
-      <ThemeHeroSection themeKey={themeKey} />
+      <ThemeHeroSection theme={currentTheme} />
       <ThemeGoodsSection themeKey={themeKey} />
     </>
   );

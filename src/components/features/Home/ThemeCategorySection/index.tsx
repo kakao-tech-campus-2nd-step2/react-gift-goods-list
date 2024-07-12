@@ -37,7 +37,11 @@ export const ThemeCategorySection = () => {
           }}
         >
           {themes.map((theme) => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+            <Link
+              key={theme.id}
+              to={getDynamicPath.theme(theme.key)}
+              onClick={() => console.log(`Navigating to ${getDynamicPath.theme(theme.key)}`)}
+            >
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
             </Link>
           ))}

@@ -8,14 +8,14 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const { isLoading, currentTheme, isError } = useCurrentTheme({ themeKey });
+  const { data: currentTheme, isLoading, isError } = useCurrentTheme({ themeKey });
 
   if (isLoading) {
     return <div>로딩...</div>;
   }
 
   if (isError || !currentTheme) {
-    return <div>테마를 불러오는 데 문제가 발생했습니다.</div>;
+    return <div>데이터를 불러오는 중 문제가 발생하였습니다.</div>;
   }
 
   const { backgroundColor, label, title, description } = currentTheme;

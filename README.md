@@ -218,14 +218,14 @@ Polyfill은 이전 버전에서 지원하지 않는 기능들에 대한 코드�
   - [x] 테마 페이지
     - [x] 헤더의 themeKey에 따라 서로 다른 내용 표시하기
     - [x] 상품 목록 섹션에 선물 표시하기
-- [ ] react-query로 리팩토링 수행하기
-- [ ] skeleton UI 구현하기
-  - [ ] Skeleton Grid를 구현하면 좋지 않을까?
-- [ ] IntersectionObserver과 useInfiniteQuery로 무한 스크롤 구현
-- [ ] ErrorBoundary로 에러 처리하기
-- [ ] Suspense로 로딩 화면 설계하기.
-  - [ ] fallback으로 Skeleton UI를 넣어보자
-  - [ ] 이미지 blob을 모두 받아온 후 표시하도록 설계해보자. 어떻게 해야할지 고민이 필요하다.
+- [x] react-query로 리팩토링 수행하기
+- [x] skeleton UI 구현하기
+  - [x] Skeleton Grid를 구현하면 좋지 않을까?
+- [x] IntersectionObserver과 useInfiniteQuery로 무한 스크롤 구현
+- [x] ErrorBoundary로 에러 처리하기
+- [x] Suspense로 로딩 화면 설계하기.
+  - [x] fallback으로 Skeleton UI를 넣어보자
+  - [x] 이미지 blob을 모두 받아온 후 표시하도록 설계해보자. 어떻게 해야할지 고민이 필요하다.
 
 ## react-suspense
 
@@ -247,3 +247,34 @@ Suspense는 fallback prop을 통해 데이터가 다 페치되지 않았을 때 
 상위 컴포넌트가 Promise를 throw하는 동안 자식 컴포넌트가 호출되지 않기 때문에 data fetch도 일어나지 않는다.
 따라서 Suspense를 사용할 때에는 Promise로 자식 컴포넌트가 필요한 데이터까지 모두 받아와버리거나, 
 useSuspenseQueries와 같은 `react-query`에서 지원하는 기능을 이용하면 위 현상을 해결할 수 있다.
+
+### 3주차 질문 답
+
+- 질문 1. CORS 에러는 무엇이고 언제 발생하는지 설명해주세요. 이를 해결할 수 있는 방법에 대해서도 설명해주세요.
+
+CORS 에러는 허용되지 않은 origin에서 리소스에 접근할 때 발생하는 에러이다. 보안상의 이유로 다른 출처의 리소스 접근을 허용하지 않는 것이 안전하기 때문이다.
+클라이언트는 서버쪽에 preflight request를 보내어 `제가 허용된 origin인가요?`를 물어본다. 서버에서는 헤더에 허용된 오리진 정보를 담아 클라이언트 측에 전송하고,
+만일 클라이언트 본인이 허용되지 않은 origin인 경우 CORS 에러가 발생한다.
+- 질문 2. 비동기 처리 방법인 callback, promise, async await에 대해 각각 장단점과 함께 설명해주세요.
+
+callback 방식은 비동기 작업이 완료된 후 특정 메소드를 실행하도록 파라미터로서 넘겨주는 것이다. 비동기 작업을 순차적으로 실행할 수 있다는 장점이 있지만
+순서대로 처리해야할 작업이 매우 많다면 코드 가독성이 현저히 낮아진다는 단점이 있다.
+
+이를 해결하기 위해 Promise라는 비동기 처리 방식이 나왔다. promise의 장점은 콜백 보다는 간결하고, 메소드 체이닝을 통한 순차적인 작업 처리가 매우 간편해졌다는 점이다.
+그리고 기존의 callback 형식으로 구현된 api를 Promise 객체로 래핑하여 복잡했던 코드 흐름을 개선할 수 있다.
+
+하지만 Promise 또한 순차적으로 처리해야할 작업이 많은 경우 메소드 체이닝 구문이 지나치게 길어지고, 복잡해진다는 문제점이 있다.
+
+또 이를 해결하기 위해 async/await 패러다임이 나왔다. 기존의 Promise를 기반으로 하고, 비동기 코드를 동기 코드처럼
+간편하게 읽을 수 있다는 장점이 있다.
+
+단점으로는 async/await은 동기 코드처럼 에러 처리 또한 try/catch문을 사용하기 때문에, Promise에 비해 에러 처리와 관련된 코드가
+조금 더 길어지고 복잡해보일 수 있다는 점을 꼽을 수 있을 것 같다.
+
+- 질문 3. react query의 주요 특징에 대해 설명하고, queryKey는 어떤 역할을 하는지 설명해주세요.
+
+react-query는 컴포넌트에서 필요한 데이터를 페치하고 쉽게 관리할 수 있도록 도와주는 라이브러리이다. 기존의 redux-saga, redux-thunk와
+같은 라이브러리보다 러닝커브가 낮고 보일러플레이트가 거의 없다는 장점이 있다.
+
+queryKey는 react-query의 기능들 중 하나인 데이터 캐싱을 위한 key 이다. 데이터 페치가 필요하지 않을 경우 react-query는
+내부 저장소에서 queryKey값을 통해 캐시된 데이터를 가져온다.

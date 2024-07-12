@@ -1,83 +1,76 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
 import { Container } from '@/components/common/layouts/Container';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
 import { getThemes } from '@/libs/api';
-import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 
 export const ThemeHeroSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [theme, setTheme] = useState<ThemeData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchTheme = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const themes = await getThemes();
-        const currentTheme = themes.themes.find((label: ThemeData) => label.key === themeKey);
+  const {
+    data: themesData,
+    isLoading,
+    isError,
+  } = useQuery(['themes'], getThemes, {
+    onSuccess: (data) => {
+      const currentTheme = data.themes.find((theme: ThemeData) => theme.key === themeKey);
 
-        if (!currentTheme) {
-          setError('theme을 찾을 수 없음');
-          setLoading(false);
-          return;
-        }
-
-        if (typeof currentTheme === 'string') {
-          setError(currentTheme);
-        } else {
-          setTheme(currentTheme);
-        }
-      } catch (err) {
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
+      if (!currentTheme) {
+        setError('Theme을 찾을 수 없습니다.');
       }
-    };
+    },
+    onError: (err) => {
+      setError((err as Error).message);
+    },
+  });
 
-    fetchTheme();
-  }, [themeKey]);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
+  if (isLoading) {
     return (
       <CenteredContent>
-        <ErrorMessage message={error} />
+        <LoadingSpinner />
       </CenteredContent>
     );
   }
 
-  if (!theme) {
-    return <Navigate to={RouterPath.notFound} />;
+  if (isError || error) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message={error || 'Unknown Error'} />
+      </CenteredContent>
+    );
   }
+
+  if (!themesData || !themesData.themes) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message="상품 데이터를 불러올 수 없습니다." />
+      </CenteredContent>
+    );
+  }
+
+  const currentTheme = themesData.themes.find((theme: ThemeData) => theme.key === themeKey);
+
+  if (!currentTheme) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message="Theme을 찾을 수 없습니다." />
+      </CenteredContent>
+    );
+  }
+
   return (
-    <Wrapper backgroundColor={theme.backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        {loading ? (
-          <CenteredContent>
-            <LoadingSpinner />
-          </CenteredContent>
-        ) : error != '' ? (
-          <CenteredContent>
-            <ErrorMessage message={error} />
-          </CenteredContent>
-        ) : (
-          <Container>
-            <Label>{theme.label}</Label>
-            <Title>{theme.title}</Title>
-            {theme.description && <Description>{theme.description}</Description>}
-          </Container>
-        )}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useQuery } from 'react-query';
 import { Navigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/theme';
@@ -8,36 +7,34 @@ import { Container } from '@/components/common/layouts/Container';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData, ThemesResponse } from '@/types';
-import { getErrorMessage } from '@/utils/errorHandler';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const { data, error, isLoading } = useQuery<ThemesResponse, Error>('themes', fetchThemes);
-  const errorMessage = error ? getErrorMessage(error) : null;
-
-  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
-
-  if (!isLoading && !currentTheme) {
-    return <Navigate to={RouterPath.home} />;
-  }
-
   return (
-    <Wrapper backgroundColor={currentTheme?.backgroundColor || '#fff'}>
-      <Container>
-        <DataWrapper isLoading={isLoading} errorMessage={errorMessage}>
-          {currentTheme && (
-            <>
-              <Label>{currentTheme.label}</Label>
-              <Title>{currentTheme.title}</Title>
-              {currentTheme.description && <Description>{currentTheme.description}</Description>}
-            </>
-          )}
-        </DataWrapper>
-      </Container>
-    </Wrapper>
+    <DataWrapper<ThemesResponse> queryKey="themes" queryFn={fetchThemes}>
+      {(data) => {
+        const currentTheme = data.themes.find((theme) => theme.key === themeKey);
+
+        if (!currentTheme) {
+          return <Navigate to={RouterPath.home} />;
+        }
+
+        const { backgroundColor, label, title, description } = currentTheme;
+
+        return (
+          <Wrapper backgroundColor={backgroundColor}>
+            <Container>
+              <Label>{label}</Label>
+              <Title>{title}</Title>
+              {description && <Description>{description}</Description>}
+            </Container>
+          </Wrapper>
+        );
+      }}
+    </DataWrapper>
   );
 };
 

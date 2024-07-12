@@ -23,7 +23,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     const fetchProducts = async () => {
       console.log('Starting fetchProducts');
       try {
-        const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 10 });
+        const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 20 });
         console.log('Fetched products:', response);
         setProducts(response.products || []);
       } catch (err) {

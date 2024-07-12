@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { EmptyMessage, ErrorMessage } from '@/components/common/Error/Error';
 import { Container } from '@/components/common/layouts/Container';
 import { LoadingMessage } from '@/components/common/Loading/Loading';
 import { getRankingProducts } from '@/libs/api';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData, RankingFilterOption } from '@/types';
+import type { RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -17,38 +18,52 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [isEmpty, setIsEmpty] = useState(false);
+  const [errorState, setErrorState] = useState('');
 
-  const fetchRankingProducts = useCallback(async (filter: RankingFilterOption) => {
-    setLoading(true);
-    setError('');
-    const data = await getRankingProducts({
-      targetType: filter.targetType,
-      rankType: filter.rankType,
-    });
-    if (typeof data === 'string') {
-      setError(data);
-    } else {
-      setGoodsList(data.products);
-      setIsEmpty(data.products.length === 0);
-    }
-    setLoading(false);
-  }, []);
+  const {
+    data: rankingData, // API에서 불러온 데이터는 이 객체에 저장됩니다.
 
-  useEffect(() => {
-    fetchRankingProducts(filterOption);
-  }, [fetchRankingProducts, filterOption]);
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery(['rankingProducts', filterOption], () => getRankingProducts(filterOption), {
+    keepPreviousData: true,
+
+    onSuccess: (data) => {
+      // data가 유효한지 확인
+      if (data || data.products) {
+        console.log(data);
+        setErrorState('');
+        if (typeof data === 'string') {
+          setErrorState(data);
+        } else {
+          setIsEmpty(data.products.length === 0);
+        }
+      } else {
+        setIsEmpty(true);
+      }
+    },
+    onError: (err) => {
+      setErrorState((err as Error).message);
+    },
+  });
+
+  const handleFilterChange = (newFilterOption: RankingFilterOption) => {
+    setFilterOption(newFilterOption);
+    refetch();
+  };
 
   return (
     <Wrapper>
       <StyledContainer>
         <Container>
           <Title>실시간 급상승 선물랭킹</Title>
-          <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-          {loading ? (
+          <GoodsRankingFilter
+            filterOption={filterOption}
+            onFilterOptionChange={handleFilterChange}
+          />
+          {isLoading || isFetching ? (
             <CenteredContent>
               <LoadingMessage />
             </CenteredContent>
@@ -56,12 +71,12 @@ export const GoodsRankingSection = () => {
             <CenteredContent>
               <EmptyMessage />
             </CenteredContent>
-          ) : error != '' ? (
+          ) : errorState ? (
             <CenteredContent>
-              <ErrorMessage message={error} />
+              <ErrorMessage message={errorState} />
             </CenteredContent>
           ) : (
-            <GoodsRankingList goodsList={goodsList} />
+            <GoodsRankingList goodsList={rankingData?.products ?? []} />
           )}
         </Container>
       </StyledContainer>
@@ -105,3 +120,5 @@ const CenteredContent = styled.div`
   height: 100%;
   padding: 20px 0;
 `;
+
+export default GoodsRankingSection;

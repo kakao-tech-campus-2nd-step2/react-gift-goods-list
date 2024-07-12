@@ -5,7 +5,7 @@ import { RENDER_ERROR_MESSAGES } from '@/constants/errorMessage';
 
 export const useThemeHero = (themeKey: string) => {
   const { data, status, error } = useSuspenseQuery({
-    queryKey: ['themeData', themeKey],
+    queryKey: ['themeData'],
     queryFn: () => fetchThemes(),
     refetchOnMount: false,
   });

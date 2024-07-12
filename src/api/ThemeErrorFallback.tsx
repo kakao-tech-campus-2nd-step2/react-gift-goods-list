@@ -8,22 +8,16 @@ import ROUTES from '@/constants/routes';
 
 type ErrorFallbackProps = {
   error: AxiosError;
-  resetErrorBoundary: () => void;
 };
 
-export const ErrorFallback = ({
-  error,
-  resetErrorBoundary,
-}: ErrorFallbackProps) => {
+export const ThemeErrorFallback = ({ error }: ErrorFallbackProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     if (error.message === RENDER_ERROR_MESSAGES.THEME_NOT_FOUND) {
       navigate(ROUTES.HOME);
-    } else {
-      resetErrorBoundary();
     }
-  }, [error.message, navigate, resetErrorBoundary]);
+  }, [error.message, navigate]);
 
   return <div>error page</div>;
 };

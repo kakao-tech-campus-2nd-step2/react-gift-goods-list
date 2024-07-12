@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-// import { Navigate, useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getThemes } from '@/api';
-// import { RouterPath } from '@/routes';
+import { RouterPath } from '@/routes';
 import { ThemeData } from '@/types';
 
 export const Theme = () => {
@@ -43,9 +43,7 @@ export const Theme = () => {
   }, [themeKey]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error loading themes.</p>;
-  if (!currentTheme) return <p>No current theme</p>;
-  //   if (!currentTheme) return <Navigate to={RouterPath.notFound} />;
+  if (isError || !currentTheme) return <Navigate to={RouterPath.notFound} />;
 
   return (
     <>

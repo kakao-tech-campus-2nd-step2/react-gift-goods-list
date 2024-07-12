@@ -1,8 +1,11 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { Meta, StoryObj } from '@storybook/react';
 import GlobalStyles from '@assets/styles';
 import ThemeCategory from '.';
+
+const queryClient = new QueryClient();
 
 const meta: Meta<typeof ThemeCategory> = {
   title: 'features/Home/ThemeCategory',
@@ -10,10 +13,12 @@ const meta: Meta<typeof ThemeCategory> = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <MemoryRouter>
-        <GlobalStyles />
-        <Story />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GlobalStyles />
+          <Story />
+        </MemoryRouter>
+      </QueryClientProvider>
     ),
   ],
 };

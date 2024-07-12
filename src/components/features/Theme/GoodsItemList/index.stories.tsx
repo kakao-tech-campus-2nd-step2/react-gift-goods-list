@@ -1,8 +1,11 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import GlobalStyles from '@assets/styles';
 import GoodsItemList from '.';
+
+const queryClient = new QueryClient();
 
 const meta: Meta<typeof GoodsItemList> = {
   title: 'features/Theme/GoodsItemList',
@@ -10,10 +13,12 @@ const meta: Meta<typeof GoodsItemList> = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <MemoryRouter>
-        <GlobalStyles />
-        <Story />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GlobalStyles />
+          <Story />
+        </MemoryRouter>
+      </QueryClientProvider>
     ),
   ],
 };

@@ -1,7 +1,10 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FilterProvider from '@context/filter/FilterProvider';
 import RankingList from '.';
+
+const queryClient = new QueryClient();
 
 const meta: Meta<typeof RankingList> = {
   title: 'features/Home/RankingList',
@@ -9,9 +12,11 @@ const meta: Meta<typeof RankingList> = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <FilterProvider>
-        <Story />
-      </FilterProvider>
+      <QueryClientProvider client={queryClient}>
+        <FilterProvider>
+          <Story />
+        </FilterProvider>
+      </QueryClientProvider>
     ),
   ],
 };

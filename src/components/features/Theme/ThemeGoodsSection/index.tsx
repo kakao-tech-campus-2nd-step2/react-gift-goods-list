@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 
 import { fetchThemeProducts } from '@/apis/fetch';
-// import useFetch from '@/apis/useFetch';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
@@ -11,14 +11,19 @@ import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
-  pageToken?: number;
 };
 
 interface GoodsDataArray {
   products: GoodsData[];
 }
 
-export const ThemeGoodsSection = ({ themeKey, pageToken }: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState<GoodsData[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  let currentStatus;
+
   const {
     data = {
       products: [],
@@ -26,19 +31,51 @@ export const ThemeGoodsSection = ({ themeKey, pageToken }: Props) => {
     isError,
     isLoading,
   } = useQuery<GoodsDataArray>({
-    queryKey: ['themeProducts', themeKey, pageToken],
-    queryFn: () => fetchThemeProducts(themeKey, pageToken),
+    queryKey: ['themeProducts', themeKey, pageNumber],
+    queryFn: () => fetchThemeProducts(themeKey, pageNumber),
   });
 
-  // const { data, status } = useFetch<GoodsDataArray>(
-  //   `api/v1/themes/${themeKey}/products?maxResults=20`,
-  //   { products: [] },
-  // );
-  const goodsItemsData = data.products;
-  let currentStatus;
+  useEffect(() => {
+    if (data && data.products.length > 0) {
+      setProducts((prevProducts) => [...prevProducts, ...data.products]);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const currentRef = ref.current;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setPageNumber((prev) => prev + 1);
+          }
+        });
+      },
+      { root: null, threshold: 0.8 },
+    );
+
+    if (data.products.length === 0) {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+      return;
+    }
+
+    if (!isLoading && currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [ref, isLoading, data.products.length]);
+
   if (isLoading) currentStatus = <StatusDiv>로딩중...</StatusDiv>;
   else if (isError) currentStatus = <StatusDiv>에러에러에러</StatusDiv>;
-  else if (goodsItemsData.length === 0) currentStatus = <StatusDiv>상품이 없어요.</StatusDiv>;
+  else if (products.length === 0) currentStatus = <StatusDiv>상품이 없어요.</StatusDiv>;
 
   return (
     <Wrapper>
@@ -51,7 +88,7 @@ export const ThemeGoodsSection = ({ themeKey, pageToken }: Props) => {
           }}
           gap={16}
         >
-          {goodsItemsData?.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -62,6 +99,7 @@ export const ThemeGoodsSection = ({ themeKey, pageToken }: Props) => {
           ))}
         </Grid>
       </Container>
+      <div ref={ref} style={{ width: '100%', height: '200px' }} />
     </Wrapper>
   );
 };

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import type { UseQueryOptions } from 'react-query';
+import { useQuery } from 'react-query';
 
 const baseURL = 'https://kakao-tech-campus-mock-server.vercel.app/api/v1';
 
@@ -172,3 +174,25 @@ export const getMyAccountInfo = async (): Promise<MyAccountInfoData> => {
     throw error;
   }
 };
+
+//
+export const useRankingProducts = (targetType: string = 'ALL', rankType: string = 'MANY_WISH_RECEIVE', options?: UseQueryOptions<ProductData[]>) =>
+  useQuery<ProductData[]>(['rankingProducts', targetType, rankType], () => getRankingProducts(targetType, rankType), options);
+
+export const useThemes = (options?: UseQueryOptions<ThemeData[]>) =>
+  useQuery<ThemeData[]>('themes', getThemes, options);
+
+export const useThemeProducts = (themeKey: string, pageToken: number = 1, maxResults: number = 20, options?: UseQueryOptions<ThemeProductsResponse>) =>
+  useQuery<ThemeProductsResponse>(['themeProducts', themeKey], () => getThemeProducts(themeKey, pageToken, maxResults), options);
+
+export const useProductDetail = (productId: string, options?: UseQueryOptions<ProductDetailData>) =>
+  useQuery<ProductDetailData>(['productDetail', productId], () => getProductDetail(productId), options);
+
+export const useProductOptions = (productId: string, options?: UseQueryOptions<unknown>) =>
+  useQuery<unknown>(['productOptions', productId], () => getProductOptions(productId), options);
+
+export const useMessageCardTemplates = (options?: UseQueryOptions<MessageCardTemplateData[]>) =>
+  useQuery<MessageCardTemplateData[]>('messageCardTemplates', getMessageCardTemplates, options);
+
+export const useMyAccountInfo = (options?: UseQueryOptions<MyAccountInfoData>) =>
+  useQuery<MyAccountInfoData>('myAccountInfo', getMyAccountInfo, options);

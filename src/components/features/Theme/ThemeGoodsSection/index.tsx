@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 
-import apiClient from '@/api';
-import type { GetThemeProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { useThemeProducts } from '@/hooks/useThemeProducts';
 import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 
@@ -14,28 +12,18 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await apiClient.get<GetThemeProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
-          params: {
-            maxResults: 20,
-          },
-        });
-        setProducts(response.data.products);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [themeKey]);
+  const [products, { isLoading, isError }] = useThemeProducts(themeKey);
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError || !products) {
+    return (
+      <div>
+        에러가 발생했습니다.
+      </div>
+    );
   }
   return (
     <Wrapper>

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Message } from '@/styles';
@@ -11,42 +12,35 @@ type Props = {
   themeKey: string;
 };
 
+const fetchThemeHeader = async (): Promise<ThemeData[]> => {
+  const { data } = await axios.get(`${BASE_URL}/api/v1/themes`);
+  return data.themes;
+};
+
+const getCurrentTheme = (themeKey: string, themeList: ThemeData[] | undefined) => {
+  return themeList?.find((theme) => theme.key === themeKey);
+};
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | undefined>();
+  const { data, isLoading, isError } = useQuery<ThemeData[]>(
+    ['ThemeData', themeKey],
+    fetchThemeHeader,
+  );
 
   useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/v1/themes`);
-        const theme = getCurrentTheme(themeKey, res.data.themes);
-        setCurrentTheme(theme);
-        setIsLoading(false);
-      } catch (err) {
-        console.error(err);
-        if (axios.isAxiosError(err)) {
-          switch (err.response?.status) {
-            case 400:
-              console.error('Bad Request');
-              break;
-            case 404:
-              console.error('Not Found');
-              break;
-            case 500:
-              console.error('Internal Server Error');
-              break;
-            default:
-              console.error(`Unknown Error ${err.response?.status}`);
-              break;
-          }
-        }
-      }
-    };
-    fetchThemeData();
-  }, [themeKey]);
+    if (data) {
+      const theme = getCurrentTheme(themeKey, data);
+      setCurrentTheme(theme);
+    }
+  }, [data, themeKey]);
 
   if (isLoading) {
     return <Message>Loading...</Message>;
+  }
+
+  if (isError) {
+    return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
   }
 
   if (!currentTheme) {
@@ -117,7 +111,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

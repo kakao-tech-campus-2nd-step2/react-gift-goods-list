@@ -30,9 +30,6 @@ export const GoodsRankingSection = () => {
   } = useQuery(['rankingProducts', filterOption], () => getRankingProducts(filterOption), {
     keepPreviousData: true,
 
-    onError: (err) => {
-      setErrorState((err as Error).message);
-    },
     onSuccess: (data) => {
       // data가 유효한지 확인
       if (data || data.products) {
@@ -46,6 +43,9 @@ export const GoodsRankingSection = () => {
       } else {
         setIsEmpty(true);
       }
+    },
+    onError: (err) => {
+      setErrorState((err as Error).message);
     },
   });
 

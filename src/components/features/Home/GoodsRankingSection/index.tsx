@@ -1,10 +1,14 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
 
+import { Error } from '@/components/common/Error';
 import { Container } from '@/components/common/layouts/Container';
+import { LoadingIcon } from '@/components/common/LoadingIcon';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
+import { type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +19,38 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const fetchGoodsRanking = async () => {
+    const response = await axios.get(process.env.REACT_APP_API_KEY + `/api/v1/ranking/products`, {
+      params: { targetType: filterOption.targetType, rankType: filterOption.rankType },
+    });
+    return response.data.products;
+  };
+
+  const { data, error, isLoading } = useQuery<GoodsData[]>({
+    queryKey: ['ranking/products', filterOption.targetType, filterOption.rankType],
+    queryFn: fetchGoodsRanking,
+  });
+
+  const GoodsRanking = () => {
+    if (data) {
+      if (data.length > 0) {
+        return <GoodsRankingList goodsList={data} />;
+      } else {
+        return <Error>보여줄 페이지가 없습니다!</Error>;
+      }
+    } else if (error) {
+      return <Error>에러가 발생했습니다.</Error>;
+    } else if (isLoading) {
+      return <LoadingIcon />;
+    }
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {GoodsRanking()}
       </Container>
     </Wrapper>
   );

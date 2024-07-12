@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import { Link } from 'react-router-dom';
 
-import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { API_ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
 
 import { Button } from '@/components/ui/Button';
@@ -24,7 +24,7 @@ const NotFound = () => {
       gap="2rem"
       css={containerStyle}
     >
-      <h1 css={titleStyle}>{ERROR_MESSAGES.PAGE_NOT_FOUND}</h1>
+      <h1 css={titleStyle}>{API_ERROR_MESSAGES.PAGE_NOT_FOUND}</h1>
       <Link to={ROUTES.HOME}>
         <Button theme="outline" css={{ width: '12rem' }}>
           메인 페이지로 돌아가기

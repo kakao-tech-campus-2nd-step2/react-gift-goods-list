@@ -27,5 +27,5 @@
 
 #### themeKey가 잘못된 경우 메인 페이지로 연결하기
 
-- [ ] suspense 추가하기
-- [ ] error boundary 처리하기
+- [x] suspense 추가하기
+- [x] error boundary 처리하기

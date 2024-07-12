@@ -1,5 +1,5 @@
 import { BACKEND_API } from '@/api/instance';
-import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { API_ERROR_MESSAGES } from '@/constants/errorMessage';
 import { RankingFilter } from '@/types/productType';
 
 import { GetProductRankingRequest, GetProductRankingResponse } from './types';
@@ -22,6 +22,6 @@ export const fetchRankingProduct = async (filter: RankingFilter) => {
       throw error;
     }
 
-    throw new Error(ERROR_MESSAGES.UNKNOWN_ERROR);
+    throw new Error(API_ERROR_MESSAGES.UNKNOWN_ERROR);
   }
 };

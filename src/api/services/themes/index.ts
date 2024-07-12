@@ -1,5 +1,5 @@
 import { BACKEND_API } from '@/api/instance';
-import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { API_ERROR_MESSAGES } from '@/constants/errorMessage';
 import { ThemeCategoryData, ThemeHeroData } from '@/types/themeType';
 
 import { GetThemesResponse } from './types';
@@ -17,6 +17,6 @@ export const fetchThemes = async () => {
       throw error;
     }
 
-    throw new Error(ERROR_MESSAGES.UNKNOWN_ERROR);
+    throw new Error(API_ERROR_MESSAGES.UNKNOWN_ERROR);
   }
 };

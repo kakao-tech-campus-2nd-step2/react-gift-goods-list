@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useThemeHero } from '@/api/hooks/useThemeHero';
-import { ERROR_MESSAGES } from '@/constants/errorMessage';
+import { API_ERROR_MESSAGES } from '@/constants/errorMessage';
 import ROUTES from '@/constants/routes';
 import { ThemeHeroData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
 import { OneTextContainer } from '@/components/OneTextContainer';
-import { Skeleton } from '@/components/ui/Skeleton';
 
 import { heroStyle, textStyle } from './styles';
 
@@ -19,20 +18,16 @@ type ThemeHeroSectionProps = {
 export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const navigate = useNavigate();
 
-  const { themeHero, status, error } = useThemeHero(themeKey);
+  const { themeHero, error } = useThemeHero(themeKey);
 
   useEffect(() => {
-    if (error?.message === ERROR_MESSAGES.DATA_NOT_FOUND) {
+    if (error?.message === API_ERROR_MESSAGES.DATA_NOT_FOUND) {
       navigate(ROUTES.HOME);
     }
   }, [error, navigate]);
 
   if (error?.message) {
     return <OneTextContainer>{error.message}</OneTextContainer>;
-  }
-
-  if (status === 'pending') {
-    return <Skeleton width="100vw" height="13rem" />;
   }
 
   const { backgroundColor, label, title, description } =

@@ -39,6 +39,9 @@ export const GoodsRankingSection = () => {
             case 400:
               setErrorMessage("400, Bad Request.");
               break;
+            case 404:
+              setErrorMessage("404, Not Found")
+              break;
           }
         } else {
           setErrorMessage("400, Bad Request.");

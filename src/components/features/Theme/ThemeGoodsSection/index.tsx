@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteQuery } from 'react-query';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
@@ -8,64 +10,55 @@ import { Grid } from '@/components/common/layouts/Grid';
 import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
-import type { FetchState } from '@/types';
 import { BASE_URL } from '@/types';
 
-type Props = {
+type FetchProps = {
+  pageParam?: number;
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [currentGoodsList, setCurrentGoodsList] = useState<GoodsData[]>([]);
-  const [isData, setIsData] = useState(false);
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-  });
+const fetchGoodsList = async ({ pageParam, themeKey }: FetchProps) => {
+  const maxResults = 20;
+  const params: { maxResults: number; pageToken?: number } = { maxResults };
+  if (pageParam) {
+    params.pageToken = pageParam;
+  }
+  const res = await axios.get(`${BASE_URL}/api/v1/themes/${themeKey}/products`, { params });
+  return res.data;
+};
+
+export const ThemeGoodsSection = ({ themeKey }: { themeKey: string }) => {
+  const { ref, inView } = useInView();
+
+  const { data, isError, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      ['goodsList', themeKey],
+      ({ pageParam = 0 }) =>
+        fetchGoodsList({ pageParam: pageParam === 0 ? undefined : pageParam, themeKey }),
+      {
+        getNextPageParam: (lastPage, pages) => {
+          if (lastPage.products.length < 20) {
+            return undefined;
+          }
+          return pages.length; // This ensures the next page token starts from 1
+        },
+      },
+    );
 
   useEffect(() => {
-    const fetchGoodsList = async () => {
-      try {
-        const maxResults = 20;
-        const queryParams = `?maxResults=${maxResults}`;
-        const res = await axios.get(`${BASE_URL}/api/v1/themes/${themeKey}/products${queryParams}`);
-        setFetchState({ isLoading: false, isError: false, data: res.data.products });
-        setCurrentGoodsList(res.data.products);
-        setIsData(res.data.products.length > 0);
-      } catch (err) {
-        console.error('Error fetching goods list', err);
-        setFetchState({ isLoading: false, isError: true, data: null });
-
-        if (axios.isAxiosError(err)) {
-          switch (err.response?.status) {
-            case 400:
-              console.error('Bad Request');
-              break;
-            case 404:
-              console.error('Not Found');
-              break;
-            case 500:
-              console.error('Internal Server Error');
-              break;
-            default:
-              console.error(`Unknown Error ${err.response?.status}`);
-              break;
-          }
-        }
-      }
-    };
-    fetchGoodsList();
-  }, [themeKey]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const renderList = () => {
-    if (fetchState.isError) {
+    if (isError) {
       return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
     }
-    if (fetchState.isLoading) {
+    if (isLoading && !isFetchingNextPage) {
       return <Message>로딩 중...</Message>;
     }
-    if (!isData) {
+    if (!data || data.pages[0].products.length === 0) {
       return <Message>보여줄 상품이 없습니다!</Message>;
     }
   };
@@ -81,16 +74,19 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {currentGoodsList.map((goods) => (
-            <DefaultGoodsItems
-              key={goods.id}
-              imageSrc={goods.imageURL}
-              title={goods.name}
-              amount={goods.price.sellingPrice}
-              subtitle={goods.brandInfo.name}
-            />
-          ))}
+          {data?.pages.map((page) =>
+            page.products.map((goods: GoodsData) => (
+              <DefaultGoodsItems
+                key={goods.id}
+                imageSrc={goods.imageURL}
+                title={goods.name}
+                amount={goods.price.sellingPrice}
+                subtitle={goods.brandInfo.name}
+              />
+            )),
+          )}
         </Grid>
+        <div ref={ref}>{isFetchingNextPage ? '상품 추가로 불러오는 중...' : ''}</div>
       </Container>
     </Wrapper>
   );

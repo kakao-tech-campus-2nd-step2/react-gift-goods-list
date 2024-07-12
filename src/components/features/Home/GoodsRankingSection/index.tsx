@@ -17,15 +17,19 @@ export const GoodsRankingSection = () => {
   });
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        setError(false); // 에러 상태 초기화
         const data = await getRankingProducts(filterOption);
         setProducts(data.products);
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       } catch (error) {
         console.error('Error fetching products:', error);
+        setError(true); // 에러 상태 설정
       } finally {
         setLoading(false);
       }
@@ -35,7 +39,35 @@ export const GoodsRankingSection = () => {
   }, [filterOption]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <LoaderWrapper>
+        <Loader />
+      </LoaderWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <Wrapper>
+        <Container>
+          <Title>실시간 급상승 선물랭킹</Title>
+          <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
+          <CenteredMessage>데이터를 불러오는 중에 문제가 발생했습니다.</CenteredMessage>
+        </Container>
+      </Wrapper>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <Wrapper>
+        <Container>
+          <Title>실시간 급상승 선물랭킹</Title>
+          <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
+          <CenteredMessage>보여줄 상품이 없어요!</CenteredMessage>
+        </Container>
+      </Wrapper>
+    );
   }
 
   return (
@@ -51,6 +83,7 @@ export const GoodsRankingSection = () => {
 
 const Wrapper = styled.section`
   padding: 0 16px 32px;
+  text-align: center;
 
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 0 16px 80px;
@@ -70,6 +103,41 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+`;
+
+const Loader = styled.div`
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const CenteredMessage = styled.p`
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 `;
 
 export default GoodsRankingSection;

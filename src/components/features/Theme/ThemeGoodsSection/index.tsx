@@ -14,17 +14,19 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const data = await getThemeProducts(themeKey, 20);
         setProducts(data.products);
+        setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-shadow
       } catch (error) {
-        setError('Error fetching products');
+        console.error('Error fetching products:', error);
       }
     };
 
@@ -38,19 +40,21 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       </LoaderWrapper>
     );
   }
-  
+
   if (error) {
     return (
-      <Wrapper>
-        <Container>
-          <ErrorMessage>Error fetching products</ErrorMessage>
-        </Container>
-      </Wrapper>
+      <MessageWrapper>
+        <Message>상품을 불러오는 중에 오류가 발생했습니다.</Message>
+      </MessageWrapper>
     );
   }
 
   if (products.length === 0) {
-    return <NoProducts>No products found</NoProducts>;
+    return (
+      <MessageWrapper>
+        <Message>상품이 없어요.</Message>
+      </MessageWrapper>
+    );
   }
 
   return (
@@ -87,11 +91,6 @@ const Wrapper = styled.section`
   }
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 18px;
-`;
-
 const LoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -117,7 +116,15 @@ const Loader = styled.div`
   }
 `;
 
-const NoProducts = styled.div`
-  text-align: center;
-  padding: 20px;
+const MessageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
 `;
+
+const Message = styled.p`
+  font-size: 18px;
+  color: #000;
+`;
+

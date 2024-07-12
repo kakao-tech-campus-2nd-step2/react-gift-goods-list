@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { getThemeProducts } from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -20,14 +21,22 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageToken, setPageToken] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = useCallback(
+    async (reset: boolean = false) => {
+      console.log('Starting fetchProducts');
       setLoading(true);
-      setError(null);
+      setError(null); // 에러 상태 초기화
       try {
-        const response = await getThemeProducts({ themeKey, pageToken: '', maxResults: 20 });
-        setProducts(response.products || []);
+        const response = await getThemeProducts({ themeKey, pageToken, maxResults: 20 });
+        console.log('Fetched products:', response);
+        setProducts((prevProducts) =>
+          reset ? response.products : [...prevProducts, ...response.products],
+        );
+        setPageToken(response.nextPageToken || undefined);
+        setHasMore(response.products.length > 0 && response.nextPageToken != null);
       } catch (err) {
         console.error('Error fetching products:', err);
         if (axios.isAxiosError(err) && err.response) {
@@ -47,12 +56,15 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [themeKey, pageToken],
+  );
 
-    fetchProducts();
-  }, [themeKey]);
+  useEffect(() => {
+    fetchProducts(true);
+  }, [themeKey, fetchProducts]);
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return <Loading />;
   }
 
@@ -67,23 +79,31 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
+        <InfiniteScroll
+          dataLength={products.length}
+          next={() => fetchProducts()}
+          hasMore={hasMore}
+          loader={<Loading />}
+          endMessage={<NoDataMessage message="No more products." />}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
-        </Grid>
+          <Grid
+            columns={{
+              initial: 2,
+              md: 4,
+            }}
+            gap={16}
+          >
+            {products.map(({ id, imageURL, name, price, brandInfo }) => (
+              <DefaultGoodsItems
+                key={id}
+                imageSrc={imageURL}
+                title={name}
+                amount={price.sellingPrice}
+                subtitle={brandInfo.name}
+              />
+            ))}
+          </Grid>
+        </InfiniteScroll>
       </Container>
     </Wrapper>
   );

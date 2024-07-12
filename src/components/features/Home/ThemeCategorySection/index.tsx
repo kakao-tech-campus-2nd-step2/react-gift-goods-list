@@ -12,7 +12,7 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
 
-  const [themeData, { isLoading, isError }] = useThemes();
+  const [themeData, { isLoading, isError, errorMessage}] = useThemes();
 
   if (isLoading) {
     return <Loading />;
@@ -22,6 +22,8 @@ export const ThemeCategorySection = () => {
     return (
       <div>
         에러가 발생했습니다.
+        <br />
+        {errorMessage}
       </div>
     )
   }

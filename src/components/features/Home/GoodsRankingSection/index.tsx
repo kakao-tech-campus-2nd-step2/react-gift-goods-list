@@ -15,7 +15,7 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [rankingProducts, { isLoading, isError }] = useRankingProducts(filterOption);
+  const [rankingProducts, { isLoading, isError, errorMessage}] = useRankingProducts(filterOption);
 
   if (isLoading) {
     return <Loading />
@@ -25,6 +25,7 @@ export const GoodsRankingSection = () => {
     return (
       <div>
         에러가 발생했습니다.
+        {errorMessage}
       </div>
     )
   }

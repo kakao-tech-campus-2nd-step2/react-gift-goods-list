@@ -8,7 +8,7 @@ import Loading from '@/styles/Loading';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [themes, { isLoading, isError}] = useThemes();
+  const [themes, { isLoading, isError, errorMessage}] = useThemes();
 
   if (isLoading) {
     return <Loading />
@@ -18,6 +18,8 @@ export const ThemePage = () => {
     return (
       <div>
         에러가 발생했습니다.
+        <br />
+        {errorMessage}
       </div>
     )
   }

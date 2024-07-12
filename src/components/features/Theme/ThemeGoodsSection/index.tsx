@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, { isLoading, isError }] = useThemeProducts(themeKey);
+  const [products, { isLoading, isError, errorMessage}] = useThemeProducts(themeKey);
 
   if (isLoading) {
     return <Loading />;
@@ -22,6 +22,8 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     return (
       <div>
         에러가 발생했습니다.
+        <br />
+        {errorMessage}
       </div>
     );
   }

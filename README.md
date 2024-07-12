@@ -19,10 +19,10 @@
   - [X] Theme 카테고리 섹션(/api/v1/themes)
   - [X] Trending 선물랭킹 섹션(/api/v1/ranking/products)
     - [X] 필터 조건 선택하면 해당 조건에 맞게 API 요청해서 보여지게 함
-- [ ] Theme 페이지
-  - [ ] Header 섹션 themekey에 따라 내용 달라지게
-  - [ ] Products 섹션 (api/themes/{themeKey}/products)
-  - [ ] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 한다.
+- [X] Theme 페이지
+  - [X] Header 섹션 themekey에 따라 내용 달라지게
+  - [X] Products 섹션 (api/themes/{themeKey}/products)
+  - [X] API 요청 시 한 번에 20개의 상품 목록이 내려오도록 한다.
 - [ ] Error, Loading Status 핸들링하기
   - [X] Loading 스피너 고르기
   - [ ] 각 API에서 Loading 상태에 대한 UI 대응 하기(Skeleton 방식으로 일단 시도,,!)

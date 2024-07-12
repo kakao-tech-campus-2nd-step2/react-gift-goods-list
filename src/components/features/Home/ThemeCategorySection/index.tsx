@@ -6,12 +6,16 @@ import { Link } from 'react-router-dom';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
-import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
-import type { FetchState } from '@/types';
 import { BASE_URL, type ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
+
+interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}
 
 export const ThemeCategorySection = () => {
   const [fetchState, setFetchState] = useState<FetchState<ThemeData[]>>({
@@ -28,7 +32,7 @@ export const ThemeCategorySection = () => {
       } catch (err) {
         console.error('Error Fetching ThemeData', err);
         setFetchState({ isLoading: false, isError: true, data: null });
-        
+
         if (axios.isAxiosError(err)) {
           switch (err.response?.status) {
             case 400:
@@ -44,17 +48,18 @@ export const ThemeCategorySection = () => {
               console.error(`Unknown Error ${err.response?.status}`);
               break;
           }
+        }
       }
     };
     fetchThemeData();
   }, []);
 
   if (fetchState.isLoading) {
-    return <Message>로딩 중...</Message>;
+    return <div>Loading...</div>;
   }
 
   if (fetchState.isError) {
-    return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
+    return <div>Error loading data</div>;
   }
 
   return (

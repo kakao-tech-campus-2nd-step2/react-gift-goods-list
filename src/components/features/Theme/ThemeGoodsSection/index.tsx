@@ -107,6 +107,40 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   };
 
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+      );
+    }
+
+    if (currentGoods.length === 0) {
+      return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+    }
+
+    return (
+      <Grid
+        columns={{
+          initial: 2,
+          md: 4,
+        }}
+        gap={16}
+      >
+        {currentGoods.map((goods) => (
+          <DefaultGoodsItems
+            key={goods.id}
+            imageSrc={goods.imageURL}
+            title={goods.name}
+            amount={goods.price.sellingPrice}
+            subtitle={goods.brandInfo.name}
+          />
+        ))}
+      </Grid>
+    );
+  };
+
   return (
     <Wrapper>
       <Container>

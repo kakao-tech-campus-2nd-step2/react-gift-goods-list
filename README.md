@@ -24,3 +24,8 @@
   - [x] 테마 카테고리
   - [x] 랭킹 굿즈
 - [x] Theme 페이지의 테마 정보
+
+#### themeKey가 잘못된 경우 메인 페이지로 연결하기
+
+- [ ] suspense 추가하기
+- [ ] error boundary 처리하기

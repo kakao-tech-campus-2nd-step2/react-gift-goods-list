@@ -19,7 +19,7 @@ export const ThemePage = () => {
         console.log(`Fetching products for themeKey: ${themeKey}`);
         const [themeData, productData] = await Promise.all([
           getThemes(),
-          getThemeProducts(themeKey),
+          getThemeProducts(themeKey, 20),
         ]);
 
         const foundTheme = themeData.themes.find((t) => t.key === themeKey);

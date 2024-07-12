@@ -19,7 +19,7 @@ type ThemeHeroSectionProps = {
 export const ThemeHeroSection = ({ themeKey }: ThemeHeroSectionProps) => {
   const navigate = useNavigate();
 
-  const { data: themeHero, status, error } = useThemeHeroData(themeKey);
+  const { themeHero, status, error } = useThemeHeroData(themeKey);
 
   useEffect(() => {
     if (error?.message === ERROR_MESSAGES.DATA_NOT_FOUND) {

@@ -12,7 +12,7 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 import { gridStyle, itemContainerStyle } from './styles';
 
 export const ThemeCategorySection = () => {
-  const { data: themeCategoryList, status, error } = useThemeCategoryData();
+  const { themeCategoryList, status, error } = useThemeCategoryData();
 
   if (error) {
     return <OneTextContainer>{error.message}</OneTextContainer>;

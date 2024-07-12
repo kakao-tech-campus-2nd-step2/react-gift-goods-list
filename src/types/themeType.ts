@@ -15,5 +15,5 @@ export type ThemeCategoryData = Pick<
 
 export type ThemeHeroData = Pick<
   ThemeData,
-  'label' | 'title' | 'description' | 'backgroundColor'
+  'key' | 'label' | 'title' | 'description' | 'backgroundColor'
 >;

@@ -4,30 +4,14 @@ import { ThemeCategoryData, ThemeHeroData } from '@/types/themeType';
 
 import { GetThemesResponse } from './types';
 
-export const fetchThemeHeroData = async (themeKey: string) => {
-  try {
-    const response = await BACKEND_API.get<GetThemesResponse>('/api/v1/themes');
-    const theme = response.data.themes.find((t) => t.key === themeKey);
-
-    if (!theme) {
-      throw new Error(ERROR_MESSAGES.DATA_NOT_FOUND);
-    }
-
-    return theme as ThemeHeroData;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-
-    throw new Error(ERROR_MESSAGES.UNKNOWN_ERROR);
-  }
-};
-
-export const fetchThemeCategoryData = async () => {
+export const fetchThemeData = async () => {
   try {
     const response = await BACKEND_API.get<GetThemesResponse>('/api/v1/themes');
 
-    return response.data.themes as ThemeCategoryData[];
+    return {
+      themes: response.data.themes as ThemeHeroData[],
+      categories: response.data.themes as ThemeCategoryData[],
+    };
   } catch (error) {
     if (error instanceof Error) {
       throw error;

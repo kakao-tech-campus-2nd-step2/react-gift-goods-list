@@ -1,10 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchThemeCategoryData } from '@/services/themeData';
+import { fetchThemeData } from '@/services/themeData';
 
 export const useThemeCategoryData = () => {
-  return useQuery({
-    queryKey: ['themeCategoryList'],
-    queryFn: () => fetchThemeCategoryData(),
+  const { data, status, error } = useQuery({
+    queryKey: ['themeData'],
+    queryFn: () => fetchThemeData(),
   });
+
+  const themeCategoryList = data?.categories;
+
+  return { themeCategoryList, status, error };
 };

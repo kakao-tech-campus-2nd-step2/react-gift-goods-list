@@ -66,4 +66,27 @@ export default () => {
             </section>
         </div>
     );
+    return (
+        <div>
+            <Header />
+            {/* theme header section */}
+            <section>
+                <ThemeHeader
+                    label={theme?.label ?? ''}
+                    title={theme?.title ?? ''}
+                    description={theme?.description ?? ''}
+                    backgroundColor={theme?.backgroundColor ?? '#000000'}
+                />
+            </section>
+            {/* goods list */}
+            <section
+                className={css`
+                    margin-top: 50px;
+                    margin-bottom: 100px;
+                `}
+            >
+                <DefaultList items={products?.data?.products ?? []} />
+            </section>
+        </div>
+    );
 };

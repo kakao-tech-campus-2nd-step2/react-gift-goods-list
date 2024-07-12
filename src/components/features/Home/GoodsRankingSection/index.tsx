@@ -22,20 +22,25 @@ export const GoodsRankingSection = () => {
 
   console.log('Fetch state:', { isLoading, isError, data });
 
+  const renderContent = () => {
+    if (isLoading) {
+      return <Description>로딩 중</Description>;
+    }
+    if (isError) {
+      return <Description>데이터를 불러오는 중에 문제가 발생했습니다.</Description>;
+    }
+    if (data && data.products.length > 0) {
+      return <GoodsRankingList goodsList={data.products} />;
+    }
+    return <Description>보여줄 상품이 없어요!</Description>;
+  };
+
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {isLoading ? (
-          <Description>로딩 중</Description>
-        ) : isError ? (
-          <Description>데이터를 불러오는 중에 문제가 발생했습니다.</Description>
-        ) : data && data.products.length > 0 ? (
-          <GoodsRankingList goodsList={data.products} />
-        ) : (
-          <Description>보여줄 상품이 없어요!</Description>
-        )}
+        {renderContent()}
       </Container>
     </Wrapper>
   );

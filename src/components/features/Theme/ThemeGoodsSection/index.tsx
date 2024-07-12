@@ -19,13 +19,15 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     params,
   );
 
-  return (
-    <Wrapper>
-      {isLoading ? (
-        <Description>로딩 중</Description>
-      ) : isError ? (
-        <Description>에러가 발생했습니다.</Description>
-      ) : data && data.products.length > 0 ? (
+  const renderContent = () => {
+    if (isLoading) {
+      return <Description>로딩 중</Description>;
+    }
+    if (isError) {
+      return <Description>에러가 발생했습니다.</Description>;
+    }
+    if (data && data.products.length > 0) {
+      return (
         <Container>
           <Grid
             columns={{
@@ -45,11 +47,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             ))}
           </Grid>
         </Container>
-      ) : (
-        <Description>상품이 없어요.</Description>
-      )}
-    </Wrapper>
-  );
+      );
+    }
+    return <Description>상품이 없어요.</Description>;
+  };
+
+  return <Wrapper>{renderContent()}</Wrapper>;
 };
 
 const Wrapper = styled.section`

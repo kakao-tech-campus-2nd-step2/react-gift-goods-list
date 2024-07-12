@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 
 import { Error } from '@/components/common/Error';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -8,38 +8,29 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { LoadingIcon } from '@/components/common/LoadingIcon';
 import { breakpoints } from '@/styles/variants';
-import type { FetchState, GoodsData } from '@/types';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
+  const fetchGoods = async () => {
+    const response = await axios.get(
+      process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products`,
+      { params: { maxResults: 20 } },
+    );
+    return response.data.products;
+  };
+
+  const { data, error, isLoading } = useQuery<GoodsData[]>({
+    queryKey: ['products', themeKey],
+    queryFn: fetchGoods,
   });
-
-  useEffect(() => {
-    const fetchGoods = async () => {
-      try {
-        const response = await axios.get(
-          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products`,
-          { params: { maxResults: 20 } },
-        );
-        setFetchState({ isLoading: false, isError: false, data: response.data.products });
-      } catch {
-        setFetchState({ isLoading: false, isError: true, data: null });
-      }
-    };
-    fetchGoods();
-  }, [themeKey]);
-
-  if (fetchState.isLoading) {
+  if (isLoading) {
     return <LoadingIcon />;
   }
-  if (fetchState.isError) {
+  if (error) {
     return <Error>에러가 발생했습니다.</Error>;
   }
   return (
@@ -52,7 +43,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {fetchState.data?.map(({ id, imageURL, name, price, brandInfo }) => (
+          {data?.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

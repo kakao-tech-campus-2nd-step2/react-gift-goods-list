@@ -1,37 +1,30 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import apiClient from '@/api';
-import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
+import { getCurrentTheme } from '@/components/features/Theme/ThemeHeroSection';
+import { useThemes } from '@/hooks/useThemes';
 import Loading from '@/styles/Loading';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await apiClient.get<GetThemesResponse>('/api/v1/themes');
-        setThemes(response.data.themes);
-      } catch (error) {
-        console.error(error);
-      } finally { // 오류가 발생하더라도 loading을 false로 변경해야함
-      setLoading(false);
-      }
-    };
-    fetchThemes();
-  }, []);
+  const [themes, { isLoading, isError}] = useThemes();
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />
+  }
+
+  if (isError || !themes) {
+    return (
+      <div>
+        에러가 발생했습니다.
+      </div>
+    )
   }
 
   return (
     <>
-      <ThemeHeroSection themes={themes} themeKey={themeKey} />
+      <ThemeHeroSection currentTheme={getCurrentTheme(themeKey, themes)} />
       <ThemeGoodsSection themeKey={themeKey} />
     </>
   );

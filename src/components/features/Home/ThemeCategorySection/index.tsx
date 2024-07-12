@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react'; 
 import { Link } from 'react-router-dom';
 
-import apiClient from '@/api/index';
-import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { useThemes } from '@/hooks/useThemes';
 import { getDynamicPath } from '@/routes/path';
 import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
@@ -14,24 +12,18 @@ import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
 
-  const [loading, setLoading] = useState(true);
-  const [themeCategory, setThemeCategory] = useState<ThemeData[]>([]);
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await apiClient.get<GetThemesResponse>('/api/v1/themes');
-        setThemeCategory(response.data.themes);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchThemes();
-  }, []);
+  const [themeData, { isLoading, isError }] = useThemes();
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError || !themeData) {
+    return (
+      <div>
+        에러가 발생했습니다.
+      </div>
+    )
   }
   return (
     <Wrapper>
@@ -42,7 +34,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themeCategory.map((theme) => {
+          {themeData && themeData.map((theme) => {
             return (
               <Link
                 key={theme.id}

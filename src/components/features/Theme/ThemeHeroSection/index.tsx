@@ -6,13 +6,11 @@ import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
-  themes: ThemeData[];
-  themeKey: string;
+  currentTheme: ThemeData | undefined;
 };
 
-export const ThemeHeroSection = ({ themes, themeKey }: Props) => {
+export const ThemeHeroSection = ({ currentTheme}: Props) => {
   const navigate = useNavigate();
-  const currentTheme = getCurrentTheme(themeKey, themes);
   if (!currentTheme) {
     navigate('/home', { replace: true });
     return null;

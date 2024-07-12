@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
@@ -16,11 +16,14 @@ export const ThemePage: React.FC = () => {
 
   useEffect(() => {
     const loadThemeData = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
       try {
         const themesResponse = await fetchThemes();
         const theme = getCurrentTheme(themeKey, themesResponse.themes);
         if (!theme) {
-          setErrorMessage('Invalid theme key');
+          setErrorMessage('유효하지 않은 키입니다.');
           setIsLoading(false);
           return;
         }
@@ -45,7 +48,7 @@ export const ThemePage: React.FC = () => {
             setErrorMessage('오류 설정문제발생');
           }
         } else {
-          setErrorMessage('예기치 않은 오류가 발생했습니다.');
+          setErrorMessage('에러가 발생했습니다.');
         }
         setIsLoading(false);
       }
@@ -59,13 +62,13 @@ export const ThemePage: React.FC = () => {
   }
 
   if (errorMessage) {
-    return <Navigate to="/" />;
+    return <Message>{errorMessage}</Message>;
   }
 
   return (
     <>
       {currentTheme && <ThemeHeroSection theme={currentTheme} />}
-      <ThemeGoodsSection themeKey={themeKey} />;
+      <ThemeGoodsSection themeKey={themeKey} />
     </>
   );
 };

@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import { useGetRankingGoods } from '@/api/hooks/useGetRankingGoods';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +15,30 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data, isLoading, isError } = useGetRankingGoods(filterOption);
+
+  const RenderGoodsRankingList = useCallback(() => {
+    if (isError) {
+      return <ErrorView>데이터를 불러오는 중에 문제가 발생했습니다.</ErrorView>;
+    }
+
+    if (isLoading) {
+      return <LoadingView>로딩 중...</LoadingView>;
+    }
+
+    if (!data || data.length === 0) {
+      return <NoDataView>데이터가 없습니다.</NoDataView>;
+    }
+
+    return <GoodsRankingList goodsList={data} />;
+  }, [isLoading, data, isError]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <RenderGoodsRankingList />
       </Container>
     </Wrapper>
   );
@@ -49,4 +65,16 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const ErrorView = styled.div`
+  color: red;
+`;
+
+const LoadingView = styled.div`
+  color: gray;
+`;
+
+const NoDataView = styled.div`
+  color: #888;
 `;

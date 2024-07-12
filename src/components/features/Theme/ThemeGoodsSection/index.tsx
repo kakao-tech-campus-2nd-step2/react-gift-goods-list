@@ -4,6 +4,7 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { useThemeProducts } from '@/hooks/useThemeProducts';
+import ErrorMessage from '@/styles/ErrorMessage';
 import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 
@@ -20,11 +21,11 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   if (isError || !products) {
     return (
-      <div>
+      <ErrorMessage>
         에러가 발생했습니다.
         <br />
         {errorMessage}
-      </div>
+      </ErrorMessage>
     );
   }
   return (

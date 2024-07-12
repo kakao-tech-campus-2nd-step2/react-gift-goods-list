@@ -4,6 +4,7 @@ import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { getCurrentTheme } from '@/components/features/Theme/ThemeHeroSection';
 import { useThemes } from '@/hooks/useThemes';
+import ErrorMessage from '@/styles/ErrorMessage';
 import Loading from '@/styles/Loading';
 
 export const ThemePage = () => {
@@ -16,11 +17,11 @@ export const ThemePage = () => {
 
   if (isError || !themes) {
     return (
-      <div>
+      <ErrorMessage>
         에러가 발생했습니다.
         <br />
         {errorMessage}
-      </div>
+      </ErrorMessage>
     )
   }
 

@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { useRankingProducts } from '@/hooks/useRankingProducts';
+import ErrorMessage from '@/styles/ErrorMessage';
 import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
@@ -23,10 +24,11 @@ export const GoodsRankingSection = () => {
 
   if (isError || !rankingProducts) {
     return (
-      <div>
+      <ErrorMessage>
         에러가 발생했습니다.
+        <br />
         {errorMessage}
-      </div>
+      </ErrorMessage>
     )
   }
 

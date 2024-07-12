@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/rankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData,RankingFilterOption } from '@/types';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -22,6 +22,7 @@ export const GoodsRankingSection = () => {
   useEffect(() => {
     const getRankingProducts = async () => {
       setIsLoading(true);
+      setError(null);
       try {
         const response = await fetchRankingProducts(filterOption);
         setGoodsList(response.products);
@@ -44,8 +45,10 @@ export const GoodsRankingSection = () => {
           <Loading>Loading...</Loading>
         ) : error ? (
           <Error>{error}</Error>
+        ) : goodsList.length === 0 ? (
+          <NoData>보여줄 상품이 없어요!</NoData>
         ) : (
-          <GoodsRankingList goodsList={goodsList} />
+          <GoodsRankingList goodsList={goodsList} isLoading={false} error={null} />
         )}
       </Container>
     </Wrapper>
@@ -84,4 +87,10 @@ const Error = styled.div`
   color: red;
   text-align: center;
   font-size: 18px;
+`;
+
+const NoData = styled.div`
+  text-align: center;
+  font-size: 18px;
+  padding: 20px 0;
 `;

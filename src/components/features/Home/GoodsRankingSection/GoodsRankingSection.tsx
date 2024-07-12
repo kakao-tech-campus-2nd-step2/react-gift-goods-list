@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container/Container';
+import ShowError from '@/components/Error/ShowError';
+import Loading from '@/components/Loading/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types/types';
 import type { product } from '@/types/types';
@@ -17,9 +19,13 @@ export const GoodsRankingSection = () => {
   });
 
   const [products, setProducts] = useState<product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+      setFetchError(null);
       try {
         const response = await fetchData('/api/v1/ranking/products', {
           targetType: filterOption.targetType,
@@ -27,12 +33,24 @@ export const GoodsRankingSection = () => {
         });
         setProducts(response.products);
       } catch (error) {
-        console.error('Error fetching themes:', error);
+        setFetchError((error as Error).message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, [filterOption]);
+
+  if (loading) {
+    return Loading();
+  }
+  if (fetchError) {
+    return ShowError(fetchError);
+  }
+  if (products.length == 0) {
+    return ShowError('데이터 없음');
+  }
 
   // GoodsMockData를 21번 반복 생성
   return (

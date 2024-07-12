@@ -23,7 +23,6 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {/* 근데 400 에러 발생하면 overlay 에러창 뜨는데 왜 나만?? 그냥 css로 꺼야하나 */}
         <ErrorBoundary
           onReset={reset}
           resetKey={filterOption}

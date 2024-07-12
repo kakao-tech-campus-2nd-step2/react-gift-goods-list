@@ -14,6 +14,13 @@ type Props = {
 };
 
 export const GoodsRankingList = ({ filterOption }: Props) => {
+  /**
+   * throwOnError: (error, query) => typeof query.state.data === 'undefined'
+   * data가 undefined가 아님을 보장하기 위해 useSuspenseQuery의 throwOnError을 수정할 수 없다고 한다.
+   * 여기서 useBaseQuery가 에러를 던지면 Errorboundary에서 잘는데 왜 overlay에는 uncaught에러가 뜨는거지????
+   * 그냥 overlay를 끌까? iframe {display: none}
+   * 다운 버전해서 useQuery를 써야하나? 많이 별론데
+   */
   const { data } = useSuspenseQuery({
     queryKey: ['goodsRanking', filterOption],
     queryFn: () => getRankingProducts(filterOption),

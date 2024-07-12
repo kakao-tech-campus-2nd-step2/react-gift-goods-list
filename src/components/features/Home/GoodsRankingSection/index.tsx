@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
+import useRanking from '@/hooks/useRanking';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +15,16 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data, isLoading, error } = useRanking(filterOption);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading && <p>Loading...</p>}
+        {Boolean(error) && <p>Error</p>}
+        {data && <GoodsRankingList goodsList={data} />}
       </Container>
     </Wrapper>
   );

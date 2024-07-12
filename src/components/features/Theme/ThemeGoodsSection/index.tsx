@@ -3,14 +3,25 @@ import styled from '@emotion/styled';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import useProduct from '@/hooks/useProduct';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const { data, error, isLoading } = useProduct({ themeKey, maxResults: 20 });
+
+  if (isLoading || !data) {
+    return <p>Loading...</p>;
+  }
+  console.log(data);
+
+  if (error) {
+    return <p>Error...</p>;
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +32,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {data.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

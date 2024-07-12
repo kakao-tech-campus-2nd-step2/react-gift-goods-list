@@ -1,27 +1,36 @@
 import React from 'react';
+import FilterProvider from '@context/filter/FilterProvider';
 import { useFilter } from '@context/filter/useFilter';
 import { Meta, StoryObj } from '@storybook/react';
 import Target, { TargetProps } from '.';
+
+function FilterDecorator(StoryComponent: any) {
+  return (
+    <FilterProvider>
+      <FilterContextWrapper StoryComponent={StoryComponent} />
+    </FilterProvider>
+  );
+}
+
+function FilterContextWrapper({ StoryComponent }: { StoryComponent: any }) {
+  const { selectedTarget, selectTarget } = useFilter();
+  return <StoryComponent selectedTarget={selectedTarget} selectTarget={selectTarget} />;
+}
 
 const meta: Meta<TargetProps> = {
   title: 'features/Home/Filter/Target',
   component: Target,
   tags: ['autodocs'],
+  decorators: [FilterDecorator],
 };
 
 export default meta;
 
 type Story = StoryObj<TargetProps>;
 
-function TargetWithFilterHooks(args: TargetProps) {
-  const { selectedTarget, selectTarget } = useFilter();
-
-  return <Target {...args} selectedTarget={selectedTarget} selectTarget={selectTarget} />;
-}
-
 export const Default: Story = {
-  render: (args) => <TargetWithFilterHooks {...args} />,
   args: {
     selectedTarget: 'ALL',
+    selectTarget: () => {},
   },
 };

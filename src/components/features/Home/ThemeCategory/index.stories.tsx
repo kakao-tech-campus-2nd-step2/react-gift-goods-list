@@ -1,6 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { Meta, StoryObj } from '@storybook/react';
+import GlobalStyles from '@assets/styles';
 import ThemeCategory from '.';
 
 const meta: Meta<typeof ThemeCategory> = {
@@ -10,6 +11,7 @@ const meta: Meta<typeof ThemeCategory> = {
   decorators: [
     (Story) => (
       <MemoryRouter>
+        <GlobalStyles />
         <Story />
       </MemoryRouter>
     ),

@@ -3,14 +3,44 @@ import styled from '@emotion/styled';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { useState, useEffect } from 'react';
+import { getData } from '@/api';
+import { Navigate } from 'react-router-dom';
+import { RouterPath } from '@/routes/path';
 
 type Props = {
   themeKey: string;
 };
 
+interface ThemeResponse {
+  themes: ThemeData[];
+}
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData>()
+  const [redirect, setRedirect] = useState(false);
+
+  useEffect(() => {
+    const getThemeData = async () => {
+      try {
+        const data = await getData<ThemeResponse>(`/api/v1/themes`);
+        const theme = getCurrentTheme(themeKey, data.themes);
+        if (!theme) {
+          setRedirect(true);
+        } else {
+          setCurrentTheme(theme);
+        }
+      } catch (error) {
+        console.error('Error fetching theme data:', error);
+      }
+    };
+
+    getThemeData();
+  }, [themeKey]);
+
+  if (redirect) {
+    return <Navigate to={RouterPath.home} />;
+  }
 
   if (!currentTheme) {
     return null;

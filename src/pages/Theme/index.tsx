@@ -9,7 +9,11 @@ import { RouterPath } from '@/routes/path';
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
 
-  const { data: themeListResponse, loading: isThemeListLoading } = useGetThemes();
+  const {
+    data: themeListResponse,
+    loading: isThemeListLoading,
+    error: isThemeListError,
+  } = useGetThemes();
 
   const themeList = themeListResponse?.data?.themes || [];
 
@@ -21,7 +25,7 @@ export const ThemePage = () => {
 
   return (
     <>
-      <Loading isLoading={isThemeListLoading}>
+      <Loading isLoading={isThemeListLoading} error={isThemeListError}>
         <ThemeHeroSection themeKey={themeKey} themeList={themeList} />
       </Loading>
       <ThemeGoodsSection themeKey={themeKey} />

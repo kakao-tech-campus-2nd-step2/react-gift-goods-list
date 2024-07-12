@@ -14,7 +14,11 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { data: productsResponse, loading } = useGetThemesProducts({
+  const {
+    data: productsResponse,
+    loading,
+    error,
+  } = useGetThemesProducts({
     themeKey,
   });
   const products = productsResponse?.data?.products || [];
@@ -22,7 +26,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        <Loading isLoading={loading}>
+        <Loading isLoading={loading} error={error}>
           <ListMapper<ProductData>
             items={products}
             ItemComponent={({ item }) => (

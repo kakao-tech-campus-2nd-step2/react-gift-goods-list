@@ -21,6 +21,7 @@ export const GoodsRankingSection = () => {
     data: rankingProducts,
     refetch: refetchRankingProducts,
     loading,
+    error,
   } = useGetRankingProducts({
     targetType: filterOption.targetType,
     rankType: filterOption.rankType,
@@ -37,7 +38,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <Loading isLoading={loading}>
+        <Loading isLoading={loading} error={error}>
           <GoodsRankingList goodsList={goodsList} />
         </Loading>
       </Container>

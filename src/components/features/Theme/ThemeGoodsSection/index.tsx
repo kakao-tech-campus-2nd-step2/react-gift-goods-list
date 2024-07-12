@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect,useState } from 'react';
 
 import instance from '@/api/api';
@@ -16,17 +17,30 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setIsError(false);
         const maxResults = 20;
         const response = await instance.get(`api/v1/themes/${themeKey}/products`, {
           params: { maxResults }
         });
         setGoodsList(response.data.products);
       } catch (error) {
-        console.error(error);
+        setIsError(true);
+
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.status) {
+            case 400:
+              setErrorMessage("400, Bad Request.")
+              break;
+          }
+        } else {
+          setErrorMessage("400, Bad Request.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -37,6 +51,14 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   if (isLoading) {
     return (
       <Loading />
+    )
+  }
+
+  if (isError) {
+    return (
+      <Wrapper>
+        <ErrorWrapper>{errorMessage}</ErrorWrapper>
+      </Wrapper>
     )
   }
 
@@ -73,3 +95,10 @@ const Wrapper = styled.section`
     padding: 40px 16px 360px;
   }
 `;
+
+const ErrorWrapper = styled.div`
+width: 100%;
+font-size: 150px;
+text-align: center;
+color: red;
+`

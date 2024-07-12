@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import instance from '@/api/api';
@@ -13,7 +14,9 @@ import { GoodsRankingList } from './List';
 export const GoodsRankingSection = () => {
 
   const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [isLoading, setIsLoading]=useState(true)
+  const [isLoading, setIsLoading]=useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
@@ -29,7 +32,17 @@ export const GoodsRankingSection = () => {
           );
           setGoodsList(response.data.products)
       } catch (error) {
-        console.error(error);
+        setIsError(true);
+
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.status) {
+            case 400:
+              setErrorMessage("400, Bad Request.");
+              break;
+          }
+        } else {
+          setErrorMessage("400, Bad Request.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -40,6 +53,14 @@ export const GoodsRankingSection = () => {
   if (isLoading) {
     return (
       <Loading />
+    );
+  };
+
+  if (isError) {
+    return (
+      <Wrapper>
+        <ErrorWrapper>{errorMessage}</ErrorWrapper>
+      </Wrapper>
     )
   }
 
@@ -78,3 +99,10 @@ const Title = styled.h2`
     line-height: 50px;
   }
 `;
+
+const ErrorWrapper = styled.div`
+width: 100%;
+font-size: 150px;
+text-align: center;
+color: red;
+`

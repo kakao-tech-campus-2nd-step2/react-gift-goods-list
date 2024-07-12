@@ -29,7 +29,7 @@ const fetchGoodsList = async ({ pageParam, themeKey }: FetchProps) => {
 export const ThemeGoodsSection = ({ themeKey }: { themeKey: string }) => {
   const { ref, inView } = useInView()
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, isError, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       ['goodsList', themeKey],
       ({ pageParam = 0 }) =>
@@ -49,6 +49,14 @@ export const ThemeGoodsSection = ({ themeKey }: { themeKey: string }) => {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
+
+  if (isError) {
+    return (
+      <ErrorWrapper>
+        <ErrorText>데이터를 불러오는 중 오류가 발생하였습니다.</ErrorText>
+      </ErrorWrapper>
+    );
+  }
 
   if (isLoading && !isFetchingNextPage) {
     return (
@@ -126,7 +134,6 @@ const Spinner = styled.div`
   }
 `;
 
-
 const LoadingText = styled.div`
   margin-top: 10px;
   font-size: 1.2rem;
@@ -143,4 +150,16 @@ const NoDataWrapper = styled.div`
 const NoDataText = styled.div`
   font-size: 1.5rem;
   color: #999;
+`;
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
+const ErrorText = styled.div`
+  font-size: 1.5rem;
+  color: #ff6347;
 `;

@@ -1,55 +1,63 @@
-import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import fetchData from '@/api'
-import { Container } from '@/components/common/layouts/Container'
-import { Grid } from '@/components/common/layouts/Grid'
-import { getDynamicPath } from '@/routes/path'
-import { breakpoints } from '@/styles/variants'
+import fetchData from '@/api';
+import { Container } from '@/components/common/layouts/Container';
+import { Grid } from '@/components/common/layouts/Grid';
+import { getDynamicPath } from '@/routes/path';
+import { breakpoints } from '@/styles/variants';
 
-import { ThemeCategoryItem } from './ThemeCategoryItem'
+import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 interface Theme {
-  id: number
-  key: string
-  label: string
-  imageURL: string
-  title: string
-  description?: string
+  id: number;
+  key: string;
+  label: string;
+  imageURL: string;
+  title: string;
+  description?: string;
 }
 
 export const ThemeCategorySection = () => {
-  const [themeFromAPI, setThemeFromAPI] = useState<Theme[]>([])
-  const [loading, setLoading] = useState(true)
+  const [themeFromAPI, setThemeFromAPI] = useState<Theme[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // 최초 렌더링 시 한 번만 실행
   useEffect(() => {
     const fetchThemeData = async () => {
       try {
-        const data = await fetchData('api/v1/themes')
+        const data = await fetchData('api/v1/themes');
+        setThemeFromAPI(data.themes);
+        setLoading(false);
+        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes);
+      } catch (error) {
+        console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error);
+        setError('Failed to fetch themes. Please try again later.');
+        setLoading(false);
+      }
+    };
+    fetchThemeData();
+  }, []);
 
-        setThemeFromAPI(data.themes)
-        setLoading(false)
-        console.log('[ThemeCategorySection] Fetch Theme Data Success: ', data.themes)
-      }
-      catch (error) {
-        console.error('[ThemeCategorySection] Fetch Theme Data Fail: ', error)
-        setLoading(false) 
-      }
-    }
-    fetchThemeData()
-  }, [])
-  
   if (loading) {
     return (
       <LoadingWrapper>
         <Spinner />
         <LoadingText>Loading...</LoadingText>
       </LoadingWrapper>
-    )
+    );
   }
-  
+
+  if (error) {
+    return (
+      <ErrorWrapper>
+        <ErrorText>{error}</ErrorText>
+      </ErrorWrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -61,9 +69,9 @@ export const ThemeCategorySection = () => {
         >
           {themeFromAPI.map((theme) => (
             // 각 Theme Detail Page로 이동할 링크
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)} >
+            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>  
+            </Link>
           ))}
         </Grid>
       </Container>
@@ -87,6 +95,13 @@ const LoadingWrapper = styled.div`
   height: 500px;
 `;
 
+const ErrorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+`;
+
 const Spinner = styled.div`
   width: 40px;
   height: 40px;
@@ -96,8 +111,12 @@ const Spinner = styled.div`
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -105,4 +124,9 @@ const LoadingText = styled.div`
   margin-top: 10px;
   font-size: 1.2rem;
   color: #555;
+`;
+
+const ErrorText = styled.div`
+  font-size: 1.5rem;
+  color: #ff6347;
 `;

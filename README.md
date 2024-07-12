@@ -13,3 +13,8 @@
 1. Loading 상태에 대한 UI 생성
 2. 데이터가 없는 경우에 대한 UI생성
 3. HTTP Status에 따라 다른 Error 처리
+
+### 3주차 과제 step3
+
+1. react-query 이용하기
+2. 페이지네이션 (무한스크롤) 구현하기

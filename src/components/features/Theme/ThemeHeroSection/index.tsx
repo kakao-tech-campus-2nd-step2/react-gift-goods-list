@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { getThemes } from '@/api/themeApi';
 import { Container } from '@/components/common/layouts/Container';
@@ -11,38 +11,17 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useQuery<{ themes: ThemeData[] }, Error>('themes', getThemes);
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const data = await getThemes();
-        const foundTheme = data.themes.find((theme) => theme.key === themeKey);
-        if (foundTheme) {
-          setCurrentTheme(foundTheme);
-        } else {
-          setError('Theme not found');
-        }
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      } catch (error) {
-        setError('Error fetching themes');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, [themeKey]);
-
-  if (loading) {
+  if (isLoading) {
     return <Loading>Loading...</Loading>;
   }
 
   if (error) {
-    return <Error>{error}</Error>;
+    return <Error>{error.message}</Error>;
   }
+
+  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
 
   if (!currentTheme) {
     return null;

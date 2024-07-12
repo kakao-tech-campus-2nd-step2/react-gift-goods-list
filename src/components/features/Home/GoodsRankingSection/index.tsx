@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import type { ProductData } from 'src/types/api';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/api/rankingApi';
 import { Container } from '@/components/common/layouts/Container';
@@ -15,30 +15,17 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(false); // 에러 상태 초기화
-        const data = await getRankingProducts(filterOption);
-        setProducts(data.products);
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setError(true); // 에러 상태 설정
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, isLoading, isError } = useQuery(
+    ['rankingProducts', filterOption],
+    () => getRankingProducts(filterOption),
+    {
+      keepPreviousData: true,
+      retry: false, 
+    }
+  );
 
-    fetchProducts();
-  }, [filterOption]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <LoaderWrapper>
         <Loader />
@@ -46,7 +33,7 @@ export const GoodsRankingSection = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <Wrapper>
         <Container>
@@ -58,7 +45,7 @@ export const GoodsRankingSection = () => {
     );
   }
 
-  if (products.length === 0) {
+  if (!data || data.products.length === 0) {
     return (
       <Wrapper>
         <Container>
@@ -75,7 +62,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={products} />
+        <GoodsRankingList goodsList={data.products} />
       </Container>
     </Wrapper>
   );

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { getThemeProducts } from '@/api/themeApi';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -13,27 +13,15 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState<ProductData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error] = useState(false);
+  const { data, error, isLoading } = useQuery<{ products: ProductData[] }, Error>(
+    ['themeProducts', themeKey],
+    () => getThemeProducts(themeKey, 20),
+    {
+      keepPreviousData: true,
+    }
+  );
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getThemeProducts(themeKey, 20);
-        setProducts(data.products);
-        setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
-    fetchProducts();
-  }, [themeKey]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <LoaderWrapper>
         <Loader />
@@ -49,7 +37,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   }
 
-  if (products.length === 0) {
+  if (!data || data.products.length === 0) {
     return (
       <MessageWrapper>
         <Message>상품이 없어요.</Message>
@@ -67,7 +55,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
+          {data.products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -127,4 +115,3 @@ const Message = styled.p`
   font-size: 18px;
   color: #000;
 `;
-

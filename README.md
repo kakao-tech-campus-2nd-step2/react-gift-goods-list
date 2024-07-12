@@ -1,4 +1,4 @@
-📝 요구사항
+# 📝 요구사항
 # step1
 - [X] 본인만의 기준으로 일관된 코드를 작성해주세요.
 - [X] 첨부된 oas.yaml 파일을 토대로 Request, Response Type을 정의해요.

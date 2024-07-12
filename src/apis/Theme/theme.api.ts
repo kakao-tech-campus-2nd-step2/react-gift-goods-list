@@ -12,7 +12,8 @@ export async function getThemes(): Promise<ThemesResponse> {
 
 export async function getThemesProducts(
   themeKey: string,
-  pageToken: string = '',
+  pageToken: string,
+  // pageToken: string = '',
   maxResults: number
 ): Promise<ProductsResponse> {
   try {

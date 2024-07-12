@@ -24,11 +24,11 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   }
 
   if (error) {
-    return <ErrorWrapper>{error.message}</ErrorWrapper>;
+    return <ErrorWrapper>{error.message || 'An unexpected error occurred'}</ErrorWrapper>;
   }
 
 
-  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
+  const currentTheme = data?.themes?.find((theme) => theme.key === themeKey);
 
   if (!currentTheme) {
     navigate('/');
@@ -113,7 +113,7 @@ const ErrorWrapper = styled.div`
   color: red;
 `;
 
-// Utility function to get the current theme (can be defined in the same file or imported from a utils file)
+
 export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

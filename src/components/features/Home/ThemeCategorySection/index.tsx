@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import axiosInstance from '@/api/axiosInstance';
@@ -15,68 +15,51 @@ type Theme = {
   key: string;
   imageURL: string;
   label: string;
-}
+};
+
+const fetchThemes = async (): Promise<Theme[]> => {
+  const response = await axiosInstance.get('/api/v1/themes');
+  return response.data.themes;
+};
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<Theme[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useQuery<Theme[], Error>({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
 
-  const fetchTheme = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axiosInstance.get('/api/v1/themes');
-      console.log('Fetch themes: ', response.data.themes);
-      setThemes(response.data.themes);
-    } catch (err: unknown) {
-      console.error(err);
-      if (isAxiosError(err)) {
-        // 서버가 상태 코드를 응답한 경우
-        if (err.response) {
-          switch (err.response.status) {
-            case 404:
-              setError('Themes not found');
-              break;
-            case 500:
-              setError('Internal server error');
-              break;
-            default:
-              setError('An unexpected error occurred');
-          }
-        } else if (err.request) {
-          // 요청이 만들어졌지만 응답을 받지 못한 경우
-          setError('Network error');
-        }
-      } else {
-        // 다른 에러인 경우
-        setError('Failed to fetch themes');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTheme();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
 
   if (error) {
-    return <ErrorWrapper>{error}</ErrorWrapper>;
+    let errorMessage: string;
+    if (isAxiosError(error)) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 404:
+            errorMessage = 'Themes not found';
+            break;
+          case 500:
+            errorMessage = 'Internal server error';
+            break;
+          default:
+            errorMessage = 'An unexpected error occurred';
+        }
+      } else {
+        errorMessage = 'Network error';
+      }
+    } else {
+      errorMessage = 'Failed to fetch themes';
+    }
+    return <ErrorWrapper>{errorMessage}</ErrorWrapper>;
   }
+
+  const themes = Array.isArray(data) ? data : [];
 
   if (themes.length === 0) {
     return <NoDataWrapper>No themes available</NoDataWrapper>;
   }
-  
-  {themes.map((theme) => {
-    console.log(getDynamicPath.theme(theme.key))
-  })}
 
   return (
     <Wrapper>
@@ -89,10 +72,7 @@ export const ThemeCategorySection = () => {
         >
           {themes.map((theme) => (
             <Link key={theme.key} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem
-                image={theme.imageURL}
-                label={theme.label}
-              />
+              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
             </Link>
           ))}
         </Grid>

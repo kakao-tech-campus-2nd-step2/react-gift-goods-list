@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Loader } from '@/components/common/Loader';
 import { useGoodsSectionControl } from '@/hooks/useGoodsSectionControl';
 import { breakpoints } from '@/styles/variants';
 
@@ -15,11 +16,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-        {isLoading ? (
-          <Container alignItems="center">로딩중</Container>
-        ) : isError ? (
+        {isError ? (
           <Container alignItems="center">에러가 발생했습니다.</Container>
-        ) : goodsList.length === 0 ? (
+        ) : !isLoading && goodsList.length === 0 ? (
           <Container alignItems="center">상품이 없어요.</Container>
         ) : (
           <Grid
@@ -38,9 +37,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
                 subtitle={brandInfo.name}
               />
             ))}
-            <div ref={loaderRef} style={{ height: '1px' }} />
           </Grid>
         )}
+        <Loader ref={loaderRef} className={isLoading ? 'loader show' : 'loader hidden'} />
       </Container>
     </Wrapper>
   );

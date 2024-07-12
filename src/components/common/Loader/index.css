@@ -72,3 +72,11 @@
     top: calc(50% - 1.25em);
     left: calc(50% - 1.25em);
 }
+
+.show {
+    opacity: 1;
+}
+
+.hidden {
+    opacity: 0;
+}

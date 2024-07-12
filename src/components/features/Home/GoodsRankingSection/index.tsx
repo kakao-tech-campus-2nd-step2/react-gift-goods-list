@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { QueryErrorResetBoundary, useQueryClient } from 'react-query';
 
-import { getRankingProducts } from '@/apis/products/products';
 import { Container } from '@/components/common/layouts/Container';
+import { GoodsRankingFilter } from '@/components/features/Home/GoodsRankingSection/Filter';
+import { GoodsRankingList } from '@/components/features/Home/GoodsRankingSection/List';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-
-import { GoodsRankingFilter } from './Filter';
-import { GoodsRankingList } from './List';
 
 const defaultFilter: RankingFilterOption = {
   targetType: 'ALL',
@@ -16,46 +16,34 @@ const defaultFilter: RankingFilterOption = {
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>(defaultFilter);
-  const [products, setProducts] = useState<Home.ProductData[]>([]);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    getRankingProducts(filterOption)
-      .then((data) => {
-        setProducts(data.products);
-      })
-      .catch((err) => {
-        /**
-         * 서버 보니까 MALE & MANY_WISH_RECEIVE에 일부러 400 던지게 만듬
-         */
-        if (err.response.status === 400) {
-          setIsError(true);
-        } else {
-          console.error(err);
-        }
-      })
-      .finally(() => setIsLoading(false));
-
-  }, [filterOption]);
+  const handleFilterChange = (newFilterOption: RankingFilterOption) => {
+    setFilterOption(newFilterOption);
+    queryClient.invalidateQueries(['goodsRanking', newFilterOption]);
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
-        <GoodsRankingFilter
-          filterOption={filterOption}
-          onFilterOptionChange={setFilterOption}
-          setIsError={setIsError}
-          setIsLoading={setIsLoading}
-        />
-        {isLoading ? (
-          <Container alignItems="center">로딩중</Container>
-        ) : isError ? (
-          <Container alignItems="center">데이터를 불러오는 중에 문제가 발생했습니다.</Container>
-        ) : (
-          <GoodsRankingList goodsList={products} />
-        )}
+        <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={handleFilterChange} />
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+              onReset={reset}
+              FallbackComponent={() => (
+                <Container alignItems="center">
+                  데이터를 불러오는 중에 문제가 발생했습니다.
+                </Container>
+              )}
+            >
+              <Suspense fallback={<Container alignItems="center">로딩중</Container>}>
+                <GoodsRankingList filterOption={filterOption} />
+              </Suspense>
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
       </Container>
     </Wrapper>
   );

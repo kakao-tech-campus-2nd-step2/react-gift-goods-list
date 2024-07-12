@@ -11,8 +11,6 @@ import { TargetTypeButton } from './TargetTypeButton';
 type Props = {
   filterOption: RankingFilterOption;
   onFilterOptionChange: (option: RankingFilterOption) => void;
-  setIsError: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type VirtualTargetTypeButton = {
@@ -21,12 +19,7 @@ type VirtualTargetTypeButton = {
   onClick: () => void;
 };
 
-export const GoodsRankingFilter = ({
-  filterOption,
-  onFilterOptionChange,
-  setIsError,
-  setIsLoading,
-}: Props) => {
+export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props) => {
   const handleFilterOption = (
     key: keyof RankingFilterOption,
     value: RankingFilterOption[keyof RankingFilterOption],
@@ -42,8 +35,6 @@ export const GoodsRankingFilter = ({
     selected: filterOption.targetType === value,
     onClick: () => {
       handleFilterOption('targetType', value as TargetType);
-      setIsError(false);
-      setIsLoading(true);
     },
   }));
 
@@ -67,8 +58,6 @@ export const GoodsRankingFilter = ({
           selected={filterOption.rankType === 'MANY_WISH'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
-            setIsError(false);
-            setIsLoading(true);
           }}
         />
         <RankTypeButton
@@ -77,8 +66,6 @@ export const GoodsRankingFilter = ({
           selected={filterOption.rankType === 'MANY_RECEIVE'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
-            setIsError(false);
-            setIsLoading(true);
           }}
         />
         <RankTypeButton
@@ -87,8 +74,6 @@ export const GoodsRankingFilter = ({
           selected={filterOption.rankType === 'MANY_WISH_RECEIVE'}
           onClick={(value) => {
             handleFilterOption('rankType', value);
-            setIsError(false);
-            setIsLoading(true);
           }}
         />
       </RankTypeWrapper>

@@ -1,20 +1,28 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 
+import { getRankingProducts } from '@/apis/products/products';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { RankingFilterOption } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  filterOption: RankingFilterOption;
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ filterOption }: Props) => {
+  const { data } = useQuery(
+    ['goodsRanking', filterOption],
+    () => getRankingProducts(filterOption),
+    { suspense: true },
+  );
   const [hasMore, setHasMore] = useState(false);
+  const products = data?.products ?? [];
 
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+  const currentGoodsList = hasMore ? products : products.slice(0, 6);
 
   return (
     <Wrapper>
@@ -67,3 +75,5 @@ const ButtonWrapper = styled.div`
 
   padding-top: 30px;
 `;
+
+// export default GoodsRankingList;

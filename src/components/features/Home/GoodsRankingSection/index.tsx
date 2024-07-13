@@ -60,11 +60,11 @@ export const GoodsRankingSection = () => {
       <Container>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
         {loading ? (
-          <LoadingMessage>로딩 중...</LoadingMessage>
+          <MessageDiv>로딩 중...</MessageDiv>
         ) : fetchError ? (
-          <ErrorMessage>{fetchError}</ErrorMessage>
+          <MessageDiv color="red">{fetchError}</MessageDiv>
         ) : goodsList.length === 0 ? (
-          <NoDataMessage>상품이 없습니다</NoDataMessage>
+          <MessageDiv>상품이 없습니다</MessageDiv>
         ) : (
           <GoodsRankingList goodsList={goodsList} />
         )}
@@ -81,23 +81,9 @@ const Wrapper = styled.section`
   }
 `;
 
-const LoadingMessage = styled.div`
+const MessageDiv = styled.div<{ color?: string }>`
   text-align: center;
   padding: 20px;
   font-size: 18px;
-  color: #666;
-`;
-
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-  color: red;
-`;
-
-const NoDataMessage = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-  color: #666;
+  color: ${({ color }) => color || '#666'};
 `;

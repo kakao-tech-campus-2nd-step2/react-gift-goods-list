@@ -47,8 +47,8 @@ export const ThemePage = () => {
 
   const currentTheme = getCurrentTheme(themeKey, themes);
 
-  if (loading) return <LoadingMessage>로딩 중...</LoadingMessage>;
-  if (fetchError) return <ErrorMessage>{fetchError}</ErrorMessage>;
+  if (loading) return <MessageDiv>로딩 중...</MessageDiv>;
+  if (fetchError) return <MessageDiv color="red">{fetchError}</MessageDiv>;
   if (!currentTheme) {
     return <Navigate to={RouterPath.notFound} />;
   }
@@ -61,18 +61,9 @@ export const ThemePage = () => {
   );
 };
 
-const LoadingMessage = styled.div`
+const MessageDiv = styled.div<{ color?: string }>`
   text-align: center;
   padding: 20px;
   font-size: 18px;
-  color: #666;
+  color: ${({ color }) => color || '#666'};
 `;
-
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-  color: red;
-`;
-
-

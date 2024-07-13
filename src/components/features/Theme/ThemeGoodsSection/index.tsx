@@ -52,9 +52,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     getProducts();
   }, [themeKey]);
 
-  if (loading) return <LoadingMessage>로딩 중...</LoadingMessage>;
-  if (fetchError) return <ErrorMessage>{fetchError}</ErrorMessage>;
-  if (products.length === 0) return <NoDataMessage>상품이 없습니다</NoDataMessage>;
+  if (loading) return <MessageDiv>로딩 중...</MessageDiv>;
+  if (fetchError) return <MessageDiv color="red">{fetchError}</MessageDiv>;
+  if (products.length === 0) return <MessageDiv>상품이 없습니다</MessageDiv>;
 
   return (
     <Wrapper>
@@ -90,23 +90,9 @@ const Wrapper = styled.section`
   }
 `;
 
-const LoadingMessage = styled.div`
+const MessageDiv = styled.div<{ color?: string }>`
   text-align: center;
   padding: 20px;
   font-size: 18px;
-  color: #666;
-`;
-
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-  color: red;
-`;
-
-const NoDataMessage = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-  color: #666;
+  color: ${({ color }) => color || '#666'};
 `;

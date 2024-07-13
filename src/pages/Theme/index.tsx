@@ -47,10 +47,10 @@ const ThemeHeaderRander = ({ themeKey, navigate }: RanderProps) => {
         if (themes?.httpStatusCode !== 200)
             navigate(`/error/${themes?.httpStatusCode}/themes_${themeKey}`, { replace: true });
         if (themes?.isLoading) return;
-        const index = themes?.data?.themes.findIndex((_theme) => _theme.key == themeKey) ?? -1;
-        if (index === -1) navigate('/error/404', { replace: true });
+        const thisTheme = themes?.data?.themes.find((_theme) => _theme.key == themeKey);
+        if (!thisTheme) navigate('/error/404', { replace: true });
 
-        setTheme(themes?.data?.themes[index]);
+        setTheme(thisTheme);
     }, [navigate, themeKey, themes]);
     if (themes?.isLoading) {
         return (

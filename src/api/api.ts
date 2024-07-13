@@ -67,11 +67,7 @@ export interface PutMyAccountPointRequest {
   point: number;
 }
 
-export type PutMyAccountPointResponse = void;
-
 export type PostOrderRequest = ProductOrderRequestBody;
-
-export type PostOrderResponse = void;
 
 export interface PostOrderErrorResponse {
   message: string;
@@ -227,15 +223,15 @@ export const fetchWishProducts = async (
 
 export const putMyAccountPoint = async (
   data: PutMyAccountPointRequest,
-): Promise<PutMyAccountPointResponse> => {
-  const response = await axiosInstance.put<PutMyAccountPointResponse>(
+): Promise<void> => {
+  const response = await axiosInstance.put<void>(
     '/api/v1/my-account/point',
     data,
   );
   return response.data;
 };
 
-export const postOrder = async (data: PostOrderRequest): Promise<PostOrderResponse> => {
-  const response = await axiosInstance.post<PostOrderResponse>('/api/v1/order', data);
+export const postOrder = async (data: PostOrderRequest): Promise<void> => {
+  const response = await axiosInstance.post<void>('/api/v1/order', data);
   return response.data;
 };

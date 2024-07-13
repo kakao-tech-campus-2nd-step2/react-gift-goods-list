@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 
+import { fetchRankingProducts } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +16,28 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data: goodsList, isLoading, isError } = useQuery<GoodsData[], Error>(
+    ['rankingProducts', filterOption],
+    () => fetchRankingProducts(filterOption.targetType, filterOption.rankType),
+    {
+      onError: (fetchError) => console.error('Failed to fetch products:', fetchError)
+    }
+  );
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading ? (
+          <LoadingMessage>Loading...</LoadingMessage>
+        ) : isError ? (
+          <ErrorMessage>에러가 발생했습니다.</ErrorMessage>
+        ) : !goodsList || goodsList.length === 0 ? (
+          <ErrorMessage>보여줄 상품이 없어요!</ErrorMessage>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -49,4 +64,15 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingMessage = styled.div`
+  color: #0070f3;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  margin-top: 20px;
 `;

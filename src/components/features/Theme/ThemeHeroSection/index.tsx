@@ -1,22 +1,38 @@
 import styled from '@emotion/styled';
+import { useQuery } from 'react-query';
 
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
-type Props = {
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+interface ThemeHeroSectionProps {
   themeKey: string;
-};
+}
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+export const ThemeHeroSection = ({themeKey} : ThemeHeroSectionProps) => {
 
-  if (!currentTheme) {
-    return null;
+  const { data: themes, isLoading, isError } = useQuery(['themes'], fetchThemes);
+
+  const theme = themes?.find((t: ThemeData) => t.key === themeKey);
+
+  if (isLoading) return <LoadingMessage>Loading...</LoadingMessage>;
+  if (isError) {
+    return <ErrorMessage>에러가 발생했습니다.</ErrorMessage>;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (!theme) return <ErrorMessage>Theme not found</ErrorMessage>;
+
+  const { backgroundColor, label, title, description } = theme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -28,6 +44,7 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
     </Wrapper>
   );
 };
+
 
 const Wrapper = styled.section<{ backgroundColor: string }>`
   padding: 27px 20px 23px;

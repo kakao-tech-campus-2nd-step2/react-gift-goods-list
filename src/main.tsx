@@ -5,7 +5,6 @@ import { RouterProvider } from 'react-router-dom';
 import GlobalStyle from '@styles/GlobalStyle';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginContextProvider from '@/providers/LoginContextProvider';
-import ThemeContextProvider from '@/providers/ThemeContextProvider';
 
 const queryClient = new QueryClient();
 
@@ -14,9 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <GlobalStyle />
     <QueryClientProvider client={queryClient}>
       <LoginContextProvider>
-        <ThemeContextProvider>
-          <RouterProvider router={router} />
-        </ThemeContextProvider>
+        <RouterProvider router={router} />
       </LoginContextProvider>
     </QueryClientProvider>
   </React.StrictMode>,

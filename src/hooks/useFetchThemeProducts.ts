@@ -30,7 +30,7 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
   const {
     data: productResponse,
     fetchNextPage, hasNextPage,
-    isFetchingNextPage, isFetching,
+    isFetchingNextPage, status,
   } = useInfiniteQuery({
     initialData: undefined,
     initialPageParam: undefined,
@@ -40,7 +40,7 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
   });
 
   return {
-    productResponse, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching,
+    productResponse, fetchNextPage, hasNextPage, isFetchingNextPage, status,
   };
 }
 

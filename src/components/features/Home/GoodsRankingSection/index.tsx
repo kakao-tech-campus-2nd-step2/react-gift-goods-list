@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 
 import { getRankingGoods } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData, RankingFilterOption } from '@/types';
+import type { RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,32 +15,30 @@ export const GoodsRankingSection: React.FC = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 변수 이름 변경
+
+  const { data: goodsList, error, isLoading, refetch } = useQuery(
+    ['rankingGoods', filterOption],
+    () => getRankingGoods(filterOption),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   useEffect(() => {
-    const fetchGoods = async () => {
-      try {
-        setErrorMessage(null);
-        const data = await getRankingGoods(filterOption);
-        setGoodsList(data);
-      } catch (err) { 
-        setErrorMessage('데이터를 불러오는데 실패하였습니다.');
-      }
-    };
-
-    fetchGoods();
-  }, [filterOption]);
+    refetch();
+  }, [filterOption, refetch]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {errorMessage ? (
-          <ErrorMessage>{errorMessage}</ErrorMessage>
+        {isLoading ? (
+          <LoadingMessage>로딩 중...</LoadingMessage>
+        ) : error ? (
+          <ErrorMessage>데이터를 불러오는데 실패하였습니다.</ErrorMessage>
         ) : (
-          <GoodsRankingList goodsList={goodsList} />
+          <GoodsRankingList goodsList={goodsList || []} />
         )}
       </Container>
     </Wrapper>
@@ -71,6 +70,13 @@ const Title = styled.h2`
 
 const ErrorMessage = styled.div`
   color: #ff0000;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+`;
+
+const LoadingMessage = styled.div`
+  color: #000;
   text-align: center;
   font-size: 16px;
   margin-top: 20px;

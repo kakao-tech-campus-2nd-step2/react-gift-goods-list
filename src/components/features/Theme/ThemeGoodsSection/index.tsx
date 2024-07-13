@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
+import type { InfiniteData } from 'react-query';
 
 import { fetchThemeProducts } from '@/api/theme';
-import { DataWrapper } from '@/components/common/DataWrapper';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
+import { InfiniteWrapper } from '@/components/common/InfiniteWrapper';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeProductResponse } from '@/types';
+import type { ProductData, ThemeProductResponse } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -14,38 +15,42 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
-    <Wrapper>
-      <Container>
-        <DataWrapper<ThemeProductResponse>
-          queryKey={['themeProducts', themeKey]}
-          queryFn={() => fetchThemeProducts(themeKey, 20)}
-        >
-          {(data) =>
-            data.products.length === 0 ? (
+    <InfiniteWrapper<ThemeProductResponse>
+      queryKey={['themeProducts', themeKey]}
+      queryFn={({ pageParam = 0 }) => fetchThemeProducts(themeKey, 20, pageParam)}
+    >
+      {(data: InfiniteData<ThemeProductResponse>) => (
+        <Wrapper>
+          <Container>
+            {data.pages.length === 0 ||
+            (data.pages.length === 1 && data.pages[0].products.length === 0) ? (
               <Message>상품이 없어요.</Message>
             ) : (
-              <Grid
-                columns={{
-                  initial: 2,
-                  md: 4,
-                }}
-                gap={16}
-              >
-                {data.products.map(({ id, imageURL, name, price, brandInfo }) => (
-                  <DefaultGoodsItems
-                    key={id}
-                    imageSrc={imageURL}
-                    title={name}
-                    amount={price.sellingPrice}
-                    subtitle={brandInfo.name}
-                  />
-                ))}
-              </Grid>
-            )
-          }
-        </DataWrapper>
-      </Container>
-    </Wrapper>
+              data.pages.map((page, pageIndex) => (
+                <Grid
+                  key={pageIndex}
+                  columns={{
+                    initial: 2,
+                    md: 4,
+                  }}
+                  gap={16}
+                >
+                  {page.products.map(({ id, imageURL, name, price, brandInfo }: ProductData) => (
+                    <DefaultGoodsItems
+                      key={id}
+                      imageSrc={imageURL}
+                      title={name}
+                      amount={price.sellingPrice}
+                      subtitle={brandInfo.name}
+                    />
+                  ))}
+                </Grid>
+              ))
+            )}
+          </Container>
+        </Wrapper>
+      )}
+    </InfiniteWrapper>
   );
 };
 

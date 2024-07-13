@@ -10,10 +10,12 @@ export const fetchThemes = async (): Promise<ThemesResponse> => {
 export const fetchThemeProducts = async (
   themeKey: string,
   maxResults: number = 20,
+  pageParam: number = 0,
 ): Promise<ThemeProductResponse> => {
   const response = await api.get<ThemeProductResponse>(`/api/v1/themes/${themeKey}/products`, {
     params: {
       maxResults,
+      page: pageParam,
     },
   });
   return response.data;

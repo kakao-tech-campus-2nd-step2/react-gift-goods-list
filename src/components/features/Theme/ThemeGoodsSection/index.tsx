@@ -27,10 +27,10 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage({ cancelRefetch: false });
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   if (isLoading) {
     return (

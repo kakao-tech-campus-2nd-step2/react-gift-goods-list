@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useInfiniteQuery,useQuery } from 'react-query';
 
 import type { ProductsResponse, ThemeResponse } from '../types/api';
 import api from './index';
@@ -12,16 +12,22 @@ export const useThemes = () => {
     return useQuery('themes', fetchThemes);
 };
 
-const fetchThemeProducts = async (themeKey: string, pageToken?: string, maxResults: number = 20): Promise<ProductsResponse> => {
+const fetchThemeProducts = async (themeKey: string, pageParam?: string, maxResults: number = 20): Promise<ProductsResponse> => {
     const response = await api.get<ProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
         params: {
-            pageToken,
+            pageToken: pageParam,
             maxResults
         }
     });
     return response.data;
 };
 
-export const useThemeProducts = (themeKey: string, pageToken?: string, maxResults: number = 20) => {
-    return useQuery(['themeProducts', themeKey, pageToken, maxResults], () => fetchThemeProducts(themeKey, pageToken, maxResults));
+export const useThemeProducts = (themeKey: string, maxResults: number = 20) => {
+    return useInfiniteQuery(
+        ['themeProducts', themeKey],
+        ({ pageParam }) => fetchThemeProducts(themeKey, pageParam, maxResults),
+        {
+            getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
+        }
+    );
 };

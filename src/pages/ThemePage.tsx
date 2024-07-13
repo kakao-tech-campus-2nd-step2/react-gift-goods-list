@@ -47,7 +47,7 @@ function ThemePage() {
             <ErrorBoundary>
               <Suspense fallback={
                 <ProductSkeletonGrid columnsDefault={4} itemCount={8} columnsSm={2} />
-            }
+              }
               >
                 <ThemeProductDisplaySection
                   themeKey={themeKey as string}

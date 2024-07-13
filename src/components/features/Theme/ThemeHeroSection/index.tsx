@@ -1,22 +1,40 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
+import type { GetThemesResponse, ThemeData } from '@/api/api';
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const navigate = useNavigate();
 
-  if (!currentTheme) {
-    return null;
+  const { data, error, isLoading } = useQuery<GetThemesResponse, Error>({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
+
+  if (isLoading) {
+    return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (error) {
+    return <ErrorWrapper>{error.message || 'An unexpected error occurred'}</ErrorWrapper>;
+  }
+
+  const currentTheme = data?.themes?.find((theme) => theme.key === themeKey);
+
+  if (!currentTheme) {
+    navigate('/');
+    return <ErrorWrapper>The requested theme does not exist</ErrorWrapper>;
+  }
+
+  const { backgroundColor = '#333', label, title, description } = currentTheme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -83,6 +101,20 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+const LoadingWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
+`;
+
+export const getCurrentTheme = (
+  themeKey: string,
+  themeList: ThemeData[],
+): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

@@ -4,7 +4,7 @@ export type ThemeData = {
   label: string;
   title: string;
   description?: string;
-  backgroundColor: string;
+  backgroundColor?: string;
 };
 
 export type RankingFilterOption = {

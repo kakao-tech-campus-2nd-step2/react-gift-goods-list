@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
 import { Loading, LoadingContainer } from '@/components/common/Loading';
 import { Message } from '@/components/common/Message';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types/api';
 
@@ -13,6 +15,7 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
+  const navigate = useNavigate();
   const { data, isError, isLoading } = useQuery('themes', fetchThemes);
 
   if (isLoading) {
@@ -26,7 +29,8 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   const currentTheme = data?.find((theme: ThemeData) => theme.key === themeKey);
 
   if (!currentTheme) {
-    return <Message>해당 테마를 찾을 수 없습니다.</Message>
+    navigate(RouterPath.home);
+    return null;
   }
 
   return (

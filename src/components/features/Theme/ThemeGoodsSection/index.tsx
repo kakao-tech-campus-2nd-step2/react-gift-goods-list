@@ -117,6 +117,83 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     };
   }, [hasNextPage, isFetching, fetchNextPage]);
 
+<<<<<<< HEAD
+=======
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+      );
+    }
+
+    if (isError) {
+      return <NoItemsMessage>Error fetching data</NoItemsMessage>;
+    }
+
+    if (!data || data.pages[0].products.length === 0) {
+      return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+    }
+
+    const allProducts = data.pages.flatMap((page) => page.products);
+
+    return (
+      <Grid
+        columns={{
+          initial: 2,
+          md: 4,
+        }}
+        gap={16}
+      >
+        {allProducts.map((goods) => (
+          <DefaultGoodsItems
+            key={goods.id}
+            imageSrc={goods.imageURL}
+            title={goods.name}
+            amount={goods.price.sellingPrice}
+            subtitle={goods.brandInfo.name}
+          />
+        ))}
+      </Grid>
+    );
+  };
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+      );
+    }
+
+    if (currentGoods.length === 0) {
+      return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+    }
+
+    return (
+      <Grid
+        columns={{
+          initial: 2,
+          md: 4,
+        }}
+        gap={16}
+      >
+        {currentGoods.map((goods) => (
+          <DefaultGoodsItems
+            key={goods.id}
+            imageSrc={goods.imageURL}
+            title={goods.name}
+            amount={goods.price.sellingPrice}
+            subtitle={goods.brandInfo.name}
+          />
+        ))}
+      </Grid>
+    );
+  };
+
+>>>>>>> c262e62c89f4016a9382c91656dcad3e578e10af
   return (
     <Wrapper>
       <Container>

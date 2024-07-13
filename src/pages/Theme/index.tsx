@@ -20,7 +20,7 @@ export default () => {
         <div>
             <Header />
             <section>
-                <ThemeHeaderRander themeKey={themeKey} navigate={navigate} />
+                <ThemeHeaderRender themeKey={themeKey} navigate={navigate} />
             </section>
             <section
                 className={css`
@@ -28,18 +28,18 @@ export default () => {
                     margin-bottom: 100px;
                 `}
             >
-                <ProductsRander themeKey={themeKey} navigate={navigate} />
+                <ProductsRender themeKey={themeKey} navigate={navigate} />
             </section>
         </div>
     );
 };
 
-interface RanderProps {
+interface RenderProps {
     themeKey: string;
     navigate: NavigateFunction;
 }
 
-const ThemeHeaderRander = ({ themeKey, navigate }: RanderProps) => {
+const ThemeHeaderRender = ({ themeKey, navigate }: RenderProps) => {
     const [theme, setTheme] = useState<ThemeData>();
     const themes = useData<Themes>('/themes');
 
@@ -71,7 +71,7 @@ const ThemeHeaderRander = ({ themeKey, navigate }: RanderProps) => {
         />
     );
 };
-const ProductsRander = ({ themeKey, navigate }: RanderProps) => {
+const ProductsRender = ({ themeKey, navigate }: RenderProps) => {
     const products = useData<Products>(`/themes/${themeKey}/products?maxResults=20`);
     useEffect(() => {
         if (products?.httpStatusCode !== 200)

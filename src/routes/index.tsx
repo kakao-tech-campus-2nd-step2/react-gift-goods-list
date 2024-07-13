@@ -1,13 +1,15 @@
+import React from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import { Layout } from '@/components/features/Layout';
 import { HomePage } from '@/pages/Home';
 import { LoginPage } from '@/pages/Login';
 import { MyAccountPage } from '@/pages/MyAccount';
-import { ThemePage } from '@/pages/Theme';
 
 import { PrivateRoute } from './components/PrivateRoute';
 import { RouterPath } from './path';
+
+const ThemePage = React.lazy(() => import('@/pages/Theme'));
 
 const router = createBrowserRouter([
   {

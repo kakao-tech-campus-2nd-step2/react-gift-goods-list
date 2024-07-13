@@ -6,16 +6,13 @@ import {
   useContext, useEffect,
 } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
-import FetchStatusBoundary
-  from '@components/atoms/container/FetchStatusBoundary';
 import FetchStatus from '@constants/FetchStatus';
-import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
 import { css } from '@emotion/react';
 import { useInView } from 'react-intersection-observer';
 import ThemeProductDisplaySection
   from '@components/organisms/theme/ThemeProductDisplaySection';
 import Container from '@components/atoms/container/Container';
-import { ThemeContext } from '@/providers/ThemeContextProvider';
+import ThemeContextProvider, { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemePage() {
   const { themeKey } = useParams();
@@ -45,11 +42,8 @@ function ThemePage() {
   }, [navigate, themes, themeKey, themeFetchStatus]);
 
   return (
-    <Page>
-      <FetchStatusBoundary
-        fetchStatus={themeFetchStatus}
-        errorMessage={ErrorMessages[ERROR_NOT_DEFINED]}
-      >
+    <ThemeContextProvider>
+      <Page>
         <Banner themeKey={themeKey as string} />
         <Container elementSize="full-width" justifyContent="center">
           <Container
@@ -69,15 +63,15 @@ function ThemePage() {
             />
           </Container>
         </Container>
-      </FetchStatusBoundary>
-      <div
-        css={css`
+        <div
+          css={css`
         width: 100%;
         height: 300px;
       `}
-        ref={ref}
-      />
-    </Page>
+          ref={ref}
+        />
+      </Page>
+    </ThemeContextProvider>
   );
 }
 

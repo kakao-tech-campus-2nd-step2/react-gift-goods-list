@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import type { ProductData } from '@/api/type';
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
+import ListMapper from '@/components/common/ListMapper';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  goodsList: ProductData[];
 };
 
 export const GoodsRankingList = ({ goodsList }: Props) => {
@@ -18,25 +19,29 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
 
   return (
     <Wrapper>
-      <Grid
-        columns={{
-          initial: 3,
-          sm: 4,
-          md: 6,
-        }}
-        gap={16}
-      >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+      <ListMapper<ProductData>
+        items={currentGoodsList}
+        ItemComponent={({ item, index }) => (
           <RankingGoodsItems
-            key={id}
+            key={item.id}
             rankingIndex={index + 1}
-            imageSrc={imageURL}
-            title={name}
-            amount={price.sellingPrice}
-            subtitle={brandInfo.name}
+            imageSrc={item.imageURL}
+            title={item.name}
+            amount={item.price.sellingPrice}
+            subtitle={item.brandInfo.name}
           />
-        ))}
-      </Grid>
+        )}
+        Wrapper={Grid}
+        wrapperProps={{
+          columns: {
+            initial: 3,
+            sm: 4,
+            md: 6,
+          },
+          gap: 16,
+        }}
+      />
+
       <ButtonWrapper>
         <Button
           theme="outline"
@@ -54,6 +59,7 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
 
 const Wrapper = styled.div`
   padding: 20px 0 30px;
+  width: 100%;
 
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 0 60px;

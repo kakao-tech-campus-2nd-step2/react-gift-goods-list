@@ -12,6 +12,7 @@ import ThemeProductDisplaySection
 import Container from '@components/atoms/container/Container';
 import ProductSkeletonGrid
   from '@components/molecules/skeleton/ProductSkeletonGrid';
+import ErrorBoundary from '@components/atoms/boundary/ErrorBoundary';
 import ThemeContextProvider, { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemePage() {
@@ -43,14 +44,16 @@ function ThemePage() {
               gap: '16px',
             }}
           >
-            <Suspense fallback={
-              <ProductSkeletonGrid columnsDefault={4} itemCount={8} columnsSm={2} />
+            <ErrorBoundary>
+              <Suspense fallback={
+                <ProductSkeletonGrid columnsDefault={4} itemCount={8} columnsSm={2} />
             }
-            >
-              <ThemeProductDisplaySection
-                themeKey={themeKey as string}
-              />
-            </Suspense>
+              >
+                <ThemeProductDisplaySection
+                  themeKey={themeKey as string}
+                />
+              </Suspense>
+            </ErrorBoundary>
           </Container>
         </Container>
       </Page>

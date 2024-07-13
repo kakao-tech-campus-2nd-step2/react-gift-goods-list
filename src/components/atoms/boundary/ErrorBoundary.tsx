@@ -50,7 +50,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
     if (hasError) {
       return fallback || (
-        <Container elementSize="full-width" justifyContent="center">
+        <Container
+          elementSize="full-width"
+          justifyContent="center"
+          cssProps={{
+            padding: '0 20px 40px 20px',
+          }}
+        >
           <p>{ErrorMessages[statusCode]}</p>
         </Container>
       );

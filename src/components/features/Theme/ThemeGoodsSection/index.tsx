@@ -28,7 +28,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage({ cancelRefetch: false });
+      fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 

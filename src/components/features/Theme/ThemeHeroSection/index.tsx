@@ -1,16 +1,20 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
+import { useContext } from "react";
 
-import { Container } from '@/components/common/layouts/Container';
-import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import type { ThemeProp } from "@/App";
+import { ThemesContext } from "@/App";
+import { Container } from "@/components/common/layouts/Container";
+import { breakpoints } from "@/styles/variants";
+import type { ThemeData } from "@/types";
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const ThemesApi: ThemeProp = useContext(ThemesContext);
+  const themes: ThemeData[] = ThemesApi.data;
+  const currentTheme = getCurrentTheme(themeKey, themes);
 
   if (!currentTheme) {
     return null;

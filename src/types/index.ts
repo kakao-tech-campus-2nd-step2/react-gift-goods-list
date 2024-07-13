@@ -2,14 +2,15 @@ export type ThemeData = {
   id: number;
   key: string;
   label: string;
+  imageURL: string;
   title: string;
   description?: string;
   backgroundColor: string;
 };
 
 export type RankingFilterOption = {
-  targetType: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
-  rankType: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
+  targetType: "ALL" | "FEMALE" | "MALE" | "TEEN";
+  rankType: "MANY_WISH" | "MANY_RECEIVE" | "MANY_WISH_RECEIVE";
 };
 
 export type GoodsData = {

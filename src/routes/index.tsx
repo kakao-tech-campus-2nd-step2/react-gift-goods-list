@@ -1,13 +1,13 @@
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 
-import { Layout } from '@/components/features/Layout';
-import { HomePage } from '@/pages/Home';
-import { LoginPage } from '@/pages/Login';
-import { MyAccountPage } from '@/pages/MyAccount';
-import { ThemePage } from '@/pages/Theme';
+import { Layout } from "@/components/features/Layout";
+import { HomePage } from "@/pages/Home";
+import { LoginPage } from "@/pages/Login";
+import { MyAccountPage } from "@/pages/MyAccount";
+import { ThemePage } from "@/pages/Theme";
 
-import { PrivateRoute } from './components/PrivateRoute';
-import { RouterPath } from './path';
+import { PrivateRoute } from "./components/PrivateRoute";
+import { RouterPath } from "./path";
 
 const router = createBrowserRouter([
   {

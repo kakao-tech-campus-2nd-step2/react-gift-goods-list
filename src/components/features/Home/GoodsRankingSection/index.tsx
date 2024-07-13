@@ -20,7 +20,6 @@ export const GoodsRankingSection = () => {
     ['rankingProducts', filterOption],
     () => fetchRankingProducts(filterOption.targetType, filterOption.rankType),
     {
-      keepPreviousData: true, 
       onError: (fetchError) => console.error('Failed to fetch products:', fetchError)
     }
   );

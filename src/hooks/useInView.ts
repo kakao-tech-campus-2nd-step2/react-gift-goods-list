@@ -11,8 +11,6 @@ function useInView({ ref, threshold }: UseInViewProps) {
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
       setInView((prevState) => {
-        console.log(entry.isIntersecting);
-
         if (prevState === entry.isIntersecting) return prevState;
 
         return entry.isIntersecting;

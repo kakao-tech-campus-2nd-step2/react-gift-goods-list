@@ -7,7 +7,7 @@ interface ErrorBoundaryProps {
   fallback?: ReactNode;
   children: ReactNode;
 }
-interface ErrorBoundaryState extends ErrorBoundaryProps {
+interface ErrorBoundaryState {
   statusCode: number;
   hasError: boolean;
 }
@@ -18,9 +18,15 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = {
       statusCode: ERROR_NOT_DEFINED,
       hasError: false,
-      fallback: props.fallback,
-      children: props.children,
     };
+  }
+
+  componentDidUpdate(prevProps: ErrorBoundaryProps) {
+    const { children: prevChildren } = this.props;
+
+    if (prevProps.children !== prevChildren) {
+      this.setState({ hasError: false, statusCode: ERROR_NOT_DEFINED });
+    }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -45,8 +51,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render() {
     const {
-      statusCode, hasError, fallback, children,
+      statusCode, hasError,
     } = this.state;
+
+    const {
+      fallback, children,
+    } = this.props;
 
     if (hasError) {
       return fallback || (

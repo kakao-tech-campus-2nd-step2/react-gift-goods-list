@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
 import { fetchThemeProducts, fetchThemes } from '@/api/Api';
@@ -49,7 +49,7 @@ export const ThemePage = () => {
   return (
     <>
       <ThemeHeroSection themeKey={themeKey} theme={categories} />
-      <ThemeGoodsSection themeKey={themeKey} goods={goods} />
+      <ThemeGoodsSection themeKey={themeKey} />
     </>
   );
 };

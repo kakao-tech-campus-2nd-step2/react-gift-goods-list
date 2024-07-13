@@ -8,6 +8,7 @@ import { fetchThemeProducts } from '@/api/themeProducts';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Loading, LoadingContainer } from '@/components/common/Loading';
 import { Message } from '@/components/common/Message';
 import { breakpoints } from '@/styles/variants';
 import type { ProductData } from '@/types/api';
@@ -95,29 +96,5 @@ const Wrapper = styled.section`
 
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 40px 16px 360px;
-  }
-`;
-
-const LoadingContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 60px;
-  padding-bottom: 60px;
-`;
-
-const Loading = styled.div`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: rgba(255, 255, 255);
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
   }
 `;

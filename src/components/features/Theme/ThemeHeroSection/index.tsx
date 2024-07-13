@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
+import { Loading, LoadingContainer } from '@/components/common/Loading';
+import { Message } from '@/components/common/Message';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types/api';
 
@@ -12,36 +13,28 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData>();
-  const navigate = useNavigate();
+  const { data, isError, isLoading } = useQuery('themes', fetchThemes);
 
-  useEffect(() => {
-    // API에서 Theme data 가져오기
-    const getThemes = async () => {
-      const themes = await fetchThemes();
-      const theme = themes.find((e) => e.key === themeKey);
-
-      // themeKey가 잘못된 경우 메인 페이지로 이동
-      if (!theme) navigate('/');
-
-      setCurrentTheme(theme);
-    };
-
-    getThemes();
-  }, [themeKey, navigate]);
-
-  if (!currentTheme) {
-    return null;
+  if (isLoading) {
+    return <LoadingContainer><Loading /></LoadingContainer>;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  if (isError) {
+    return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
+  }
+
+  const currentTheme = data?.find((theme: ThemeData) => theme.key === themeKey);
+
+  if (!currentTheme) {
+    return <Message>해당 테마를 찾을 수 없습니다.</Message>
+  }
 
   return (
-    <Wrapper backgroundColor={backgroundColor!}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor!}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

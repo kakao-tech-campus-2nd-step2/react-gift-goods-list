@@ -12,6 +12,7 @@ export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
   const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const getTheme = async () => {
@@ -21,6 +22,7 @@ export const ThemePage = () => {
         setCurrentTheme(theme || null);
       } catch (err) {
         console.error('Failed to load themes', err);
+        setError('테마를 불러오는데 실패했습니다. 잠시후에 다시 시도하세요.')
       } finally {
         setIsLoading(false);
       }
@@ -31,6 +33,10 @@ export const ThemePage = () => {
 
   if (isLoading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
+  }
+
+  if (error) {
+    return <ErrorWrapper>{error}</ErrorWrapper>;
   }
 
   if (!currentTheme) {
@@ -48,4 +54,10 @@ export const ThemePage = () => {
 const LoadingWrapper = styled.div`
   padding: 20px;
   text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
 `;

@@ -1,11 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
-import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
-import Container from '@components/atoms/container/Container';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import {
-  useContext, useEffect, useRef,
+  useContext, useEffect,
 } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import FetchStatusBoundary
@@ -13,17 +11,16 @@ import FetchStatusBoundary
 import FetchStatus from '@constants/FetchStatus';
 import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
 import { css } from '@emotion/react';
-import ProductSkeletonGrid
-  from '@components/molecules/skeleton/ProductSkeletonGrid';
 import { useInView } from 'react-intersection-observer';
+import ThemeProductDisplaySection
+  from '@components/organisms/theme/ThemeProductDisplaySection';
+import Container from '@components/atoms/container/Container';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
-import { generateRandomId } from '@/utils';
 
 function ThemePage() {
-  const themePageId = useRef(generateRandomId());
   const { themeKey } = useParams();
   const {
-    productResponse, hasNextPage, fetchNextPage, isFetchingNextPage,
+    productResponse, hasNextPage, fetchNextPage, isFetchingNextPage, status: productFetchStatus,
   } = useFetchThemeProducts({ themeKey: themeKey || '' });
   const { themes, fetchStatus: themeFetchStatus } = useContext(ThemeContext);
 
@@ -65,25 +62,11 @@ function ThemePage() {
               gap: '16px',
             }}
           >
-            {
-              productResponse?.pages?.map((page, index) => {
-                const key = `${themePageId}-${index}`;
-
-                return (
-                  <GiftDisplaySection
-                    products={page.products}
-                    maxColumns={4}
-                    minColumns={2}
-                    key={key}
-                  />
-                );
-              })
-            }
-            {
-              isFetchingNextPage ? (
-                <ProductSkeletonGrid columnsDefault={4} itemCount={4} columnsSm={2} />
-              ) : null
-            }
+            <ThemeProductDisplaySection
+              fetchStatus={productFetchStatus}
+              isFetchingNextPage={isFetchingNextPage}
+              productResponse={productResponse}
+            />
           </Container>
         </Container>
       </FetchStatusBoundary>

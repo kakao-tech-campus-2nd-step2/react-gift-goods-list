@@ -1,31 +1,20 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { axiosInstance } from '@/api/index';
+import { useGetThemes } from '@/api/hooks/useGetThemes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types/index';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const { data: themes, isLoading, isError } = useGetThemes();
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await axiosInstance.get('/api/v1/themes');
-        setThemes(response.data.themes);
-      } catch (error) {
-        console.error('Error fetching themes:', error);
-      }
-    };
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error fetching themes</p>;
 
-    fetchThemes();
-  }, []);
   return (
     <Wrapper>
       <Container>
@@ -35,11 +24,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => (
-            <Link key={theme.key} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-            </Link>
-          ))}
+          {themes &&
+            themes.map((theme) => (
+              <Link key={theme.key} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+              </Link>
+            ))}
         </Grid>
       </Container>
     </Wrapper>

@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { axiosInstance } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData, RankingFilterOption } from '@/types';
+import useFetch from '@/utils/api';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,35 +15,32 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const { isLoading, isError, data } = useFetch<{ products: GoodsData[] }>(
+    '/api/v1/ranking/products',
+    filterOption,
+  );
 
-  useEffect(() => {
-    const fetchRanking = async () => {
-      try {
-        const response = await axiosInstance.get('/api/v1/ranking/products', {
-          params: {
-            targetType: filterOption.targetType,
-            rankType: filterOption.rankType,
-          },
-        });
+  console.log('Fetch state:', { isLoading, isError, data });
 
-        const { products } = response.data;
-
-        setGoodsList(products);
-      } catch (error) {
-        console.error('Error fetching ranking:', error);
-      }
-    };
-
-    fetchRanking();
-  }, [filterOption]);
+  const renderContent = () => {
+    if (isLoading) {
+      return <Description>로딩 중</Description>;
+    }
+    if (isError) {
+      return <Description>데이터를 불러오는 중에 문제가 발생했습니다.</Description>;
+    }
+    if (data && data.products.length > 0) {
+      return <GoodsRankingList goodsList={data.products} />;
+    }
+    return <Description>보여줄 상품이 없어요!</Description>;
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goodsList} />
+        {renderContent()}
       </Container>
     </Wrapper>
   );
@@ -70,4 +67,15 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Description = styled.div`
+  width: 100%;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 40px 16px 60px;
+  font-size: 16px;
 `;

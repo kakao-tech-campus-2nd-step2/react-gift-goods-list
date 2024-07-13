@@ -1,43 +1,23 @@
-import { useCallback, useState } from 'react';
+import { Suspense, useState } from 'react';
 import Container from '@components/atoms/container/Container';
-import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import TargetFilterArea
   from '@components/organisms/main/ranking/TargetFilterArea';
 import RankFilterArea from '@components/organisms/main/ranking/RankFilterArea';
-import Button from '@components/atoms/button/Button';
 import {
   RankingSectionTitle,
   RankingSectionTitleContainer,
 } from '@components/organisms/main/ranking/RankingSection.styles';
-import FetchStatusBoundary
-  from '@components/atoms/container/FetchStatusBoundary';
-import FetchStatus from '@constants/FetchStatus';
-import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
-import { useQuery } from '@tanstack/react-query';
-import { fetchProducts } from '@utils/query';
+import RankingGiftDisplayArea
+  from '@components/organisms/main/ranking/RankingGiftDisplayArea';
 import ProductSkeletonGrid
   from '@components/molecules/skeleton/ProductSkeletonGrid';
-import { QueryKeys } from '@constants/QueryKeys';
+import ErrorBoundary from '@components/atoms/boundary/ErrorBoundary';
 import { RankFilter, TargetFilter } from '@/types';
-import { ProductData } from '@/dto';
 
 function RankingSection() {
   const [targetFilter, setTargetFilter] = useState<TargetFilter>('ALL');
   const [rankFilter, setRankFilter] = useState<RankFilter>('MANY_WISH');
-  const [isFolded, setIsFolded] = useState(true);
-
-  const { data: products = [], status } = useQuery<ProductData[]>({
-    queryKey: [QueryKeys.RANKING_PRODUCTS, { targetType: targetFilter, rankType: rankFilter }],
-    queryFn: fetchProducts,
-  });
-
-  const DISPLAY_COUNT_WHEN_FOLDED = 6;
-
-  const showButton = useCallback(
-    () => products?.length > DISPLAY_COUNT_WHEN_FOLDED && status === FetchStatus.FETCH_SUCCESS,
-    [products, status],
-  );
 
   return (
     <Container elementSize="full-width" justifyContent="center">
@@ -52,48 +32,24 @@ function RankingSection() {
             실시간 급상승 선물랭킹
           </RankingSectionTitle>
         </RankingSectionTitleContainer>
-        <TargetFilterArea currentFilter={targetFilter} setTargetFilter={setTargetFilter} />
+        <TargetFilterArea
+          currentFilter={targetFilter}
+          setTargetFilter={setTargetFilter}
+        />
         <RankFilterArea
           currentFilter={rankFilter}
           setPopularityFilter={setRankFilter}
         />
-        <Container padding="40px 0 20px">
-          <FetchStatusBoundary
-            fetchStatus={status}
-            errorMessage={ErrorMessages[ERROR_NOT_DEFINED]}
-            loadingComponent={(
-              <ProductSkeletonGrid
-                columnsDefault={6}
-                itemCount={6}
-                columnsSm={3}
-              />
-            )}
-          >
-            <GiftDisplaySection
-              products={isFolded ? products?.slice(0, DISPLAY_COUNT_WHEN_FOLDED) : products}
-              maxColumns={6}
-              minColumns={3}
-              indexed
-            />
-          </FetchStatusBoundary>
-        </Container>
-        <Container elementSize="full-width" justifyContent="center">
-          <Container elementSize="full-width" maxWidth="480px">
-            {
-              showButton()
-                ? (
-                  <Button
-                    theme="lightGray"
-                    elementSize={{ width: '100%', height: '60px' }}
-                    text={isFolded ? '더보기' : '접기'}
-                    onClick={() => {
-                      setIsFolded(!isFolded);
-                    }}
-                  />
-                )
-                : null
+        <Container padding="40px 0 0 0" flexDirection="column">
+
+          <ErrorBoundary>
+            <Suspense fallback={
+              <ProductSkeletonGrid columnsDefault={6} itemCount={6} columnsSm={3} />
             }
-          </Container>
+            >
+              <RankingGiftDisplayArea targetFilter={targetFilter} rankFilter={rankFilter} />
+            </Suspense>
+          </ErrorBoundary>
         </Container>
       </Container>
     </Container>

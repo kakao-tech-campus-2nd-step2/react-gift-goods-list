@@ -1,29 +1,58 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { BASE_URL, type ThemeData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
+const fetchThemeHeader = async (): Promise<ThemeData[]> => {
+  const { data } = await axios.get(`${BASE_URL}/api/v1/themes`);
+  return data.themes;
+};
+
+const getCurrentTheme = (themeKey: string, themeList: ThemeData[] | undefined) => {
+  return themeList?.find((theme) => theme.key === themeKey);
+};
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | undefined>();
+  const { data, isLoading, isError } = useQuery<ThemeData[]>(
+    ['ThemeData', themeKey],
+    fetchThemeHeader,
+  );
+
+  useEffect(() => {
+    if (data) {
+      const theme = getCurrentTheme(themeKey, data);
+      setCurrentTheme(theme);
+    }
+  }, [data, themeKey]);
+
+  if (isLoading) {
+    return <Message>Loading...</Message>;
+  }
+
+  if (isError) {
+    return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
+  }
 
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -82,7 +111,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

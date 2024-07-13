@@ -1,8 +1,11 @@
+export const BASE_URL: string = 'https://react-gift-mock-api-diwoni.vercel.app';
+
 export type ThemeData = {
   id: number;
   key: string;
   label: string;
   title: string;
+  imageURL: string;
   description?: string;
   backgroundColor: string;
 };
@@ -31,3 +34,9 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+export interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}

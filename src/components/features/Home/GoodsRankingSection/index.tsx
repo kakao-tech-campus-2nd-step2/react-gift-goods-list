@@ -1,13 +1,25 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Message } from '@/styles';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
+import { BASE_URL, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
+
+const fetchRankingList = async (filterOption: RankingFilterOption) => {
+  const params = {
+    targetType: filterOption.targetType,
+    rankType: filterOption.rankType,
+  };
+  const { data } = await axios.get(`${BASE_URL}/api/v1/ranking/products`, { params });
+  return data.products;
+};
 
 export const GoodsRankingSection = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
@@ -15,14 +27,29 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data, isLoading, isError } = useQuery<GoodsData[]>(['rankingList', filterOption], () =>
+    fetchRankingList(filterOption),
+  );
+
+  const renderList = () => {
+    if (isError) {
+      return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
+    }
+    if (isLoading) {
+      return <Message>로딩 중...</Message>;
+    }
+    if (!data?.length) {
+      return <Message>보여줄 상품이 없습니다!</Message>;
+    }
+    return <GoodsRankingList goodsList={data} />;
+  };
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {renderList()}
       </Container>
     </Wrapper>
   );

@@ -34,7 +34,7 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
   } = useInfiniteQuery({
     initialData: undefined,
     initialPageParam: undefined,
-    queryKey: [QueryKeys.THEME_PRODUCTS],
+    queryKey: [QueryKeys.THEME_PRODUCTS, themeKey],
     queryFn: fetchPage,
     getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
   });

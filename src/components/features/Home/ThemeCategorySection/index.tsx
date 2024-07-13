@@ -20,7 +20,7 @@ export const ThemeCategorySection: React.FC = () => {
         const data = await fetchTheme(); 
         setThemes(data);
       } catch (error) {
-        console.error('Failed to fetch themes:', error);
+        console.error('themecategory error', error);
       }
     };
 
@@ -40,7 +40,7 @@ export const ThemeCategorySection: React.FC = () => {
           {themes.map((theme) => (
             <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
               <ThemeCategoryItem
-                image={theme.imageURL} // API에서 가져온 이미지 URL 사용
+                image={theme.imageURL}
                 label={theme.label}
               />
             </Link>

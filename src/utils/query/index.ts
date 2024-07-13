@@ -7,9 +7,12 @@ import { ThemeDataRepository } from '@/types';
 export const fetchThemes = async () => {
   const response = await axiosInstance.get<ThemesResponse>(RequestURLs.THEMES);
   const tmpThemes: ThemeDataRepository = {};
-  response.data.themes.forEach((theme) => {
-    tmpThemes[theme.key] = theme;
-  });
+
+  if (response.data.themes) {
+    response.data.themes.forEach((theme) => {
+      tmpThemes[theme.key] = theme;
+    });
+  }
 
   return tmpThemes;
 };
@@ -19,5 +22,5 @@ export const fetchProducts = async ({ queryKey }:{ queryKey: QueryKey }) => {
   const response = await axiosInstance
     .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params: queryParams });
 
-  return response.data.products;
+  return response.data.products || [];
 };

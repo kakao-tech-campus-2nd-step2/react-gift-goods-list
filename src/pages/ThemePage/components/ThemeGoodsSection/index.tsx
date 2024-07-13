@@ -39,7 +39,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
   if (!themeProducts?.length) {
     return <OneTextContainer>상품 목록이 없습니다.</OneTextContainer>;
   }
-  // isLoad, setIsLoad, noLazy
+
   return (
     <Content>
       <Grid

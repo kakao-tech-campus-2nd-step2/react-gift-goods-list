@@ -8,7 +8,6 @@ const meta = {
     tags: ['autodocs'],
     render: () => (
         <div>
-            rhdiddl
             <LoadingUI />
         </div>
     ),

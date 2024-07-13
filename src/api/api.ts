@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-throw-literal */
-import axios from 'axios';
-
 import axiosInstance from './axiosInstance';
 
 // api 타입 정의
@@ -239,13 +236,6 @@ export const putMyAccountPoint = async (
 };
 
 export const postOrder = async (data: PostOrderRequest): Promise<PostOrderResponse> => {
-  try {
-    const response = await axiosInstance.post<PostOrderResponse>('/api/v1/order', data);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw error.response.data as PostOrderErrorResponse;
-    }
-    throw error;
-  }
+  const response = await axiosInstance.post<PostOrderResponse>('/api/v1/order', data);
+  return response.data;
 };

@@ -12,9 +12,15 @@ type RankedImageProps = {
   rank: number;
   imageSrc: string;
   alt: string;
+  isLazy?: boolean;
 };
 
-export const RankedImage = ({ rank, imageSrc, alt }: RankedImageProps) => {
+export const RankedImage = ({
+  rank,
+  imageSrc,
+  alt,
+  isLazy = true,
+}: RankedImageProps) => {
   return (
     <div css={rankingWrapperStyle}>
       <Container
@@ -29,7 +35,7 @@ export const RankedImage = ({ rank, imageSrc, alt }: RankedImageProps) => {
         alt={alt}
         ratio={GOODS_IMAGE_DEFAULT_RATIO}
         radius={GOODS_IMAGE_DEFAULT_RADIUS}
-        isLazy
+        isLazy={isLazy}
       />
     </div>
   );

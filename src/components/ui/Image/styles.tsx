@@ -7,7 +7,7 @@ import { Radius, Ratio } from '@/types/uiTypes';
 
 const transitionStyle = (isLoad: boolean) => {
   const defultStyle = {
-    transition: 'opacity 1s ease-in-out',
+    transition: 'opacity 0.6s ease-in-out',
   };
 
   if (isLoad) {

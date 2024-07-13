@@ -9,6 +9,7 @@ import { containerStyle } from './styles';
 
 interface RankingGoodsItemProps extends GoodsItemProps {
   rank: number;
+  isLazy?: boolean;
 }
 
 export const RankingGoodsItem = ({
@@ -17,10 +18,16 @@ export const RankingGoodsItem = ({
   title,
   subtitle,
   amount,
+  isLazy,
 }: RankingGoodsItemProps) => {
   return (
     <Container maxWidth="100%" flexDirection="column" css={containerStyle}>
-      <RankedImage rank={rank} imageSrc={imageSrc} alt={title} />
+      <RankedImage
+        rank={rank}
+        imageSrc={imageSrc}
+        alt={title}
+        isLazy={isLazy}
+      />
       <GoodsItemDetail subtitle={subtitle} title={title} amount={amount} />
     </Container>
   );

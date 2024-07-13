@@ -26,6 +26,7 @@ export const RankList = ({ filteredRankList }: RankListProps) => {
             title={name}
             subtitle={brandInfo.name}
             amount={price.sellingPrice}
+            isLazy={index > 5}
           />
         )
       )}

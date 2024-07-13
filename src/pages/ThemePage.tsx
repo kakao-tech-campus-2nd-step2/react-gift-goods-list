@@ -3,35 +3,22 @@ import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
 import {
+  Suspense,
   useContext, useEffect,
 } from 'react';
-import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import FetchStatus from '@constants/FetchStatus';
-import { css } from '@emotion/react';
-import { useInView } from 'react-intersection-observer';
 import ThemeProductDisplaySection
   from '@components/organisms/theme/ThemeProductDisplaySection';
 import Container from '@components/atoms/container/Container';
+import ProductSkeletonGrid
+  from '@components/molecules/skeleton/ProductSkeletonGrid';
 import ThemeContextProvider, { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemePage() {
   const { themeKey } = useParams();
-  const {
-    productResponse, hasNextPage, fetchNextPage, isFetchingNextPage, status: productFetchStatus,
-  } = useFetchThemeProducts({ themeKey: themeKey || '' });
   const { themes, fetchStatus: themeFetchStatus } = useContext(ThemeContext);
 
   const navigate = useNavigate();
-
-  const { ref, inView } = useInView({
-    threshold: 1,
-  });
-
-  useEffect(() => {
-    if (!inView || !hasNextPage) return;
-
-    fetchNextPage();
-  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     if (themeFetchStatus === FetchStatus.FETCHING) return;
@@ -56,20 +43,16 @@ function ThemePage() {
               gap: '16px',
             }}
           >
-            <ThemeProductDisplaySection
-              fetchStatus={productFetchStatus}
-              isFetchingNextPage={isFetchingNextPage}
-              productResponse={productResponse}
-            />
+            <Suspense fallback={
+              <ProductSkeletonGrid columnsDefault={4} itemCount={8} columnsSm={2} />
+            }
+            >
+              <ThemeProductDisplaySection
+                themeKey={themeKey as string}
+              />
+            </Suspense>
           </Container>
         </Container>
-        <div
-          css={css`
-        width: 100%;
-        height: 300px;
-      `}
-          ref={ref}
-        />
       </Page>
     </ThemeContextProvider>
   );

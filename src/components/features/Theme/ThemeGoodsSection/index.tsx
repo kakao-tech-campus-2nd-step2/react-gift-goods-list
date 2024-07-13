@@ -1,39 +1,48 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteQuery } from 'react-query';
 
 import { getThemeProducts } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [goods, setGoods] = useState<GoodsData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setisLoading] = useState(true);
+  const { ref, inView } = useInView();
+  console.log('inView:', inView);
 
+  const fetchGoods = async ({ pageParam = 0 }) => {
+    const data = await getThemeProducts(themeKey, pageParam);
+    console.log('Fetched data for page:', pageParam, data);
+    return { data, nextPage: pageParam + 1 };
+  };
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    error,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(['themeProducts', themeKey], fetchGoods, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage.data.length < 20) return undefined;
+      return lastPage.nextPage;
+    },
+  });
 
   useEffect(() => {
-    const fetchGoods = async () => {
-      try {
-        setisLoading(true);
-        const data = await getThemeProducts(themeKey);
-        setGoods(data);
-        setisLoading(false);
-      } catch (err) {
-        setisLoading(true);
-        setError('상품을 가져오는데 실패하였습니다.');
-        setisLoading(false);
-      }
-    };
-
-    fetchGoods();
-  }, [themeKey]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return (
@@ -44,8 +53,13 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   }
 
   if (error) {
-    return <ErrorMessage>{error}</ErrorMessage>;
+    return <ErrorMessage>상품을 가져오는데 실패하였습니다.</ErrorMessage>;
   }
+
+  if (!data) {
+    return <ErrorMessage>상품이 없습니다.</ErrorMessage>;
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -56,7 +70,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {goods.map(({ id, imageURL, name, price, brandInfo }) => (
+          {data.pages.flatMap(page => page.data).map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -66,6 +80,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             />
           ))}
         </Grid>
+        <div ref={ref} /> {/* ref 설정 */}
+        {(isFetching || isFetchingNextPage) && (
+          <SpinnerWrapper>
+            <Spinner />
+          </SpinnerWrapper>
+        )}
       </Container>
     </Wrapper>
   );
@@ -79,7 +99,6 @@ const Wrapper = styled.section`
     padding: 40px 16px 360px;
   }
 `;
-
 
 const ErrorMessage = styled.div`
   color: black;

@@ -19,8 +19,8 @@ export const GoodsRankingSection: React.FC = () => {
 
   useEffect(() => {
     const fetchGoods = async () => {
-      setErrorMessage(null);
       try {
+        setErrorMessage(null);
         const data = await getRankingGoods(filterOption);
         setGoodsList(data);
       } catch (err) { 

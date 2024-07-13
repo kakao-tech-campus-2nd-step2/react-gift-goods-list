@@ -19,11 +19,11 @@ export const fetchThemes = async (themeKey: string): Promise<ThemeData> => {
   return response.data;
 };
 
-export const getThemeProducts = async (themeKey: string, page: number): Promise<GoodsData[]> => {
+export const getThemeProducts = async (themeKey: string , pageParam: number): Promise<GoodsData[]> => {
   const response = await api.get<{ products: GoodsData[] }>(`/api/v1/themes/${themeKey}/products`, {
     params: {
-      page,
       maxResults: 20, 
+      page: pageParam
     },
   });
   return response.data.products;

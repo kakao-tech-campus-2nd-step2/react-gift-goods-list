@@ -25,7 +25,7 @@ export interface GetThemeProductsRequest {
 
 export interface GetThemeProductsResponse {
   products: ProductData[];
-  nextPageToken?: string;
+  nextPageToken?: string | null;
   pageInfo: {
     totalResults: number;
     resultsPerPage: number;

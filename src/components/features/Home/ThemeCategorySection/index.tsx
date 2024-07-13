@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect,useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/api';
@@ -12,15 +12,15 @@ import type { ThemeData } from '@/types';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const { data: themes, isLoading, isError } = useQuery<ThemeData[], Error>('themes', fetchThemes);
 
-  useEffect(() => {
-    const loadThemes = async () => {
-      const themesData = await fetchThemes();
-      setThemes(themesData);
-    };
-    loadThemes();
-  }, []);
+  if (isLoading) {
+    return <LoadingMessage>Loading...</LoadingMessage>;
+  }
+
+  if (isError) {
+    return <ErrorMessage>에러가 발생했습니다.</ErrorMessage>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -30,12 +30,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme, index) => (
-          <Link key={`${theme.id}-${index}`} to={getDynamicPath.theme(theme.key)}>
-            <ThemeCategoryItem
-              image={theme.imageURL}
-              label={theme.label}
-            />
+          {themes && themes.map((theme, index) => (
+            <Link key={`${theme.id}-${index}`} to={getDynamicPath.theme(theme.key)}>
+              <ThemeCategoryItem
+                image={theme.imageURL}
+                label={theme.label}
+              />
           </Link>
           ))}
         </Grid>
@@ -50,4 +50,15 @@ const Wrapper = styled.section`
   @media screen and (min-width: ${breakpoints.sm}) {
     padding: 45px 52px 23px;
   }
+`;
+
+const LoadingMessage = styled.div`
+  color: #0070f3;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  margin-top: 20px;
 `;

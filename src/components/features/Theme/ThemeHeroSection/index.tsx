@@ -1,7 +1,6 @@
-// src/components/features/Theme/ThemeHeroSection.tsx
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { Navigate} from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { Navigate } from 'react-router-dom';
 
 import { fetchTheme } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
@@ -14,27 +13,15 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { data: themes, error, isLoading } = useQuery('themes', fetchTheme);
 
-  useEffect(() => {
-    const getThemeData = async () => {
-      try {
-        const themes = await fetchTheme();
-        const foundTheme = themes.find((theme) => theme.key === themeKey);
-        setCurrentTheme(foundTheme || null);
-      } catch (error) {
-        setErrorMessage('error');
-      }
-    };
+  const currentTheme = themes?.find((theme: ThemeData) => theme.key === themeKey) || null;
 
-    getThemeData();
-  }, [themeKey]);
-
-  if (errorMessage) {
+  if (error) {
     return <Navigate to={RouterPath.home} />;
   }
-  if (!currentTheme) {
+
+  if (isLoading || !currentTheme) {
     return null;
   }
 

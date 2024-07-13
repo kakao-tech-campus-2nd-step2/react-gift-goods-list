@@ -4,19 +4,20 @@ import { ERROR_NOT_DEFINED, ErrorMessages } from '@constants/ErrorMessage';
 import Container from '@components/atoms/container/Container';
 
 interface ErrorBoundaryProps {
-  statusCode: number;
-  hasError: boolean;
   fallback?: ReactNode;
   children: ReactNode;
 }
-interface ErrorBoundaryState extends ErrorBoundaryProps {}
+interface ErrorBoundaryState extends ErrorBoundaryProps {
+  statusCode: number;
+  hasError: boolean;
+}
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
-      statusCode: props.statusCode,
-      hasError: props.hasError,
+      statusCode: ERROR_NOT_DEFINED,
+      hasError: false,
       fallback: props.fallback,
       children: props.children,
     };

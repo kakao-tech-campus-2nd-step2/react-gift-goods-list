@@ -14,6 +14,7 @@ export interface ThemesResponse {
 
 export interface ThemeProductsResponse {
   products: GoodsData[];
+  nextCursor: number | null;
 }
 
 export type RankingFilterOption = {
@@ -43,4 +44,5 @@ export type GoodsData = {
 
 export interface RankingProductsResponse {
   products: GoodsData[];
+  nextCursor: number | null;
 }

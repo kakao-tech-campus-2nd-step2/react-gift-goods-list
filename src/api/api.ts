@@ -29,14 +29,19 @@ export const fetchRankingProducts = async (
   return response.data;
 };
 
-export const fetchThemeProducts = async (themeKey: string): Promise<ThemeProductsResponse> => {
+export const fetchThemeProducts = async (
+  themeKey: string,
+  page: number = 0,
+): Promise<ThemeProductsResponse> => {
   const response = await apiClient.get<ThemeProductsResponse>(
     `/api/v1/themes/${themeKey}/products`,
     {
       params: {
         maxResults: 20,
+        page,
       },
     },
   );
-  return response.data;
+  const nextCursor = response.data.products.length < 20 ? null : page + 1;
+  return { ...response.data, nextCursor };
 };

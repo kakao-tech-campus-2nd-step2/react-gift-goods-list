@@ -1,51 +1,56 @@
-import { InfiniteData } from '@tanstack/react-query';
 import ProductSkeletonGrid
   from '@components/molecules/skeleton/ProductSkeletonGrid';
 import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
-import { useRef } from 'react';
-import FetchStatusBoundary
-  from '@components/atoms/container/FetchStatusBoundary';
-import { ThemeProductsResponse } from '@/types/response';
+import { useEffect, useRef } from 'react';
+import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
+import { css } from '@emotion/react';
+import { useInView } from 'react-intersection-observer';
 import { generateRandomId } from '@/utils';
-import { FetchStatusType } from '@/types';
 
 interface ThemeProductDisplaySectionProps {
-  productResponse?: InfiniteData<ThemeProductsResponse>;
-  fetchStatus: FetchStatusType;
-  isFetchingNextPage: boolean;
+  themeKey: string;
 }
 
-function ThemeProductDisplaySection({
-  productResponse,
-  fetchStatus,
-  isFetchingNextPage,
-}: ThemeProductDisplaySectionProps) {
+function ThemeProductDisplaySection({ themeKey }: ThemeProductDisplaySectionProps) {
   const productDisplayId = useRef(generateRandomId());
+  const {
+    productResponse, hasNextPage, fetchNextPage, isFetchingNextPage,
+  } = useFetchThemeProducts({ themeKey: themeKey || '' });
+
+  const { ref, inView } = useInView({
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (!inView || !hasNextPage) return;
+
+    fetchNextPage();
+  }, [inView, hasNextPage, fetchNextPage]);
 
   return (
     <>
-      <FetchStatusBoundary
-        fetchStatus={fetchStatus}
-        loadingComponent={
-          <ProductSkeletonGrid columnsDefault={4} itemCount={8} columnsSm={2} />
-        }
-      >
-        {productResponse?.pages?.map((page, index) => {
-          const key = `${productDisplayId}-${index}`;
+      {productResponse?.pages?.map((page, index) => {
+        const key = `${productDisplayId}-${index}`;
 
-          return (
-            <GiftDisplaySection
-              products={page.products}
-              maxColumns={4}
-              minColumns={2}
-              key={key}
-            />
-          );
-        })}
-      </FetchStatusBoundary>
+        return (
+          <GiftDisplaySection
+            products={page.products}
+            maxColumns={4}
+            minColumns={2}
+            key={key}
+          />
+        );
+      })}
       {isFetchingNextPage ? (
         <ProductSkeletonGrid columnsDefault={4} itemCount={4} columnsSm={2} />
       ) : null}
+      <div
+        css={css`
+          width: 100%;
+          height: 300px;
+        `}
+        ref={ref}
+      />
     </>
   );
 }

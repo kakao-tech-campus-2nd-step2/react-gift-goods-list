@@ -15,6 +15,7 @@ export const ThemePage = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    setIsLoading(true)
     const getTheme = async () => {
       try {
         const response = await fetchThemes();

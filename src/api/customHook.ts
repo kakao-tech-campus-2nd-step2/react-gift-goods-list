@@ -6,8 +6,10 @@ export const useFetchThemes = () => {
   return useFetchData<ThemeData[]>(fetchThemesFromAPI);
 };
 
-export const useFetchProductsByTheme = (themeKey: string) => {
-  return useFetchData<ProductData[]>(() => fetchProductsByTheme(themeKey));
+export const useFetchProductsByTheme = (themeKey: string, pageToken: number) => {
+  return useFetchData<{ products: ProductData[]; nextPageToken: number | null }>(() =>
+    fetchProductsByTheme(themeKey, pageToken),
+  );
 };
 
 export const useFetchRanking = (filterOption: RankingFilterOption) => {

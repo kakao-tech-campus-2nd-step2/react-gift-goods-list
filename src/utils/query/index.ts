@@ -1,8 +1,7 @@
 import { axiosInstance } from '@utils/network';
 import RequestURLs from '@constants/RequestURLs';
-import { QueryKey } from '@tanstack/react-query';
 import { RankingProductsResponse, ThemesResponse } from '@/types/response';
-import { ThemeDataRepository } from '@/types';
+import { RankFilter, TargetFilter, ThemeDataRepository } from '@/types';
 
 export const fetchThemes = async () => {
   const response = await axiosInstance.get<ThemesResponse>(RequestURLs.THEMES);
@@ -17,10 +16,10 @@ export const fetchThemes = async () => {
   return tmpThemes;
 };
 
-export const fetchProducts = async ({ queryKey }:{ queryKey: QueryKey }) => {
-  const queryParams = queryKey[1];
+export const fetchProducts = async (params:
+{ targetType: TargetFilter, rankType: RankFilter }) => {
   const response = await axiosInstance
-    .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params: queryParams });
+    .get<RankingProductsResponse>(RequestURLs.RANKING_PRODUCTS, { params });
 
   return response.data.products || [];
 };

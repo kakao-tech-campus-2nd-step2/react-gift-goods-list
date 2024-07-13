@@ -3,7 +3,9 @@ import {
 } from 'react';
 import { axiosInstance, replacePathParams } from '@utils/network';
 import RequestURLs from '@constants/RequestURLs';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import { QueryKeys } from '@constants/QueryKeys';
 import { ThemeProductsResponse } from '@/types/response';
 
@@ -30,8 +32,8 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
   const {
     data: productResponse,
     fetchNextPage, hasNextPage,
-    isFetchingNextPage, status,
-  } = useInfiniteQuery({
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery({
     initialData: undefined,
     initialPageParam: undefined,
     queryKey: [QueryKeys.THEME_PRODUCTS, themeKey],
@@ -40,7 +42,7 @@ function useFetchThemeProducts({ themeKey }: FetchParams) {
   });
 
   return {
-    productResponse, fetchNextPage, hasNextPage, isFetchingNextPage, status,
+    productResponse, fetchNextPage, hasNextPage, isFetchingNextPage,
   };
 }
 

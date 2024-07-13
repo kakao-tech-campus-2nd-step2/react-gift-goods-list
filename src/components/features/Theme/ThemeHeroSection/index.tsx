@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,23 +13,20 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
   const navigate = useNavigate();
+  const {
+    data: themes,
+    error,
+    isLoading,
+  } = useQuery<ThemeData[]>({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
+
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchThemes();
-        setThemes(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (themes.length > 0) {
+    if (themes) {
       const theme = getCurrentTheme(themeKey, themes);
       if (theme) {
         setCurrentTheme(theme);
@@ -37,6 +35,14 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
       }
     }
   }, [themes, themeKey, navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading themes</div>;
+  }
 
   if (!currentTheme) {
     return null;

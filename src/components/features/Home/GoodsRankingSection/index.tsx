@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 
 import { fetchRankingProducts } from '@/api/fetchRankingProducts';
 import { FetchDataUI } from '@/components/common/FetchDataUI';
 import { Container } from '@/components/common/layouts/Container';
-import { useFetchData } from '@/hooks/useFetchData';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import type { GoodsData } from '@/types';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -22,8 +21,9 @@ export const GoodsRankingSection = () => {
     return fetchRankingProducts(filterOption.targetType, filterOption.rankType);
   }, [filterOption]);
 
-  const { data, loading, error } = useFetchData<GoodsData[]>({
-    fetchData,
+  const { data, error, isLoading } = useQuery<GoodsData[]>({
+    queryKey: ['rankingProducts', filterOption],
+    queryFn: fetchData,
   });
 
   return (
@@ -31,8 +31,8 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <FetchDataUI loading={loading} error={error} data={data}>
-          <GoodsRankingList goodsList={data} />
+        <FetchDataUI loading={isLoading} error={error ? error.message : null} data={data || []}>
+          <GoodsRankingList goodsList={data || []} />
         </FetchDataUI>
       </Container>
     </Wrapper>

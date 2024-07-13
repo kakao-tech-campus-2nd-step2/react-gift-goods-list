@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import { useCallback } from 'react';
+import type { QueryFunctionContext } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import type { FetchThemeProductsResponse } from '@/api/fetchThemeProducts';
 import { fetchThemeProducts } from '@/api/fetchThemeProducts';
@@ -7,29 +10,46 @@ import { FetchDataUI } from '@/components/common/FetchDataUI';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { useFetchData } from '@/hooks/useFetchData';
 import { breakpoints } from '@/styles/variants';
 
 type Props = {
   themeKey: string;
 };
 
-const fetchData = async (themeKey: string): Promise<FetchThemeProductsResponse> => {
-  const res = await fetchThemeProducts(themeKey);
+const fetchProductList = async (
+  themeKey: string,
+  pageToken: string = '',
+): Promise<FetchThemeProductsResponse> => {
+  const res = await fetchThemeProducts(themeKey, pageToken);
   return res;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const fetchDataCallback = useCallback(() => fetchData(themeKey), [themeKey]);
+  const { ref, inView } = useInView();
 
-  const { data, loading, error } = useFetchData<FetchThemeProductsResponse>({
-    fetchData: fetchDataCallback,
-  });
+  const { data, fetchNextPage, isLoading, isError, error } =
+    useInfiniteQuery<FetchThemeProductsResponse>({
+      queryKey: ['products', themeKey],
+      queryFn: ({ pageParam = '' }: QueryFunctionContext) =>
+        fetchProductList(themeKey, pageParam as string),
+      initialPageParam: '',
+      getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
+    });
+
+  useEffect(() => {
+    if (inView && !isLoading) {
+      fetchNextPage();
+    }
+  }, [inView, isLoading, fetchNextPage]);
 
   return (
     <Wrapper>
       <Container>
-        <FetchDataUI loading={loading} error={error} data={data?.products}>
+        <FetchDataUI
+          loading={isLoading}
+          error={isError ? (error as Error).message : null}
+          data={data?.pages.flatMap((page) => page.products) || []}
+        >
           <Grid
             columns={{
               initial: 2,
@@ -37,17 +57,20 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             }}
             gap={16}
           >
-            {data?.products?.map(({ id, imageURL, name, price, brandInfo }) => (
-              <DefaultGoodsItems
-                key={id}
-                imageSrc={imageURL}
-                title={name}
-                amount={price.sellingPrice}
-                subtitle={brandInfo.name}
-              />
-            ))}
+            {data?.pages
+              .flatMap((page) => page.products)
+              ?.map(({ id, imageURL, name, price, brandInfo }) => (
+                <DefaultGoodsItems
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              ))}
           </Grid>
         </FetchDataUI>
+        <div ref={ref} style={{ height: '20px' }} />
       </Container>
     </Wrapper>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Navigate, useParams } from 'react-router-dom';
 
 import { fetchThemes } from '@/api/fetchThemes';
@@ -9,20 +9,16 @@ import { RouterPath } from '@/routes/path';
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const themes = await fetchThemes();
-        const currentTheme = getCurrentTheme(themeKey, themes);
+  const { data: themes } = useQuery({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
 
-        if (!currentTheme) {
-          return <Navigate to={RouterPath.notFound} />;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [themeKey]);
+  const currentTheme = themes ? getCurrentTheme(themeKey, themes) : null;
+
+  if (!currentTheme) {
+    return <Navigate to={RouterPath.notFound} />;
+  }
 
   return (
     <>

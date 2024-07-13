@@ -39,7 +39,7 @@ function ThemePage() {
             maxWidth={MAX_CONTENT_WIDTH}
             alignItems="center"
             flexDirection="column"
-            padding="40px 16px 0"
+            padding="40px 16px"
             cssProps={{
               gap: '16px',
             }}

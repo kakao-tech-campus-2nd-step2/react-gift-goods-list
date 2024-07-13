@@ -64,7 +64,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           elementSize="full-width"
           justifyContent="center"
           cssProps={{
-            padding: '0 20px 40px 20px',
+            padding: '0 20px',
           }}
         >
           <p>{ErrorMessages[statusCode]}</p>

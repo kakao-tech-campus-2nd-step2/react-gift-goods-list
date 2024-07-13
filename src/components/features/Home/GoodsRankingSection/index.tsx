@@ -1,28 +1,46 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { getRankingGoods } from '@/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-export const GoodsRankingSection = () => {
+export const GoodsRankingSection: React.FC = () => {
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 변수 이름 변경
 
-  // GoodsMockData를 21번 반복 생성
+  useEffect(() => {
+    const fetchGoods = async () => {
+      setErrorMessage(null);
+      try {
+        const data = await getRankingGoods(filterOption);
+        setGoodsList(data);
+      } catch (err) { 
+        setErrorMessage('데이터를 불러오는데 실패하였습니다.');
+      }
+    };
+
+    fetchGoods();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {errorMessage ? (
+          <ErrorMessage>{errorMessage}</ErrorMessage>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -49,4 +67,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff0000;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
 `;

@@ -9,6 +9,7 @@ import { ThemePage } from '@/pages/Theme';
 import { PrivateRoute } from './components/PrivateRoute';
 import { RouterPath } from './path';
 
+
 const router = createBrowserRouter([
   {
     path: RouterPath.root,

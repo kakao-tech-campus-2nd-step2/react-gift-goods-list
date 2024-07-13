@@ -1,7 +1,7 @@
 import type { GoodsData, ThemeData } from '.';
 
 export const ThemeMockData: ThemeData = {
-  id: 1,
+  id: 0,
   key: 'life_small_gift',
   label: '가벼운 선물',
   title: '예산은 가볍게, 감동은 무겁게❤️',
@@ -33,4 +33,7 @@ export const GoodsMockData: GoodsData = {
   },
 };
 
-export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
+export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, (_, index) => ({
+  ...GoodsMockData,
+  id: GoodsMockData.id + index, // 고유한 id 값 설정
+}));

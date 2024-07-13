@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
-import { fetchThemeProducts } from '@/api/Api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
@@ -11,51 +13,60 @@ import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
-  goods: GoodsData[];
+  pageParam?: number;
+};
+
+type ProductResponse = {
+  products: GoodsData[];
+  pageToken: number;
+};
+
+const BASE_URL = 'https://kakao-tech-campus-mock-server.vercel.app';
+
+const fetchThemeProducts = async ({
+  themeKey,
+  pageParam,
+}: {
+  themeKey: string;
+  pageParam?: number;
+}): Promise<ProductResponse> => {
+  const maxResults = 20;
+  const params: { maxResults: number; pageToken?: number } = { maxResults };
+  if (pageParam) {
+    params.pageToken = pageParam;
+  }
+  const response = await axios.get(`${BASE_URL}/api/v1/themes/${themeKey}/products`, { params });
+  return response.data;
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [goods, setGoods] = useState<GoodsData[]>([]);
+  const { inView, ref } = useInView();
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery<ProductResponse, AxiosError>(
+      ['themeProducts', themeKey],
+      ({ pageParam = 0 }) =>
+        fetchThemeProducts({ pageParam: pageParam === 0 ? undefined : pageParam, themeKey }),
+      {
+        getNextPageParam: (lastPage: ProductResponse) => {
+          if (lastPage.products.length < 20) {
+            return undefined;
+          }
+          return lastPage.pageToken + 1;
+        },
+      },
+    );
 
   useEffect(() => {
-    const fetchGoods = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await fetchThemeProducts(themeKey);
-        setGoods(data.products);
-        setLoading(false);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          switch (err.response?.status) {
-            case 400:
-              setError(new Error('죄송합니다. 요청이 잘못되었습니다. 다시 시도해 주세요.'));
-              break;
-            case 404:
-              setError(new Error('찾을 수 없습니다. 요청하신 페이지를 찾을 수 없습니다.'));
-              break;
-            case 500:
-              setError(new Error('서버에 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.'));
-              break;
-            default:
-              setError(
-                new Error(`알 수 없는 오류가 발생했습니다. 오류 코드: ${err.response?.status}`),
-              );
-              break;
-          }
-        }
-      }
-    };
-    fetchGoods();
-  }, [themeKey]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
+  if (isError) {
     return <div>Error: {error.message}</div>;
   }
 
@@ -69,16 +80,19 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {goods.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data?.pages.map((page) =>
+            page.products.map((goods: GoodsData) => (
+              <DefaultGoodsItems
+                key={goods.id}
+                imageSrc={goods.imageURL}
+                title={goods.name}
+                amount={goods.price.sellingPrice}
+                subtitle={goods.brandInfo.name}
+              />
+            )),
+          )}
         </Grid>
+        <div ref={ref}>{isFetchingNextPage ? '상품 추가로 불러오는 중...' : ''}</div>
       </Container>
     </Wrapper>
   );

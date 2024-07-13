@@ -20,14 +20,13 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   useEffect(() => {
     const fetchGoods = async () => {
+      setisLoading(true);
       try {
-        setisLoading(true);
         const data = await getThemeProducts(themeKey);
         setGoods(data);
-        setisLoading(false);
       } catch (err) {
-        setisLoading(true);
         setError('상품을 가져오는데 실패하였습니다.');
+      } finally {
         setisLoading(false);
       }
     };

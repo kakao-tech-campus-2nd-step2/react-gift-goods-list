@@ -21,6 +21,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     useInfiniteQuery(['themeProducts', themeKey], fetchThemeProducts, {
       getNextPageParam: (lastPage, allPages) =>
         lastPage.length ? allPages.length * 20 : undefined,
+      enabled: !!themeKey,
     });
   const { ref, inView } = useInView();
 

@@ -6,25 +6,31 @@ import apiClient from '@/api/index';
 import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { useThemes } from '@/hooks/useThemes';
 import { getDynamicPath } from '@/routes/path';
+import ErrorMessage from '@/styles/ErrorMessage';
+import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
 
-  const [themeCategory, setThemeCategory] = useState<ThemeData[]>([]);
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await apiClient.get<GetThemesResponse>('/api/v1/themes');
-        setThemeCategory(response.data.themes);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchThemes();
-  }, []);
+  const [themeData, { isLoading, isError, errorMessage}] = useThemes();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError || !themeData) {
+    return (
+      <ErrorMessage>
+        에러가 발생했습니다.
+        <br />
+        {errorMessage}
+      </ErrorMessage>
+    )
+  }
   return (
     <Wrapper>
       <Container>
@@ -34,7 +40,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themeCategory.map((theme) => {
+          {themeData && themeData.map((theme) => {
             return (
               <Link
                 key={theme.id}

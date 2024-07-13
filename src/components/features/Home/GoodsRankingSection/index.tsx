@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import apiClient from '@/api';
 import type { GetRankingProductsResponse,ProductData } from '@/api/types/apiTypes';
 import { Container } from '@/components/common/layouts/Container';
+import { useRankingProducts } from '@/hooks/useRankingProducts';
+import ErrorMessage from '@/styles/ErrorMessage';
+import Loading from '@/styles/Loading';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
 
@@ -15,25 +18,21 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [rankingProducts, setRankingProducts] = useState<ProductData[]>([]);
-  useEffect(() => {
-    const fetchRankingProducts = async () => {
-      try {
-        const response = await apiClient.get<GetRankingProductsResponse>('/api/v1/ranking/products', {
-          params: {
-            targetType: filterOption.targetType,
-            rankType: filterOption.rankType,
-          },
-        });
-        setRankingProducts(response.data.products);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchRankingProducts();
-  }, [filterOption]);
+  const [rankingProducts, { isLoading, isError, errorMessage}] = useRankingProducts(filterOption);
 
-  
+  if (isLoading) {
+    return <Loading />
+  }
+
+  if (isError || !rankingProducts) {
+    return (
+      <ErrorMessage>
+        에러가 발생했습니다.
+        <br />
+        {errorMessage}
+      </ErrorMessage>
+    )
+  }
 
   return (
     <Wrapper>
@@ -68,3 +67,4 @@ const Title = styled.h2`
     line-height: 50px;
   }
 `;
+

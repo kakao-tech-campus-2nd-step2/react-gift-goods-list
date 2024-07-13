@@ -17,20 +17,17 @@ export default () => {
             navigate('/error/' + themes?.httpStatusCode + '/main_themeList', { replace: true });
     }, [themes?.httpStatusCode, navigate]);
 
+    if (themes?.isLoading) return <LoadingUI />;
     return (
         <Grid columns={{ initial: 2, xs: 4, sm: 4, md: 6 }}>
-            {themes?.isLoading ? (
-                <LoadingUI />
-            ) : (
-                themes?.data?.themes.map((theme) => (
-                    <ThemeButton
-                        key={theme.id}
-                        themeKey={theme.key}
-                        themeLabel={theme.label}
-                        themeImg={theme.imageURL}
-                    />
-                ))
-            )}
+            {themes?.data?.themes.map((theme) => (
+                <ThemeButton
+                    key={theme.id}
+                    themeKey={theme.key}
+                    themeLabel={theme.label}
+                    themeImg={theme.imageURL}
+                />
+            ))}
         </Grid>
     );
 };

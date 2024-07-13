@@ -4,7 +4,7 @@ import GiftDisplaySection from '@components/organisms/gift/GiftDisplaySection';
 import { useEffect, useRef } from 'react';
 import useFetchThemeProducts from '@hooks/useFetchThemeProducts';
 import { css } from '@emotion/react';
-import { useInView } from 'react-intersection-observer';
+import useInView from '@hooks/useInView';
 import { generateRandomId } from '@/utils';
 
 interface ThemeProductDisplaySectionProps {
@@ -17,7 +17,10 @@ function ThemeProductDisplaySection({ themeKey }: ThemeProductDisplaySectionProp
     productResponse, hasNextPage, fetchNextPage, isFetchingNextPage,
   } = useFetchThemeProducts({ themeKey: themeKey || '' });
 
-  const { ref, inView } = useInView({
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { inView } = useInView({
+    ref: bottomRef,
     threshold: 1,
   });
 
@@ -49,7 +52,7 @@ function ThemeProductDisplaySection({ themeKey }: ThemeProductDisplaySectionProp
           width: 100%;
           height: 300px;
         `}
-        ref={ref}
+        ref={bottomRef}
       />
     </>
   );

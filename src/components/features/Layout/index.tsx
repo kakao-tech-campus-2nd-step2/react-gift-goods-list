@@ -1,32 +1,10 @@
 import styled from '@emotion/styled';
-import { useContext, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-
-import { getThemes } from '@/apis/themes/themes';
-import { SetThemeContext } from '@/context/themeContext';
-import { handleStatusCode } from '@/hooks/useGoodsSectionControl';
 
 import { Footer } from './Footer';
 import { Header, HEADER_HEIGHT } from './Header';
 
-let isInit = true;
-
 export const Layout = () => {
-  const setThemes = useContext(SetThemeContext);
-
-  useEffect(() => {
-    if (setThemes && isInit) {
-      getThemes()
-        .then((data) => {
-          isInit = false;
-          setThemes(data.themes);
-        })
-        .catch((err) => {
-          handleStatusCode(err);
-        });
-    }
-  }, [setThemes]);
-
   return (
     <Wrapper>
       <Header />

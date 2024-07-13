@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/apis/products/products';
 import { Button } from '@/components/common/Button';
@@ -14,13 +14,19 @@ type Props = {
 };
 
 export const GoodsRankingList = ({ filterOption }: Props) => {
-  const { data } = useQuery(
-    ['goodsRanking', filterOption],
-    () => getRankingProducts(filterOption),
-    { suspense: true },
-  );
+  /**
+   * throwOnError: (error, query) => typeof query.state.data === 'undefined'
+   * data가 undefined가 아님을 보장하기 위해 useSuspenseQuery의 throwOnError을 수정할 수 없다고 한다.
+   * 여기서 useBaseQuery가 에러를 던지면 Errorboundary에서 잘잡는데 왜 overlay에는 uncaught에러가 뜨는거지????
+   * 그냥 overlay를 끌까? iframe {display: none}
+   * 다운 버전해서 useQuery를 써야하나? 많이 별론데
+   */
+  const { data } = useSuspenseQuery({
+    queryKey: ['goodsRanking', filterOption],
+    queryFn: () => getRankingProducts(filterOption),
+  });
   const [hasMore, setHasMore] = useState(false);
-  const products = data?.products ?? [];
+  const products: Home.ProductData[] = data?.products ?? [];
 
   const currentGoodsList = hasMore ? products : products.slice(0, 6);
 
@@ -75,5 +81,3 @@ const ButtonWrapper = styled.div`
 
   padding-top: 30px;
 `;
-
-// export default GoodsRankingList;

@@ -7,6 +7,7 @@ export const ThemeMockData: ThemeData = {
   title: '예산은 가볍게, 감동은 무겁게❤️',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
+  imageURL: '',
 };
 
 export const ThemeMockList = [ThemeMockData];
@@ -15,7 +16,7 @@ export const GoodsMockData: GoodsData = {
   id: 123,
   name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
   imageURL:
-    'https://st.kakaocdn.net/product/gift/product/20231030175450_53e90ee9708f45ffa45b3f7b4bc01c7c.jpg',
+    '',
   wish: {
     wishCount: 201,
     isWished: false,
@@ -29,8 +30,10 @@ export const GoodsMockData: GoodsData = {
     id: 2088,
     name: 'BBQ',
     imageURL:
-      'https://st.kakaocdn.net/product/gift/gift_brand/20220216170226_38ba26d8eedf450683200d6730757204.png',
+      '',
   },
 };
 
 export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
+
+// 진행하며 생긴 궁금증: 기존에 있던 imageURL 등은 그냥 날리고 빈칸으로 둬도 무방할까요?

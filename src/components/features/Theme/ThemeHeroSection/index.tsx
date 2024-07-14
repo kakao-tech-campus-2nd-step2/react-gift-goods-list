@@ -1,29 +1,45 @@
 import styled from '@emotion/styled';
+// import type { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
 
+import instance from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const [ currentTheme, setCurrentTheme ] = useState<ThemeData>();
+
+  useEffect(() => {
+    const fetchThemeHero = async () => {
+      try {
+        const themeData  = await instance.get(`api/v1/themes`)
+        const theme = getCurrentTheme(themeKey, themeData.data.themes)
+        // data 없이 themeData.themes만 할 때는 자꾸 오류가 뜸:(.
+        setCurrentTheme(theme)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchThemeHero();
+  }, [themeKey]);
 
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  // const { backgroundColor, label, title, description } = currentTheme;
 
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

@@ -1,16 +1,70 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect,useState } from 'react';
 
+import instance from '@/api/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { Loading } from '@/components/common/Loading/Loading';
 import { breakpoints } from '@/styles/variants';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection = ({}: Props) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setIsError(false);
+        const maxResults = 20;
+        const response = await instance.get(`api/v1/themes/${themeKey}/products`, {
+          params: { maxResults }
+        });
+        setGoodsList(response.data.products);
+      } catch (error) {
+        setIsError(true);
+
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.status) {
+            case 400:
+              setErrorMessage("400, Bad Request.")
+              break;
+            case 404:
+              setErrorMessage("404, Not Found")
+              break;
+          }
+        } else {
+          setErrorMessage("400, Bad Request.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  fetchItems();
+  }, [themeKey]);
+
+  if (isLoading) {
+    return (
+      <Loading />
+    )
+  }
+
+  if (isError) {
+    return (
+      <Wrapper>
+        <ErrorWrapper>{errorMessage}</ErrorWrapper>
+      </Wrapper>
+    )
+  }
+
   return (
     <Wrapper>
       <Container>
@@ -21,7 +75,7 @@ export const ThemeGoodsSection = ({}: Props) => {
           }}
           gap={16}
         >
-          {GoodsMockList.map(({ id, imageURL, name, price, brandInfo }) => (
+          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -44,3 +98,10 @@ const Wrapper = styled.section`
     padding: 40px 16px 360px;
   }
 `;
+
+const ErrorWrapper = styled.div`
+width: 100%;
+font-size: 150px;
+text-align: center;
+color: red;
+`

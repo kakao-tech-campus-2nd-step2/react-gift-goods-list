@@ -33,6 +33,8 @@ const CategoryImage = styled(Image)`
   height: 100%;
   max-width: 50px;
   max-height: 50px;
+  aspect-ratio: 1;
+  object-fit: cover;
 
   border-radius: 18px;
 

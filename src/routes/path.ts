@@ -5,6 +5,7 @@ export const RouterPath = {
   myAccount: '/my-account',
   login: '/login',
   notFound: '*',
+  error: '/error',
 };
 
 export const getDynamicPath = {

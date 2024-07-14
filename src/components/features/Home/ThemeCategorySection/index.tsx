@@ -1,15 +1,21 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchThemes } from 'src/api/themes';
 
+import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
+
+interface ThemeData {
+  id: string;
+  key: string;
+  label: string;
+  imageURL: string;
+}
 
 export const ThemeCategorySection = () => {
   const [themes, setThemes] = useState<ThemeData[]>([]);
@@ -20,10 +26,8 @@ export const ThemeCategorySection = () => {
     const getThemes = async () => {
       try {
         const data = await fetchThemes();
-        console.log('Fetched themes:', data); // 응답 데이터 구조 확인
-        setThemes(data.themes ?? []); // If data.themes is undefined, set to empty array
+        setThemes(data.themes);
       } catch (err) {
-        console.error('Error fetching themes:', err);
         setError('Error loading themes');
       } finally {
         setIsLoading(false);
@@ -45,18 +49,14 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes && themes.length > 0 ? (
-            themes.map(theme => (
-              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-                <ThemeCategoryItem
-                  image={theme.imageURL}
-                  label={theme.label}
-                />
-              </Link>
-            ))
-          ) : (
-            <div>No themes available</div>
-          )}
+          {themes.map(theme => (
+            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+              <ThemeCategoryItem
+                image={theme.imageURL}
+                label={theme.label}
+              />
+            </Link>
+          ))}
         </Grid>
       </Container>
     </Wrapper>

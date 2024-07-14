@@ -1,17 +1,8 @@
-import type { ThemeProductsRequest,ThemeProductsResponse, ThemesResponse } from '../types';
-import axiosInstance from './axiosInstance';
+import axios from 'axios';
 
-export const fetchThemes = async (): Promise<ThemesResponse> => {
-  const response = await axiosInstance.get<ThemesResponse>('/api/v1/themes');
-  return response.data;
-};
+const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
 
-export const fetchThemeProducts = async (params: ThemeProductsRequest): Promise<ThemeProductsResponse> => {
-  const response = await axiosInstance.get<ThemeProductsResponse>(`/api/v1/themes/${params.themeKey}/products`, {
-    params: {
-      pageToken: params.pageToken,
-      maxResults: params.maxResults ?? 20,
-    },
-  });
+export const fetchThemes = async () => {
+  const response = await axios.get(`${baseURL}/api/v1/themes`);
   return response.data;
 };

@@ -506,6 +506,10 @@ components:
           type: string
           description: 선물 테마 카테고리 배경색
           example: '#F5F5F5'
+        imageUrl:
+          type: string
+          description: 선물 테마 이미지 URL
+          example: 'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png'
       required:
         - id
         - key

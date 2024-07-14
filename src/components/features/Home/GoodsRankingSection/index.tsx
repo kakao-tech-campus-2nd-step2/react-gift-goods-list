@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import { type GoodsData, type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,15 +14,54 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
+  const [goods, setGoods] = useState<GoodsData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>();
 
-  // GoodsMockData를 21번 반복 생성
+  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/ranking/products';
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: url,
+      params: filterOption,
+    })
+      .then((res) => {
+        setGoods(res.data.products);
+      })
+      .catch((err) => {
+        console.error('Error fetching themes:', err);
+        setError(err); // 에러 메시지 설정
+      })
+      .finally(() => {
+        setLoading(false); // 로딩 상태 해제
+      });
+  }, [filterOption]);
+
+  if (loading)
+    return (
+      <Container>
+        <div>데이터를 로딩중입니다.</div>
+      </Container>
+    );
+  if (error)
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
+  if (goods.length === 0)
+    return (
+      <Container>
+        <div>데이터가 존재하지 않습니다.</div>
+      </Container>
+    );
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        <GoodsRankingList goodsList={goods} />
       </Container>
     </Wrapper>
   );

@@ -1,14 +1,57 @@
 import styled from '@emotion/styled';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
+import { type ThemeData } from '@/types';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
+  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>();
+
+  const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
+  useEffect(() => {
+    axios
+      .get(url)
+      .then((res) => {
+        setThemes(res.data.themes);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error('Error fetching themes:', err);
+        setError(err); // 에러 메시지 설정
+      })
+      .finally(() => {
+        setLoading(false); // 로딩 상태 해제
+      });
+  }, []);
+
+  if (loading)
+    return (
+      <Container>
+        <div>데이터를 로딩중입니다.</div>
+      </Container>
+    );
+  if (error)
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
+  if (themes.length === 0)
+    return (
+      <Container>
+        <div>데이터가 존재하지 않습니다.</div>
+      </Container>
+    );
+
   return (
     <Wrapper>
       <Container>
@@ -18,78 +61,12 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="생일"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="졸업선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="스몰럭셔리"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="명품선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="결혼/집들이"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="따뜻한선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="가벼운선물"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="팬심저격"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="교환권"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="건강/비타민"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="과일/한우"
-            />
-          </Link>
-          <Link to={getDynamicPath.theme('life_small_gift')}>
-            <ThemeCategoryItem
-              image="https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fgift%2Fhome%2Ftheme%2F292020231106_MXMUB.png"
-              label="출산/키즈"
-            />
-          </Link>
+          {themes &&
+            themes.map((theme) => (
+              <Link to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+              </Link>
+            ))}
         </Grid>
       </Container>
     </Wrapper>

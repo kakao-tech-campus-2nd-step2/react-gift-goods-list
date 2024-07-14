@@ -1,55 +1,90 @@
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteQuery } from 'react-query';
 
+import { axiosInstance } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
-import useFetch from '@/utils/api';
 
 type Props = {
   themeKey: string;
 };
 
+type ProductResponse = {
+  products: GoodsData[];
+  nextPageToken?: string;
+};
+
+const fetchThemeProducts = async ({
+  themeKey,
+  pageParam,
+}: {
+  themeKey: string;
+  pageParam?: number;
+}) => {
+  const maxResults = 20;
+  const params = { maxResults, pageToken: pageParam };
+  if (pageParam) {
+    params.pageToken = pageParam;
+  }
+  try {
+    const response = await axiosInstance.get(`/api/v1/themes/${themeKey}/products`, { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw new Error('Failed to fetch theme products');
+  }
+};
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const params = useMemo(() => ({ maxResults: 20 }), []);
-  const { isLoading, isError, data } = useFetch<{ products: GoodsData[] }>(
-    `/api/v1/themes/${themeKey}/products`,
-    params,
-  );
+  const { inView, ref } = useInView();
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery<ProductResponse>(
+      ['themeProducts', themeKey],
+      async ({ pageParam = '0' }) => fetchThemeProducts({ pageParam, themeKey }),
+      {
+        getNextPageParam: (lastPage: ProductResponse) => lastPage.nextPageToken ?? false,
+      },
+    );
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const renderContent = () => {
-    if (isLoading) {
-      return <Description>로딩 중</Description>;
-    }
-    if (isError) {
-      return <Description>에러가 발생했습니다.</Description>;
-    }
-    if (data && data.products.length > 0) {
-      return (
-        <Container>
-          <Grid
-            columns={{
-              initial: 2,
-              md: 4,
-            }}
-            gap={16}
-          >
-            {data.products.map(({ id, imageURL, name, price, brandInfo }) => (
+    if (isLoading) return <Description>로딩 중</Description>;
+    if (isError) return <Description>에러가 발생했습니다.</Description>;
+    if (!data || data.pages.length === 0) return <Description>상품이 없어요.</Description>;
+    return (
+      <Container>
+        <Grid
+          columns={{
+            initial: 2,
+            md: 4,
+          }}
+          gap={16}
+        >
+          {data?.pages.map((page) =>
+            page.products.map((goods: GoodsData) => (
               <DefaultGoodsItems
-                key={id}
-                imageSrc={imageURL}
-                title={name}
-                amount={price.sellingPrice}
-                subtitle={brandInfo.name}
+                key={goods.id}
+                imageSrc={goods.imageURL}
+                title={goods.name}
+                amount={goods.price.sellingPrice}
+                subtitle={goods.brandInfo.name}
               />
-            ))}
-          </Grid>
-        </Container>
-      );
-    }
-    return <Description>상품이 없어요.</Description>;
+            )),
+          )}
+        </Grid>
+        <div ref={ref}>{isFetchingNextPage ? '로딩 중' : ''}</div>
+      </Container>
+    );
   };
 
   return <Wrapper>{renderContent()}</Wrapper>;

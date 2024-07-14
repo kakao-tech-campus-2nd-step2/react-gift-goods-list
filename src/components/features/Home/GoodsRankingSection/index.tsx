@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import useGetRanking from '@/api/hooks/useGetRanking';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData, RankingFilterOption } from '@/types';
-import useFetch from '@/utils/api';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,7 +15,7 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const { isLoading, isError, data } = useFetch<{ products: GoodsData[] }>(
+  const { isLoading, isError, data } = useGetRanking<{ products: GoodsData[] }>(
     '/api/v1/ranking/products',
     filterOption,
   );

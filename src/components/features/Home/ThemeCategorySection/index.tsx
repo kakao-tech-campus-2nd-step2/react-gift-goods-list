@@ -33,16 +33,24 @@ export const ThemeCategorySection = () => {
     fetchData();
   }, []); // 컴포넌트가 마운트될 때 한 번만 실행
 
+
+  if (isLoading) {
+    return <Loading />; // 로딩 중일 때
+  }
+
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>; // 에러 발생 시
+  }
+
+  if (themes.length === 0) {
+    return <EmptyMessage>테마 목록이 비어있습니다.</EmptyMessage>;
+  }
+
+
   return (
     <Wrapper>
       <Container>
-        {isLoading ? (
-          <Loading /> // 로딩 중일 때 로딩 컴포넌트 표시
-        ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage> // 에러 발생 시 에러 메시지 표시
-        ) : themes.length === 0 ? (
-          <EmptyMessage>테마 목록이 비어있습니다.</EmptyMessage> // 테마 리스트가 비어있을 때 빈 메시지 표시
-        ) : (
+
           <Grid
             columns={{
               initial: 4,
@@ -55,7 +63,7 @@ export const ThemeCategorySection = () => {
               </Link>
             ))}
           </Grid>
-        )}
+
       </Container>
     </Wrapper>
   );

@@ -35,16 +35,21 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     fetchData();
   }, [themeKey]); // themeKey가 변경될 때마다 데이터 다시 불러옴
 
+  if (isLoading) {
+    return <Loading />; // 로딩 중일 때
+  }
+
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>; // 에러 발생 시
+  }
+
+  if (goodsList.length === 0) {
+    return <EmptyMessage>선물 목록이 비어있습니다.</EmptyMessage>; // 상품 리스트가 비어있을 때
+  }
+
   return (
     <Wrapper>
       <Container>
-        {isLoading ? (
-          <Loading /> // 로딩 중일 때 로딩 컴포넌트 표시
-        ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage> // 에러 발생 시 에러 메시지 표시
-        ) : goodsList.length === 0 ? (
-          <EmptyMessage>상품 목록이 비어있습니다.</EmptyMessage> // 상품 리스트가 비어있을 때 빈 메시지 표시
-        ) : (
           <Grid
             columns={{
               initial: 2,
@@ -62,7 +67,6 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
               />
             ))}
           </Grid>
-        )}
       </Container>
     </Wrapper>
   );
@@ -78,7 +82,7 @@ const Wrapper = styled.section`
 
 const ErrorMessage = styled.p`
   color: red;
-  text-align: left;
+  text-align: center;
   font-size: 20px;
   padding: 20px;
   @media screen and (min-width: ${breakpoints.sm}) {

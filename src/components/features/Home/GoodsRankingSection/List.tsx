@@ -11,7 +11,7 @@ type Props = {
   goodsList: GoodsData[];
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList: React.FC<Props> = ({ goodsList }) => {
   const [hasMore, setHasMore] = useState(false);
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
@@ -37,17 +37,19 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
           />
         ))}
       </Grid>
-      <ButtonWrapper>
-        <Button
-          theme="outline"
-          style={{ maxWidth: '480px' }}
-          onClick={() => {
-            setHasMore((prev) => !prev);
-          }}
-        >
-          {hasMore ? '접기' : '더보기'}
-        </Button>
-      </ButtonWrapper>
+      {goodsList.length > 6 && (
+        <ButtonWrapper>
+          <Button
+            theme="outline"
+            style={{ maxWidth: '480px' }}
+            onClick={() => {
+              setHasMore((prev) => !prev);
+            }}
+          >
+            {hasMore ? '접기' : '더보기'}
+          </Button>
+        </ButtonWrapper>
+      )}
     </Wrapper>
   );
 };
@@ -64,6 +66,5 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-
   padding-top: 30px;
 `;

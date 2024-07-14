@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Grid } from '@/components/ui/Layout/Grid';
-
+import { Grid } from '.';
 import { NumberNode } from './NumberNode';
 
 const meta: Meta<typeof Grid> = {

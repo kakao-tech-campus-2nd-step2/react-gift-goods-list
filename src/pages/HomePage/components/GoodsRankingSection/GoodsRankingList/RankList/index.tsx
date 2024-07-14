@@ -1,6 +1,6 @@
 import { ProductData } from '@/types/productType';
 
-import { RankingGoodsItem } from '@/components/ui/GoodsItem/Ranking';
+import { RankingGoodsItem } from '@/components/GoodsItem/Ranking/Ranking';
 import { Grid } from '@/components/ui/Layout/Grid';
 
 type RankListProps = {

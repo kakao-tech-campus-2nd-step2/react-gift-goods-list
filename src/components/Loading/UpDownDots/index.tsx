@@ -10,7 +10,7 @@ const Dot = ({ delay }: DotProps) => {
   return <span css={dotStyle(delay)} />;
 };
 
-export const LoadingDots = () => {
+export const UpDownDots = () => {
   return (
     <Container alignItems="center" justifyContent="center" css={containerStyle}>
       <Dot delay={0} />

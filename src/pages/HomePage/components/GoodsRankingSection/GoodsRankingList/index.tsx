@@ -3,7 +3,7 @@ import { useExpansionControl } from '@/pages/HomePage/hooks/useExpansionControl'
 import { useVisibleList } from '@/pages/HomePage/hooks/useVisibleList';
 import { RankingFilter } from '@/types/productType';
 
-import { LoadingDots } from '@/components/LoadingDots';
+import { UpDownDots } from '@/components/Loading/UpDownDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { Container } from '@/components/ui/Layout/Container';
 
@@ -31,7 +31,7 @@ export const GoodsRankingList = ({ filter }: GoodsRankingListProps) => {
   }
 
   if (status === 'pending') {
-    return <LoadingDots />;
+    return <UpDownDots />;
   }
 
   if (!rankProducts?.length) {

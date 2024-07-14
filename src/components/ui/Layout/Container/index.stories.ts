@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Container } from '@/components/ui/Layout/Container';
+import { Container } from '.';
 
 const meta: Meta<typeof Container> = {
   title: 'Example/Layout/Container',

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Container } from '../ui/Layout/Container';
+import { Container } from '@/components/ui/Layout/Container';
 
 type OneTextContainerProps = {
   children: ReactNode;

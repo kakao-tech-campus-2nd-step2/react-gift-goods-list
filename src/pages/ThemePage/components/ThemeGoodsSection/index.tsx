@@ -5,9 +5,9 @@ import { useInfiniteThemeProducts } from '@/api/hooks/useInfiniteThemeProducts';
 import { ProductData } from '@/types/productType';
 
 import { Content } from '@/components/Content';
-import { LoadingDots } from '@/components/LoadingDots';
+import { GoodsItem } from '@/components/GoodsItem/Default/Default';
+import { UpDownDots } from '@/components/Loading/UpDownDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
-import { GoodsItem } from '@/components/ui/GoodsItem/Default';
 import { Grid } from '@/components/ui/Layout/Grid';
 
 import { gridStyle } from './styles';
@@ -33,7 +33,7 @@ export const ThemeGoodsSection = ({ themeKey }: ThemeGoodsSectionProps) => {
   }
 
   if (status === 'pending') {
-    return <LoadingDots />;
+    return <UpDownDots />;
   }
 
   if (!themeProducts?.length) {

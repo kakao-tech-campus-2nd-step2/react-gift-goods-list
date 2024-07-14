@@ -4,7 +4,7 @@ import { useThemeCategory } from '@/api/hooks/useThemeCategory';
 import { ThemeCategoryData } from '@/types/themeType';
 
 import { Content } from '@/components/Content';
-import { LoadingDots } from '@/components/LoadingDots';
+import { UpDownDots } from '@/components/Loading/UpDownDots';
 import { OneTextContainer } from '@/components/OneTextContainer';
 import { Grid } from '@/components/ui/Layout/Grid';
 
@@ -19,7 +19,7 @@ export const ThemeCategorySection = () => {
   }
 
   if (status === 'pending') {
-    return <LoadingDots />;
+    return <UpDownDots />;
   }
 
   return (

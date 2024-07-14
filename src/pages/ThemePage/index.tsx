@@ -6,7 +6,7 @@ import { ThemeErrorFallback } from '@/api/ThemeErrorFallback';
 import ROUTES from '@/constants/routes';
 import BaseLayout from '@/layouts/BaseLayout';
 
-import { Skeleton } from '@/components/ui/Skeleton';
+import { Skeleton } from '@/components/Loading/Skeleton';
 
 import { ThemeGoodsSection } from './components/ThemeGoodsSection';
 import { ThemeHeroSection } from './components/ThemeHeroSection';

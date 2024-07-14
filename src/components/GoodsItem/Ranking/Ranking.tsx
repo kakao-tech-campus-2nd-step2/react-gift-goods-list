@@ -1,11 +1,11 @@
 import { DEFAULT_IMAGE_URL } from '@/constants/data';
 
-import { RankedImage } from '@/components/ui/Image/RankingImage';
+import { RankedImage } from '@/components/GoodsItem/Ranking/RankingImage';
 import { Container } from '@/components/ui/Layout/Container';
 
-import { GoodsItemProps } from './Default';
-import { GoodsItemDetail } from './GoodsItemDetail';
-import { containerStyle } from './styles';
+import { GoodsItemProps } from '../Default/Default';
+import { GoodsItemDetail } from '../Default/GoodsItemDetail';
+import { containerStyle } from '../Default/styles';
 
 interface RankingGoodsItemProps extends GoodsItemProps {
   rank: number;

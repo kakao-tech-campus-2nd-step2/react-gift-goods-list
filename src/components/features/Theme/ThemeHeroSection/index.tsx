@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { useThemes } from '@/api';
+import { useThemes } from '@/api/hooks/useThemes';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import { ThemeData } from '@/types';

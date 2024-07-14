@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { useRankingProducts } from '@/api';
+import { useRankingProducts } from '@/api/hooks/useRankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { ErrorMessageContainer } from '@/styles';
 import { RankingFilterOption } from '@/types';

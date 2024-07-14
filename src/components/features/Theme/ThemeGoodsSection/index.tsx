@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
 
-import { useThemeProducts } from '@/api';
+import { useThemeProducts } from '@/api/hooks/useThemeProducts';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/DefaultGoodsItems';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';

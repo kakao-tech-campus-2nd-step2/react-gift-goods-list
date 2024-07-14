@@ -1,5 +1,4 @@
 import type { GoodsData, ThemeData } from '.';
-
 export const ThemeMockData: ThemeData = {
   id: 1,
   key: 'life_small_gift',
@@ -7,11 +6,10 @@ export const ThemeMockData: ThemeData = {
   title: '예산은 가볍게, 감동은 무겁게❤️',
   description: '당신의 센스를 뽐내줄 부담 없는 선물',
   backgroundColor: '#4b4d50',
-  imageURL: 'https://img1.daumcdn.net/thumb/S104x104/?fname=htt…et%2Fgift%2Fhome%2Ftheme%2F292120240213_MPJIS.png'
+  imageURL: '',
 };
 
 export const ThemeMockList = [ThemeMockData];
-
 export const GoodsMockData: GoodsData = {
   id: 123,
   name: 'BBQ 양념치킨+크림치즈볼+콜라1.25L',
@@ -33,5 +31,4 @@ export const GoodsMockData: GoodsData = {
       'https://st.kakaocdn.net/product/gift/gift_brand/20220216170226_38ba26d8eedf450683200d6730757204.png',
   },
 };
-
 export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);

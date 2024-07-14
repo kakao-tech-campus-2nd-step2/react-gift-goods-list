@@ -1,21 +1,37 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
+import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
+
+interface ThemeState {
+  label: string;
+  title: string;
+  description: string;
+  backgroundColor: string;
+}
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const location = useLocation();
 
-  if (!currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
+  const state = location.state as ThemeState;
+
+  if (!state) {
+    return <div>Invalid state</div>;
   }
+
+  const { label, title, description, backgroundColor } = state;
+  const theme = {
+    label: label,
+    title: title,
+    description: description,
+    backgroundColor: backgroundColor,
+    themeKey: themeKey, // themeKey 추가
+  };
 
   return (
     <>
-      <ThemeHeroSection themeKey={themeKey} />
+      <ThemeHeroSection theme={theme} />
       <ThemeGoodsSection themeKey={themeKey} />
     </>
   );

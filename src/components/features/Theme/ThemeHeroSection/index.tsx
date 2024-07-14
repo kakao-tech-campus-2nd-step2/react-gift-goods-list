@@ -1,22 +1,70 @@
 import styled from '@emotion/styled';
+import { isAxiosError } from 'axios';
+import { useEffect,useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { fetchThemes } from '@/api/api';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null> (null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const getTheme = async () => {
+      try {
+        const response = await fetchThemes()
+        const theme = getCurrentTheme(themeKey, response.themes)
+        if (!theme) {
+          setError('The requested theme does not exist')
+          navigate('/')
+        } else {
+          setCurrentTheme(theme)
+        }
+      } catch(err) {
+        if (isAxiosError(err)) {
+          if (err.response?.status === 404) {
+            setError('Theme not found')
+          } else if (err.response?.status === 500) {
+            setError('Internal server error')
+          } else {
+            setError('An unexpected error')
+          }
+        } else {
+          setError('Failed to load themes')
+          console.error('Failed to load themes', err)
+        }
+        navigate('/')
+      } finally {
+        setLoading(false)
+      }
+    }
+    getTheme()
+  }, [themeKey, navigate])
+
+  if (loading) {
+    return <LoadingWrapper>Loading...</LoadingWrapper>;
+  }
+
+  if (error) {
+    return <ErrorWrapper>{error}</ErrorWrapper>;
+  }
 
   if (!currentTheme) {
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
+  const { backgroundColor = '#333', label, title, description } = currentTheme;
 
   return (
     <Wrapper backgroundColor={backgroundColor}>
@@ -83,6 +131,17 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
+const LoadingWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+`;
+
+const ErrorWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: red;
+`;
+
+export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]): ThemeData | undefined => {
   return themeList.find((theme) => theme.key === themeKey);
 };

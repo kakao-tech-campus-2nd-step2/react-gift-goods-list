@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { RankingFilterOption } from '@/types/types';
 import { url } from '@/utils/url/url';
 
-export const fetchData = async (path: string, params?: RankingFilterOption) => {
+export const fetchData = async (path: string, params?: RankingFilterOption | { pageToken?: string; maxResults?: number }) => {
   try {
     const response = await axios.get(`${url}${path}`, {
       params,

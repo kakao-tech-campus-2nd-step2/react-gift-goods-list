@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { fetchRankingProducts } from '@/api/rankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData, RankingFilterOption } from '@/types';
+import type { GoodsData, RankingFilterOption, RankingProductsResponse } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -25,9 +25,15 @@ export const GoodsRankingSection = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetchRankingProducts(filterOption);
-        setGoodsList(response.products);
+        const response: RankingProductsResponse = await fetchRankingProducts(filterOption);
+        console.log('API Response:', response); // 응답 데이터를 콘솔에 출력
+        if (response && response.products) {
+          setGoodsList(response.products);
+        } else {
+          setGoodsList([]);
+        }
       } catch (err) {
+        console.error('Fetching ranking products failed:', err);
         if (axios.isAxiosError(err) && err.response) {
           switch (err.response.status) {
             case 400:
@@ -48,6 +54,7 @@ export const GoodsRankingSection = () => {
         } else {
           setError('네트워크 오류가 발생했습니다.');
         }
+        setGoodsList([]);
       } finally {
         setIsLoading(false);
       }

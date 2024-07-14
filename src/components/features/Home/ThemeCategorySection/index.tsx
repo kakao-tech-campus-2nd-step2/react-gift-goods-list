@@ -20,8 +20,10 @@ export const ThemeCategorySection = () => {
     const getThemes = async () => {
       try {
         const data = await fetchThemes();
-        setThemes(data.themes);
+        console.log('Fetched themes:', data); // 응답 데이터 구조 확인
+        setThemes(data.themes ?? []); // If data.themes is undefined, set to empty array
       } catch (err) {
+        console.error('Error fetching themes:', err);
         setError('Error loading themes');
       } finally {
         setIsLoading(false);
@@ -43,14 +45,18 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map(theme => (
-            <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
-              <ThemeCategoryItem
-                image={theme.imageURL}
-                label={theme.label}
-              />
-            </Link>
-          ))}
+          {themes && themes.length > 0 ? (
+            themes.map(theme => (
+              <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
+                <ThemeCategoryItem
+                  image={theme.imageURL}
+                  label={theme.label}
+                />
+              </Link>
+            ))
+          ) : (
+            <div>No themes available</div>
+          )}
         </Grid>
       </Container>
     </Wrapper>

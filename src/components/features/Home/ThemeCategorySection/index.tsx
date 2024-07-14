@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import useTheme from '@/hooks/useTheme/indes';
+import useTheme from '@/hooks/querys/useTheme';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 

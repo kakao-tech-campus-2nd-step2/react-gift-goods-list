@@ -2,7 +2,7 @@ import { Navigate, useParams } from 'react-router-dom';
 
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import useTheme from '@/hooks/useTheme/indes';
+import useTheme from '@/hooks/querys/useTheme';
 import { RouterPath } from '@/routes/path';
 
 export const ThemePage = () => {

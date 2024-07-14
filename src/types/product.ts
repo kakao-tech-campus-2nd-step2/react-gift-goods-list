@@ -28,7 +28,8 @@ export interface Theme {
   imageURL: string;
 }
 
-export interface ProductWithInfo extends Array<Product> {
+export interface ProductWithInfo {
+  products: Product[];
   nextPageToken: string;
   pageInfo: {
     totalResults: number;

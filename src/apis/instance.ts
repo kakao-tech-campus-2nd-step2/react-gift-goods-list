@@ -1,19 +1,27 @@
+import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-import ERROR_MESSATE from './errorCode.constants';
+import ERROR_MESSAGE from './errorCode.constants';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
+const handleAxiosError = (error: AxiosError) => {
+  const statusCode = error.response?.status?.toString();
+  if (statusCode && statusCode in ERROR_MESSAGE) {
+    throw new Error(ERROR_MESSAGE[statusCode as unknown as keyof typeof ERROR_MESSAGE]);
+  }
+  throw error;
+};
+
 instance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const isHasErrorMessage = Object.keys(ERROR_MESSATE).includes(error.response.status.toString());
-
-    if (isHasErrorMessage) {
-      throw new Error(ERROR_MESSATE[error.response.status as keyof typeof ERROR_MESSATE]);
+  (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      return handleAxiosError(error);
     }
+    throw error;
   },
 );
 

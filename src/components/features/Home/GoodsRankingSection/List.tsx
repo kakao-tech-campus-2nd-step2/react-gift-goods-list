@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useReducer } from 'react';
 
 import { Button } from '@/components/common/Button';
 import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
@@ -11,8 +11,17 @@ type Props = {
   goodsList: GoodsData[];
 };
 
+function hasMoreReducer(state: boolean, action: { type: 'TOGGLE' }): boolean {
+  switch (action.type) {
+    case 'TOGGLE':
+      return !state;
+    default:
+      return state;
+  }
+}
+
 export const GoodsRankingList = ({ goodsList }: Props) => {
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, toggleHasMore] = useReducer(hasMoreReducer, false);
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
 
@@ -45,9 +54,7 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
             <Button
               theme="outline"
               style={{ maxWidth: '480px' }}
-              onClick={() => {
-                setHasMore((prev) => !prev);
-              }}
+              onClick={() => toggleHasMore({ type: 'TOGGLE' })}
             >
               {hasMore ? '접기' : '더보기'}
             </Button>

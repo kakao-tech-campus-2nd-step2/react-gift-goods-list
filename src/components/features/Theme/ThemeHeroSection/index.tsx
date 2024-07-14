@@ -1,29 +1,44 @@
 import styled from '@emotion/styled';
+import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
+import { fetchThemes } from '@/api/themes';
 import { Container } from '@/components/common/layouts/Container';
+import { Loading, LoadingContainer } from '@/components/common/Loading';
+import { Message } from '@/components/common/Message';
+import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import type { ThemeData } from '@/types/api';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const navigate = useNavigate();
+  const { data, isError, isLoading } = useQuery('themes', fetchThemes);
+
+  if (isLoading) {
+    return <LoadingContainer><Loading /></LoadingContainer>;
+  }
+
+  if (isError) {
+    return <Message>데이터를 불러오는 중에 문제가 발생했습니다.</Message>;
+  }
+
+  const currentTheme = data?.find((theme: ThemeData) => theme.key === themeKey);
 
   if (!currentTheme) {
+    navigate(RouterPath.home);
     return null;
   }
 
-  const { backgroundColor, label, title, description } = currentTheme;
-
   return (
-    <Wrapper backgroundColor={backgroundColor}>
+    <Wrapper backgroundColor={currentTheme.backgroundColor!}>
       <Container>
-        <Label>{label}</Label>
-        <Title>{title}</Title>
-        {description && <Description>{description}</Description>}
+        <Label>{currentTheme.label}</Label>
+        <Title>{currentTheme.title}</Title>
+        {currentTheme.description && <Description>{currentTheme.description}</Description>}
       </Container>
     </Wrapper>
   );

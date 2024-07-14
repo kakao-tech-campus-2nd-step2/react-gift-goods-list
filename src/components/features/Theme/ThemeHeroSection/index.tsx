@@ -1,16 +1,27 @@
 import styled from '@emotion/styled';
+import { useQuery } from 'react-query';
 
+import { getThemes } from '@/api/themeApi';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data, error, isLoading } = useQuery<{ themes: ThemeData[] }, Error>('themes', getThemes);
+
+  if (isLoading) {
+    return <Loading>Loading...</Loading>;
+  }
+
+  if (error) {
+    return <Error>{error.message}</Error>;
+  }
+
+  const currentTheme = data?.themes.find((theme) => theme.key === themeKey);
 
   if (!currentTheme) {
     return null;
@@ -83,6 +94,13 @@ const Description = styled.p`
   }
 `;
 
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};
+const Loading = styled.div`
+  text-align: center;
+  padding: 20px;
+`;
+
+const Error = styled.div`
+  text-align: center;
+  padding: 20px;
+  color: red;
+`;

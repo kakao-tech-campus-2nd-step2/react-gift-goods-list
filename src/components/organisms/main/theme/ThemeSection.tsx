@@ -6,7 +6,7 @@ import ResponsiveThemeSection
   from '@components/organisms/main/theme/ResponsiveThemeSection';
 import { useContext } from 'react';
 import FetchStatusBoundary
-  from '@components/atoms/container/FetchStatusBoundary';
+  from '@components/atoms/boundary/FetchStatusBoundary';
 import { ThemeContext } from '@/providers/ThemeContextProvider';
 
 function ThemeSection() {

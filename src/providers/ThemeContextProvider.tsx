@@ -1,17 +1,15 @@
 import {
-  createContext, ReactNode, useEffect, useMemo, useState,
+  createContext, ReactNode, useMemo,
 } from 'react';
-import { axiosInstance } from '@utils/network';
-import RequestURLs from '@constants/RequestURLs';
 import FetchStatus from '@constants/FetchStatus';
-import { ThemesResponse } from '@/types/response';
-import { ThemeData } from '@/dto';
-
-type ThemeDataRepository = { [key: string]: ThemeData };
+import { useQuery } from '@tanstack/react-query';
+import { fetchThemes } from '@utils/query';
+import { QueryKeys } from '@constants/QueryKeys';
+import { FetchStatusType, ThemeDataRepository } from '@/types';
 
 interface ThemeContextData {
   themes: ThemeDataRepository;
-  fetchStatus: FetchStatus;
+  fetchStatus: FetchStatusType;
 }
 
 const defaultThemeContextData = {
@@ -22,29 +20,13 @@ const defaultThemeContextData = {
 export const ThemeContext = createContext<ThemeContextData>(defaultThemeContextData);
 
 function ThemeContextProvider({ children }: { children: ReactNode }) {
-  const [themes, setThemes] = useState<ThemeDataRepository>({});
-  const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.FETCHING);
+  const { data: themes = {}, status } = useQuery({
+    queryKey: [QueryKeys.THEMES],
+    queryFn: fetchThemes,
+  });
   const value = useMemo<ThemeContextData>(() => ({
-    themes, fetchStatus,
-  }), [themes, fetchStatus]);
-
-  useEffect(() => {
-    async function request() {
-      try {
-        const response = await axiosInstance.get<ThemesResponse>(RequestURLs.THEMES);
-        const tmpThemes: ThemeDataRepository = {};
-        response.data.themes.forEach((theme) => {
-          tmpThemes[theme.key] = theme;
-        });
-        setThemes(tmpThemes);
-        setFetchStatus(FetchStatus.FETCH_SUCCESS);
-      } catch (e) {
-        setFetchStatus(FetchStatus.FETCH_ERROR);
-      }
-    }
-
-    request();
-  }, []);
+    themes, fetchStatus: status,
+  }), [themes, status]);
 
   return (
     <ThemeContext.Provider value={value}>

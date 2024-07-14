@@ -14,17 +14,17 @@ function Banner({ themeKey }: BannerProps) {
   const theme = themes[themeKey];
 
   return (
-    <Container backgroundColor={theme.backgroundColor || backgroundColors.containerDark} elementSize="full-width" justifyContent="center">
+    <Container backgroundColor={theme?.backgroundColor || backgroundColors.containerDark} elementSize="full-width" justifyContent="center">
       <Container maxWidth={MAX_CONTENT_WIDTH} elementSize="full-width" padding="50px 20px">
         <Container flexDirection="column">
           <ThemeName>
-            {theme.label}
+            {theme?.label}
           </ThemeName>
           <ThemeTitle>
-            {theme.title}
+            {theme?.title}
           </ThemeTitle>
           <ThemeSubtitle>
-            {theme.description}
+            {theme?.description}
           </ThemeSubtitle>
         </Container>
       </Container>

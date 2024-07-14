@@ -2,10 +2,11 @@ import { ReactNode } from 'react';
 import FetchStatus from '@constants/FetchStatus';
 import Container from '@components/atoms/container/Container';
 import LoadingSpinner from '@components/atoms/LoadingSpinner';
+import { FetchStatusType } from '@/types';
 
 interface FetchStatusBoundaryProps {
   children: ReactNode;
-  fetchStatus: FetchStatus;
+  fetchStatus: FetchStatusType;
   loadingComponent?: ReactNode;
   errorComponent?: ReactNode;
   errorMessage?: string;

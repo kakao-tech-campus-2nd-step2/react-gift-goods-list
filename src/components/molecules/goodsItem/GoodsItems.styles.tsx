@@ -35,6 +35,7 @@ export const Title = styled.p`
   white-space: normal;
   display: -webkit-box;
   text-overflow: ellipsis;
+  line-height: 19px;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 `;

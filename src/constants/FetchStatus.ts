@@ -1,7 +1,7 @@
 enum FetchStatus {
-  FETCHING,
-  FETCH_SUCCESS,
-  FETCH_ERROR,
+  FETCHING = 'pending',
+  FETCH_SUCCESS = 'success',
+  FETCH_ERROR = 'error',
 }
 
 export default FetchStatus;

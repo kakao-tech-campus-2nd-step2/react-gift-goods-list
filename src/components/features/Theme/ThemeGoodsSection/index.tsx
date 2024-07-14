@@ -16,17 +16,17 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const {
     data: productsResponse,
-    loading,
-    error,
+    isLoading,
+    isError,
   } = useGetThemesProducts({
     themeKey,
   });
-  const products = productsResponse?.data?.products || [];
+  const products = productsResponse?.products || [];
 
   return (
     <Wrapper>
       <Container>
-        <Loading isLoading={loading} error={error}>
+        <Loading isLoading={isLoading} error={isError}>
           <ListMapper<ProductData>
             items={products}
             ItemComponent={({ item }) => (

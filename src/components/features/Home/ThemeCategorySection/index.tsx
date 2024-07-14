@@ -13,13 +13,13 @@ import { breakpoints } from '@/styles/variants';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const { data: themesResponse, loading, error } = useGetThemes();
-  const themes = themesResponse?.data?.themes;
+  const { data: themesResponse, isLoading, isError } = useGetThemes();
+  const themes = themesResponse?.themes;
 
   return (
     <Wrapper>
       <Container>
-        <Loading isLoading={loading} error={error}>
+        <Loading isLoading={isLoading} error={isError}>
           <ListMapper<ThemeData>
             items={themes}
             ItemComponent={({ item }) => (

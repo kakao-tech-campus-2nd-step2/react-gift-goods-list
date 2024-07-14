@@ -41,7 +41,7 @@ export const ThemeCategorySection = () => {
   if (fetchError) {
     return ShowError(fetchError);
   }
-  if (themes.length == 0) {
+  if (themes?.length == 0) {
     return ShowError('데이터 없음');
   }
 

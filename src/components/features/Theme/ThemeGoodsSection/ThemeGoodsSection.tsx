@@ -42,7 +42,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   if (fetchError) {
     return ShowError(fetchError);
   }
-  if (products.length == 0) {
+  if (products?.length == 0) {
     return ShowError('데이터 없음');
   }
 

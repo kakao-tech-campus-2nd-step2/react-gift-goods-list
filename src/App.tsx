@@ -45,6 +45,10 @@ const router = createBrowserRouter([
         element: <Error />,
     },
     {
+        path: '/error/:http_status/:error_origin',
+        element: <Error />,
+    },
+    {
         path: '/theme/:themeKey',
         element: <Theme />,
     },

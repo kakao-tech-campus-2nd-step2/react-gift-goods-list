@@ -1,4 +1,5 @@
 type ItemComponentProps<T> = {
+  ref?: React.Ref<HTMLDivElement>;
   item: T;
   index: number;
 };
@@ -12,6 +13,9 @@ type ListMapperProps<T> = {
   ItemComponent: (props: ItemComponentProps<T>) => React.JSX.Element;
   width?: string;
   height?: string;
+  infinite?: boolean;
+  hasNextPage?: boolean;
+  fetchNextPage?: () => void;
 };
 
 function ListMapper<T>({

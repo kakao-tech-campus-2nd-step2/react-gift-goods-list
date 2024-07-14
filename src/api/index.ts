@@ -49,7 +49,8 @@ function useAxiosQueryWithPage<T extends { nextPageToken: string }>(
         params: { ...axiosOptions.params, pageToken: pageParam },
       }).then((res) => res.data),
     initialPageParam: '0',
-    getNextPageParam: (lastPage) => lastPage,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getNextPageParam: (lastPage: any) => lastPage.nextPageToken,
     ...(queryOptions || {}),
   });
 }

@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { RouterPath } from '@/routes/path';
+
 import Loading from '@/components/Loading';
 import { fetchThemesFromAPI, fetchProductsByTheme } from '@/api/api';
 

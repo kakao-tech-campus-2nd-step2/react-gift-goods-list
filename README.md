@@ -30,7 +30,7 @@
   - [X] Http Status에 따라 Error 다르게 처리(일단 400, 404만..)
   - [ ] Error 페이지 제작,,(시간관계상 포기)
 - [ ] Pagination
-  - [ ]메인 페이지의 테마 별 선물 추천 API에 페이지네이션 구현하기
+  - [ ] Theme 페이지의 테마 별 선물 추천 API에 페이지네이션 구현하기
 - [ ] React Query 사용해보기
   - [ ] 1단계에서 구현한 API를 react-query를 사용해서 구현해봐요.
 

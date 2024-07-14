@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -8,6 +7,7 @@ import { UnderlineTextField } from '@/components/common/Form/Input/UnderlineText
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { breakpoints } from '@/styles/variants';
 import { authSessionStorage } from '@/utils/storage';
+import styled from '@emotion/styled';
 
 export const LoginPage = () => {
   const [id, setId] = useState('');
@@ -31,7 +31,7 @@ export const LoginPage = () => {
 
   return (
     <Wrapper>
-      <Logo src={KAKAO_LOGO} alt="카카고 CI" />
+      <Logo src={KAKAO_LOGO} alt="카카오 CI" />
       <FormWrapper>
         <UnderlineTextField placeholder="이름" value={id} onChange={(e) => setId(e.target.value)} />
         <Spacing />

@@ -33,4 +33,7 @@ export const GoodsMockData: GoodsData = {
   },
 };
 
-export const GoodsMockList: GoodsData[] = Array.from({ length: 21 }, () => GoodsMockData);
+export const GoodsMockList: GoodsData[] = Array.from(
+  { length: 21 },
+  () => GoodsMockData
+);

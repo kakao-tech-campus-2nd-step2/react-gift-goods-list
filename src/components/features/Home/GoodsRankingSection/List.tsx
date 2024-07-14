@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Button } from '@/components/common/Button';
@@ -6,6 +5,7 @@ import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
+import styled from '@emotion/styled';
 
 type Props = {
   goodsList: GoodsData[];

@@ -1,11 +1,14 @@
-import { AuthProvider } from './provider/Auth';
-import { Routes } from './routes';
+import { AuthProvider } from '@/provider/Auth';
+import { ThemeProvider } from '@/provider/Theme/ThemeProvider';
+import { Routes } from '@/routes';
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Routes />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

@@ -1,7 +1,6 @@
-import styled from '@emotion/styled';
-
 import { Image } from '@/components/common/Image';
 import { breakpoints } from '@/styles/variants';
+import styled from '@emotion/styled';
 
 type Props = {
   image: string;

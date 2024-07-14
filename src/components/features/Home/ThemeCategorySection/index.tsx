@@ -1,37 +1,20 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getThemes } from '@/api';
+import { useThemes } from '@/api/hooks/useThemes';
 import { Image } from '@/components/common/Image';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { getDynamicPath } from '@/routes';
 import { ErrorMessageContainer } from '@/styles';
-import { ThemeData } from '@/types';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const data = await getThemes();
-        setThemes(data.themes);
-        setIsLoading(false);
-      } catch (error) {
-        setIsError(true);
-        setIsLoading(false);
-      }
-    };
-
-    fetchThemes();
-  }, []);
+  const { data, isLoading, isError } = useThemes();
 
   if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
   if (isError) return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
+
+  const themes = data?.themes ?? [];
 
   return (
     <StyledThemeCategorySection>

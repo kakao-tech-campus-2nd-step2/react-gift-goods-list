@@ -36,22 +36,26 @@ export const GoodsRankingSection = () => {
     };
 
     fetchData();
-  }, [filterOption]); // filterOption이 변경될 때마다 데이터 다시 불러오기
+  }, [filterOption]);
+
+  if (isLoading) {
+    return <Loading />; // 로딩 중일 때
+  }
+
+  if (error) {
+    return <ErrorMessage>{error}</ErrorMessage>; // 에러 발생 시
+  }
+
+  if (goodsList.length === 0) {
+    return <EmptyMessage>선물 목록이 비어있습니다.</EmptyMessage>; // 상품 리스트가 비어있을 때
+  }
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        {isLoading ? (
-          <Loading /> // 데이터 로딩 중일 때 로딩 컴포넌트 표시
-        ) : error ? (
-          <ErrorMessage>{error}</ErrorMessage> // 에러 발생 시 에러 메시지 표시
-        ) : goodsList.length === 0 ? (
-          <EmptyMessage>선물 목록이 비어있습니다.</EmptyMessage> // 상품 리스트가 비어있을 때
-        ) : (
-          <GoodsRankingList goodsList={goodsList} /> // 상품 랭킹 리스트 표시
-        )}
+        <GoodsRankingList goodsList={goodsList} /> // 상품 랭킹 리스트 표시
       </Container>
     </Wrapper>
   );

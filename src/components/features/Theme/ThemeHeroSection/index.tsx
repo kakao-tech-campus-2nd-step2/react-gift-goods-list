@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Navigate } from 'react-router-dom';
 
 import { API_ENDPOINT } from '@/api/constants/apiPath';
 import { fetchData } from '@/api/fetchData';
-import { getErrorMessage } from '@/api/getErrorMessage';
-import type { FetchState } from '@/api/types/fetchState';
 import { Container } from '@/components/common/layouts/Container';
 import { RouterPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
@@ -16,61 +14,24 @@ type Props = {
   themeKey: string;
 };
 
+const fetchThemeData = async () => {
+  const { data } = await fetchData<GetThemeDataResponse>(API_ENDPOINT.THEMES);
+  return data.themes;
+};
+
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [fetchState, setFetchState] = useState<FetchState<ThemeData>>({
-    isLoading: true,
-    isError: false,
-    isDataNull: false,
-    data: null,
-    errorMessage: null,
+  const { data } = useSuspenseQuery<ThemeData[]>({
+    queryKey: ['themeData'],
+    queryFn: () => fetchThemeData(),
   });
+  const currentTheme = getCurrentTheme(themeKey, data);
 
-  useEffect(() => {
-    const fetchThemeData = async () => {
-      try {
-        const res = await fetchData<GetThemeDataResponse>(API_ENDPOINT.THEMES);
-        if (res.ok) {
-          const theme = getCurrentTheme(themeKey, res.data.themes);
-          setFetchState({
-            isLoading: false,
-            isError: false,
-            isDataNull: theme === null,
-            data: theme || null,
-            errorMessage: null,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        setFetchState({
-          isLoading: false,
-          isError: true,
-          isDataNull: true,
-          data: null,
-          errorMessage: getErrorMessage(error),
-        });
-      }
-    };
-
-    fetchThemeData();
-  }, [themeKey]);
-
-  if (fetchState.isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (fetchState.isError) {
-    return <div>테마 섹션을 불러오지 못했습니다.</div>;
-  }
-
-  if (fetchState.isDataNull) {
-    return <div>테마 섹션이 비어있습니다.</div>;
-  }
-
-  if (!fetchState?.data?.key) {
+  if (!currentTheme?.key) {
     return <Navigate to={RouterPath.home} />;
   }
 
-  const { backgroundColor, label, title, description } = fetchState.data;
+  const { backgroundColor, label, title, description } = currentTheme;
+  
   return (
     <Wrapper backgroundColor={backgroundColor}>
       <Container>

@@ -32,3 +32,11 @@ npm run start
 - [x] 각 API에서 Loading 상태에 대한 UI 대응을 함.
 - [x] 데이터가 없는 경우에 대한 UI 대응을 함.
 - [x] Http Status에 따라 Error를 다르게 처리함.
+
+## Week3. STEP3 - 테마 별 선물 추천 API에 페이지네이션 구현하기
+
+### 📜Requirements
+
+- [x] React Query를 사용하여 API 구현
+- [x] Suspense, Error Boundary를 사용하여 에러, 로딩 상태 핸들링을 함.
+- [x] 페이지네이션과 무한스크롤 구현

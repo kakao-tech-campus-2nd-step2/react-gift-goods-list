@@ -28,7 +28,7 @@ function MyPage() {
   }, [isLoggedIn, navigate]);
 
   return (
-    <Page isLoggedIn>
+    <Page>
       <Container
         elementSize="full-width"
         justifyContent="center"

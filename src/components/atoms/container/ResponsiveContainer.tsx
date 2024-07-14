@@ -1,9 +1,7 @@
 import BreakpointContainer
   from '@components/atoms/container/ResponsiveContainer.styles';
 import Container from '@components/atoms/container/Container';
-import {
-  ResponsiveContainerProps,
-} from '@/types';
+import { ResponsiveContainerProps } from '@/types';
 
 function ResponsiveContainer({
   sizeDefault, sizeXS, sizeSm, sizeMd, sizeLg, ...rest

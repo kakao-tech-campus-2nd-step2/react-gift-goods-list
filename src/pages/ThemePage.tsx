@@ -2,10 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Page from '@components/templates/Page';
 import Banner from '@components/organisms/banner/Banner';
 import { MAX_CONTENT_WIDTH } from '@styles/size';
-import {
-  Suspense,
-  useContext, useEffect,
-} from 'react';
+import { Suspense, useContext, useEffect } from 'react';
 import FetchStatus from '@constants/FetchStatus';
 import ThemeProductDisplaySection
   from '@components/organisms/theme/ThemeProductDisplaySection';

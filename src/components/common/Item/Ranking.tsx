@@ -2,17 +2,17 @@ import styled from '@emotion/styled';
 
 import { breakpoints } from '@/styles/variants';
 
-import { DefaultGoodsItems, type DefaultGoodsItemsProps } from './Default';
+import { DefaultItems, type DefaultItemsProps } from './Default';
 
 type Props = {
   rankingIndex: number;
-} & DefaultGoodsItemsProps;
+} & DefaultItemsProps;
 
-export const RankingGoodsItems = ({ rankingIndex, ...props }: Props) => {
+export const RankingItems = ({ rankingIndex, ...props }: Props) => {
   return (
     <Wrapper>
       <RankingLabel rankingIndex={rankingIndex}>{rankingIndex}</RankingLabel>
-      <DefaultGoodsItems {...props} />
+      <DefaultItems {...props} />
     </Wrapper>
   );
 };

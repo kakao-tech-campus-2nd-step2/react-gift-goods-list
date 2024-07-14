@@ -1,6 +1,6 @@
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { AiDiscoveryBanner } from '@/components/features/Home/AiDiscoveryBanner';
-import { GoodsRankingSection } from '@/components/features/Home/GoodsRankingSection';
+import { RankingSection } from '@/components/features/Home/RankingSection';
 import { SelectFriendsBanner } from '@/components/features/Home/SelectFriendsBanner';
 import { ThemeCategorySection } from '@/components/features/Home/ThemeCategorySection';
 
@@ -17,7 +17,7 @@ export const HomePage = () => {
           md: 120,
         }}
       />
-      <GoodsRankingSection />
+      <RankingSection />
     </>
   );
 };

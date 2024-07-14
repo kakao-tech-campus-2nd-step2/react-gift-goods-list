@@ -1,19 +1,41 @@
 import styled from '@emotion/styled';
+import { useQuery } from 'react-query';
 
+import axiosInstance from '@/api/axiosInstance';
+import { Loading } from '@/api/Loading';
+import { NoData } from '@/api/NoData';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
-export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+const fetchThemes = async () => {
+  const response = await axiosInstance.get('/api/v1/themes');
+  return response.data;
+};
+
+export const HeroSection = ({ themeKey }: Props) => {
+  const { data, isLoading, error } = useQuery<{ themes: ThemeData[] }>('themes', fetchThemes);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <NoData message="An error occurred while fetching data." />;
+  }
+
+  if (!data || !Array.isArray(data.themes)) {
+    return <NoData />;
+  }
+
+  const currentTheme = data.themes.find((theme) => theme.key === themeKey);
 
   if (!currentTheme) {
-    return null;
+    return <NoData />;
   }
 
   const { backgroundColor, label, title, description } = currentTheme;
@@ -82,7 +104,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

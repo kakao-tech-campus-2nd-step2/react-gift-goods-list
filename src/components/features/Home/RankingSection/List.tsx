@@ -2,19 +2,19 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { Button } from '@/components/common/Button';
-import { RankingGoodsItems } from '@/components/common/GoodsItem/Ranking';
+import { RankingItems } from '@/components/common/Item/Ranking';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { ProductData } from '@/types';
 
 type Props = {
-  goodsList: GoodsData[];
+  ProductList: ProductData[];
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const RankingList = ({ ProductList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
-  const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+  const currentProductList = hasMore ? ProductList : ProductList.slice(0, 6);
 
   return (
     <Wrapper>
@@ -26,8 +26,8 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
         }}
         gap={16}
       >
-        {currentGoodsList.map(({ id, imageURL, name, price, brandInfo }, index) => (
-          <RankingGoodsItems
+        {currentProductList.map(({ id, imageURL, name, price, brandInfo }, index) => (
+          <RankingItems
             key={id}
             rankingIndex={index + 1}
             imageSrc={imageURL}

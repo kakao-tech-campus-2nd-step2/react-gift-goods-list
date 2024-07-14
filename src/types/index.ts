@@ -5,6 +5,8 @@ export type ThemeData = {
   title: string;
   description?: string;
   backgroundColor: string;
+  imageURL: string;  // api
+  name: string;      // api
 };
 
 export type RankingFilterOption = {
@@ -12,7 +14,7 @@ export type RankingFilterOption = {
   rankType: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
 };
 
-export type GoodsData = {
+export type ProductData = {
   id: number;
   name: string;
   imageURL: string;
@@ -29,5 +31,14 @@ export type GoodsData = {
     id: number;
     name: string;
     imageURL: string;
+  };
+};
+
+export type ThemeProductResponse = {
+  products: ProductData[];
+  nextPageToken?: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
   };
 };

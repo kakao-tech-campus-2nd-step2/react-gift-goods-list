@@ -2,20 +2,20 @@ import styled from '@emotion/styled';
 
 import { Image } from '@/components/common/Image';
 
-export type DefaultGoodsItemsProps = {
+export type DefaultItemsProps = {
   imageSrc: string;
   subtitle: string;
   title: string;
   amount: number;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export const DefaultGoodsItems = ({
+export const DefaultItems = ({
   imageSrc,
   subtitle,
   title,
   amount,
   ...props
-}: DefaultGoodsItemsProps) => {
+}: DefaultItemsProps) => {
   return (
     <Wrapper {...props}>
       <Image src={imageSrc} alt={`${title} 소개`} width="100%" ratio="square" radius={4} />

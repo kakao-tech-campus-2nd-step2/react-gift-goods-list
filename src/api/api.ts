@@ -21,15 +21,25 @@ export const fetchRankingFromAPI = async (
 
 export const fetchProductsByTheme = async (
   themeKey: string,
+  pageToken: number,
   maxResults = 20,
-): Promise<ProductData[]> => {
-  const response = await api.get<{ products: ProductData[] }>(
-    `/api/v1/themes/${themeKey}/products`,
-    {
-      params: {
-        maxResults,
-      },
+): Promise<{ products: ProductData[]; nextPageToken: number | null }> => {
+  const response = await api.get<{
+    products: ProductData[];
+    nextPageToken: string | null;
+    pageInfo: { totalResults: number; resultsPerPage: number };
+  }>(`/api/v1/themes/${themeKey}/products`, {
+    params: {
+      pageToken,
+      maxResults,
     },
-  );
-  return response.data.products;
+  });
+  const { products, pageInfo } = response.data;
+  const calculatedNextPageToken =
+    pageToken * maxResults >= pageInfo.totalResults ? null : pageToken + 1;
+
+  return {
+    products,
+    nextPageToken: calculatedNextPageToken,
+  };
 };

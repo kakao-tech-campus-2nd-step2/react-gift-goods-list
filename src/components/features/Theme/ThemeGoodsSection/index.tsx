@@ -5,24 +5,20 @@ import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { breakpoints } from '@/styles/variants';
 
-import { useFetchProductsByTheme } from '@/api/customHook';
 import Loading from '@/components/Loading';
-import ErrorMessage from '@/components/ErrorMessage';
+import { ProductData } from '@/types';
 
 type Props = {
-  themeKey: string;
+  items: ProductData[];
 };
 
-export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { data: products, loading, error } = useFetchProductsByTheme(themeKey);
-
-  if (loading) return <Loading />;
-  if (error) return <ErrorMessage message={error} />;
+export const ThemeGoodsSection = ({ items }: Props) => {
+  if (items.length === 0) return <Loading />;
 
   return (
     <Wrapper>
       <Container>
-        {products && products.length > 0 ? (
+        {items && items.length > 0 ? (
           <Grid
             columns={{
               initial: 2,
@@ -30,7 +26,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
             }}
             gap={16}
           >
-            {products.map(({ id, imageURL, name, price, brandInfo }) => (
+            {items.map(({ id, imageURL, name, price, brandInfo }) => (
               <DefaultGoodsItems
                 key={id}
                 imageSrc={imageURL}

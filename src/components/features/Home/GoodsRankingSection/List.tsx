@@ -9,12 +9,26 @@ import type { GoodsData } from '@/types';
 
 type Props = {
   goodsList: GoodsData[];
+  isLoading: boolean;
+  error: string | null;
 };
 
-export const GoodsRankingList = ({ goodsList }: Props) => {
+export const GoodsRankingList = ({ goodsList, isLoading, error }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);
+
+  if (isLoading) {
+    return <Loading>Loading...</Loading>;
+  }
+
+  if (error) {
+    return <Error>{error}</Error>;
+  }
+
+  if (goodsList.length === 0) {
+    return <NoData>보여줄 상품이 없어요!</NoData>;
+  }
 
   return (
     <Wrapper>
@@ -64,6 +78,22 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-
   padding-top: 30px;
+`;
+
+const Loading = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const Error = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 18px;
+`;
+
+const NoData = styled.div`
+  text-align: center;
+  font-size: 18px;
+  padding: 20px 0;
 `;

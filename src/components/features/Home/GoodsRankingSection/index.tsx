@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
+import { fetchRankingProducts } from '@/api/rankingProducts';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
+import type { GoodsData, RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -15,14 +16,60 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getRankingProducts = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetchRankingProducts(filterOption);
+        setGoodsList(response.products);
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response) {
+          switch (err.response.status) {
+            case 400:
+              setError('잘못된 요청입니다.');
+              break;
+            case 401:
+              setError('인증이 필요합니다.');
+              break;
+            case 404:
+              setError('리소스를 찾을 수 없습니다.');
+              break;
+            case 500:
+              setError('서버 오류가 발생했습니다.');
+              break;
+            default:
+              setError('알 수 없는 오류가 발생했습니다.');
+          }
+        } else {
+          setError('네트워크 오류가 발생했습니다.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading ? (
+          <Loading>Loading...</Loading>
+        ) : error ? (
+          <Error>{error}</Error>
+        ) : goodsList.length === 0 ? (
+          <NoData>보여줄 상품이 없어요!</NoData>
+        ) : (
+          <GoodsRankingList goodsList={goodsList} isLoading={false} error={null} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -49,4 +96,21 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const Loading = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const Error = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 18px;
+`;
+
+const NoData = styled.div`
+  text-align: center;
+  font-size: 18px;
+  padding: 20px 0;
 `;

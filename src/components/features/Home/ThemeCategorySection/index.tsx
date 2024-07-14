@@ -33,7 +33,6 @@ export const ThemeCategorySection = () => {
     fetchData();
   }, []); // 컴포넌트가 마운트될 때 한 번만 실행
 
-
   if (isLoading) {
     return <Loading />; // 로딩 중일 때
   }
@@ -46,24 +45,21 @@ export const ThemeCategorySection = () => {
     return <EmptyMessage>테마 목록이 비어있습니다.</EmptyMessage>;
   }
 
-
   return (
     <Wrapper>
       <Container>
-
-          <Grid
-            columns={{
-              initial: 4,
-              md: 6,
-            }}
-          >
-            {themes.map((theme) => (
-              <Link key={theme.id} to={`/theme/${theme.key}`}>
-                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-              </Link>
-            ))}
-          </Grid>
-
+        <Grid
+          columns={{
+            initial: 4,
+            md: 6,
+          }}
+        >
+          {themes.map((theme) => (
+            <Link key={theme.id} to={`/theme/${theme.key}`}>
+              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+            </Link>
+          ))}
+        </Grid>
       </Container>
     </Wrapper>
   );

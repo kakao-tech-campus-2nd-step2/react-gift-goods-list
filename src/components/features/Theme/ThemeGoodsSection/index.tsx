@@ -50,23 +50,23 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
     <Wrapper>
       <Container>
-          <Grid
-            columns={{
-              initial: 2,
-              md: 4,
-            }}
-            gap={16}
-          >
-            {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
-              <DefaultGoodsItems
-                key={id}
-                imageSrc={imageURL}
-                title={name}
-                amount={price.sellingPrice}
-                subtitle={brandInfo.name}
-              />
-            ))}
-          </Grid>
+        <Grid
+          columns={{
+            initial: 2,
+            md: 4,
+          }}
+          gap={16}
+        >
+          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
+            <DefaultGoodsItems
+              key={id}
+              imageSrc={imageURL}
+              title={name}
+              amount={price.sellingPrice}
+              subtitle={brandInfo.name}
+            />
+          ))}
+        </Grid>
       </Container>
     </Wrapper>
   );

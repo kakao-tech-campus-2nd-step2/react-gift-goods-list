@@ -17,38 +17,43 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
 
   const { data, isLoading, isError, refetch } = useThemeProducts(themeKey);
 
-  const goodsList = data?.products ?? [];
+  const goodsList = data?.products;
 
   useEffect(() => {
     refetch();
   }, [themeKey, refetch]);
 
   if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
-  if (isError || !goodsList)
-    return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
+  if (isError) return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
 
   return (
-    <Wrapper>
-      <Container>
-        <Grid
-          columns={{
-            initial: 2,
-            md: 4,
-          }}
-          gap={16}
-        >
-          {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
-        </Grid>
-      </Container>
-    </Wrapper>
+    <>
+      {goodsList === undefined || goodsList.length === 0 ? (
+        <ErrorMessageContainer>상품이 없습니다.</ErrorMessageContainer>
+      ) : (
+        <Wrapper>
+          <Container>
+            <Grid
+              columns={{
+                initial: 2,
+                md: 4,
+              }}
+              gap={16}
+            >
+              {goodsList.map(({ id, imageURL, name, price, brandInfo }) => (
+                <DefaultGoodsItems
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              ))}
+            </Grid>
+          </Container>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

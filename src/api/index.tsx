@@ -1,33 +1,54 @@
+import { useQuery } from '@tanstack/react-query';
+
+import { ThemeData, GoodsData } from '@/types';
 import { fetchInstance } from './instance';
 
-export const getThemes = async () => {
-  try {
-    const response = await fetchInstance.get('/v1/themes');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching themes: ', error);
-    throw error;
-  }
+type ThemesResponse = {
+  themes: ThemeData[];
 };
 
-export const getRankingProducts = async (targetType: string, rankType: string) => {
+const getThemes = async (): Promise<ThemesResponse> => {
+  const response = await fetchInstance.get('/v1/themes');
+  return response.data;
+};
+
+export const useThemes = () => {
+  return useQuery({
+    queryKey: ['themes'],
+    queryFn: getThemes,
+  });
+};
+
+//
+
+type GoodsResponse = {
+  products: GoodsData[];
+};
+
+const getRankingProducts = async (targetType: string, rankType: string): Promise<GoodsResponse> => {
   const queryParams = `?targetType=${targetType}&rankType=${rankType}`;
 
-  try {
-    const response = await fetchInstance.get(`/v1/ranking/products${queryParams}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching ranking products: ', error);
-    throw error;
-  }
+  const response = await fetchInstance.get(`/v1/ranking/products${queryParams}`);
+  return response.data;
 };
 
-export const getThemeProducts = async (themeKey: string) => {
-  try {
-    const response = await fetchInstance.get(`/v1/themes/${themeKey}/products`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching theme products (getThemeProducts): ', error);
-    throw error;
-  }
+export const useRankingProducts = (targetType: string, rankType: string) => {
+  return useQuery({
+    queryKey: ['rankingProducts'],
+    queryFn: () => getRankingProducts(targetType, rankType),
+  });
+};
+
+//
+
+const getThemeProducts = async (themeKey: string): Promise<GoodsResponse> => {
+  const response = await fetchInstance.get(`/v1/themes/${themeKey}/products`);
+  return response.data;
+};
+
+export const useThemeProducts = (themeKey: string) => {
+  return useQuery({
+    queryKey: ['themeProducts', themeKey],
+    queryFn: () => getThemeProducts(themeKey),
+  });
 };

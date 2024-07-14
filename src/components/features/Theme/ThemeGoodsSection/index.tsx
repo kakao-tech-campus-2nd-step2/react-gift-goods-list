@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { getThemeProducts } from '@/api';
+import { useThemeProducts } from '@/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/DefaultGoodsItems';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { ErrorMessageContainer } from '@/styles';
 import { breakpoints } from '@/styles/variants';
-import { GoodsData } from '@/types';
 
 type Props = {
   themeKey: string;
@@ -16,33 +15,13 @@ type Props = {
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   // console.log('themeKey: ', themeKey);
 
-  const [goodsList, setGoodsList] = useState<GoodsData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const { data, isLoading, isError, refetch } = useThemeProducts(themeKey);
+
+  const goodsList = data?.products ?? [];
 
   useEffect(() => {
-    const fetchThemeProducts = async () => {
-      try {
-        const response = await getThemeProducts(themeKey);
-        const products: GoodsData[] = response.products;
-
-        if (products) {
-          setGoodsList(products);
-          // console.log('products: ', products);
-        } else {
-          console.error(`No products found for key: ${themeKey}`);
-          setIsError(true);
-        }
-      } catch (error) {
-        setIsError(true);
-        console.error('Error fetching theme products:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchThemeProducts();
-  }, [themeKey]);
+    refetch();
+  }, [themeKey, refetch]);
 
   if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
   if (isError || !goodsList)

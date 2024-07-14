@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useQuery } from 'react-query';
+import { useEffect, useState } from 'react';
 
 import { getThemeProducts } from '@/api/themeApi';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -13,15 +13,43 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const { data, error, isLoading } = useQuery<{ products: ProductData[] }, Error>(
-    ['themeProducts', themeKey],
-    () => getThemeProducts(themeKey, 20),
-    {
-      keepPreviousData: true,
-    }
-  );
+  const [products, setProducts] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
-  if (isLoading) {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const fetchProducts = async (page: number) => {
+    try {
+      setLoading(true);
+      const data = await getThemeProducts(themeKey, 20, page);
+      if (data.products.length === 0) {
+        setHasMore(false);
+      } else {
+        setProducts((prev) => [...prev, ...data.products]);
+      }
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeKey]);
+
+  const fetchMoreData = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchProducts(nextPage);
+  };
+
+  if (loading && page === 1) {
     return (
       <LoaderWrapper>
         <Loader />
@@ -37,7 +65,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   }
 
-  if (!data || data.products.length === 0) {
+  if (products.length === 0) {
     return (
       <MessageWrapper>
         <Message>상품이 없어요.</Message>
@@ -55,7 +83,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {data.products.map(({ id, imageURL, name, price, brandInfo }) => (
+          {products.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}
@@ -66,6 +94,9 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           ))}
         </Grid>
       </Container>
+      {hasMore && !loading && (
+        <LoadMoreButton onClick={fetchMoreData}>더 보기</LoadMoreButton>
+      )}
     </Wrapper>
   );
 };
@@ -115,3 +146,13 @@ const Message = styled.p`
   font-size: 18px;
   color: #000;
 `;
+
+const LoadMoreButton = styled.button`
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+export default ThemeGoodsSection;

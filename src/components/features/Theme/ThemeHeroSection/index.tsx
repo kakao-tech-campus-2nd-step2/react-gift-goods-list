@@ -104,3 +104,5 @@ const Error = styled.div`
   padding: 20px;
   color: red;
 `;
+
+export default ThemeHeroSection;

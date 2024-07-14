@@ -9,7 +9,7 @@ export const getThemes = async (): Promise<GetThemesResponse> => {
   return response.data;
 };
 
-export const getThemeProducts = async (themeKey: string, _p0: number): Promise<GetThemeProductsResponse> => {
+export const getThemeProducts = async (themeKey: string, _p0: number, _pageParam?: unknown): Promise<GetThemeProductsResponse> => {
   const response = await axios.get(`${API_BASE_URL}/themes/${themeKey}/products`);
   return response.data;
 };

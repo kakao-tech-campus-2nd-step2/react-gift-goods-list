@@ -1,4 +1,5 @@
 type ItemComponentProps<T> = {
+  ref?: React.Ref<HTMLDivElement>;
   item: T;
   index: number;
 };
@@ -12,6 +13,9 @@ type ListMapperProps<T> = {
   ItemComponent: (props: ItemComponentProps<T>) => React.JSX.Element;
   width?: string;
   height?: string;
+  infinite?: boolean;
+  hasNextPage?: boolean;
+  fetchNextPage?: () => void;
 };
 
 function ListMapper<T>({
@@ -42,7 +46,7 @@ function ListMapper<T>({
     return (
       <Wrapper {...wrapperProps}>
         {items.map((item, index) => (
-          <ItemComponent item={item} index={index} />
+          <ItemComponent key={index} item={item} index={index} />
         ))}
       </Wrapper>
     );

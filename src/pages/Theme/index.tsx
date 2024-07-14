@@ -11,11 +11,11 @@ export const ThemePage = () => {
 
   const {
     data: themeListResponse,
-    loading: isThemeListLoading,
-    error: isThemeListError,
+    isLoading: isThemeListLoading,
+    isError: isThemeListError,
   } = useGetThemes();
 
-  const themeList = themeListResponse?.data?.themes || [];
+  const themeList = themeListResponse?.themes || [];
 
   const currentTheme = getCurrentTheme(themeKey, themeList);
 

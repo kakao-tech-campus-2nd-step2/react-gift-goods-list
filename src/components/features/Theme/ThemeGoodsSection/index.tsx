@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { useGetThemesProducts } from '@/api';
 import type { ProductData } from '@/api/type';
@@ -14,19 +16,30 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
+  const { ref, inView } = useInView();
+
   const {
-    data: productsResponse,
-    loading,
-    error,
+    data: productsPages,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
   } = useGetThemesProducts({
     themeKey,
   });
-  const products = productsResponse?.data?.products || [];
+
+  const products: ProductData[] = productsPages?.pages.flatMap((page) => page.products) || [];
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   return (
     <Wrapper>
       <Container>
-        <Loading isLoading={loading} error={error}>
+        <Loading isLoading={isLoading} error={isError}>
           <ListMapper<ProductData>
             items={products}
             ItemComponent={({ item }) => (
@@ -47,6 +60,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
               gap: 16,
             }}
           />
+          <div ref={ref} />
         </Loading>
       </Container>
     </Wrapper>

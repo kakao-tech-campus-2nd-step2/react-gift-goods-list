@@ -1,7 +1,9 @@
+import { useQuery } from 'react-query';
+
 import type { RankingProductsResponse } from '../types/api';
 import api from './index';
 
-export const fetchRankingProducts = async (targetType: string = 'ALL', rankType: string = 'MANY_WISH_RECEIVE'): Promise<RankingProductsResponse> => {
+const fetchRankingProducts = async (targetType: string = 'ALL', rankType: string = 'MANY_WISH_RECEIVE'): Promise<RankingProductsResponse> => {
     const response = await api.get<RankingProductsResponse>('/api/v1/ranking/products', {
         params: {
             targetType,
@@ -9,4 +11,8 @@ export const fetchRankingProducts = async (targetType: string = 'ALL', rankType:
         }
     });
     return response.data;
+};
+
+export const useRankingProducts = (targetType: string, rankType: string) => {
+    return useQuery(['rankingProducts', targetType, rankType], () => fetchRankingProducts(targetType, rankType));
 };

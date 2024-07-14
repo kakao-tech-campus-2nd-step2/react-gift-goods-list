@@ -29,6 +29,8 @@ export const Image = ({
         css={imageStyle(isLoad, ratio, radius, width, isLazy)}
         alt={alt}
         src={src}
+        width={600}
+        height={600}
         onLoad={() => setIsLoad(true)}
         {...props}
       />

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import ShowError from '@/components/Error/ShowError';
@@ -11,33 +10,31 @@ import { fetchData } from '@/utils/api/api';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  // const [themes, setThemes] = useState<ThemeData[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [fetchError, setFetchError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetchData('/api/v1/themes');
-        setThemes(response.themes);
-      } catch (error) {
-        setFetchError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchThemes();
-  }, [themeKey]);
+  const fetchThemes = async (): Promise<ThemeData[]> => {
+    const response = await fetchData('/api/v1/themes');
+    return response.themes;
+  };
 
-  if (loading) {
+  const {
+    data: themes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
+
+  if (isLoading) {
     return Loading();
   }
-  if (fetchError) {
-    return ShowError(fetchError);
+  if (error) {
+    return ShowError((error as Error).message);
   }
-  if (themes?.length == 0) {
+  if (!themes || themes?.length === 0) {
     return ShowError('데이터 없음');
   }
 

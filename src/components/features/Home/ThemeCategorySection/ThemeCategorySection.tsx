@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container/Container';
@@ -14,34 +14,27 @@ import { fetchData } from '@/utils/api/api';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<Theme[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchThemes = async (): Promise<Theme[]> => {
+    const response = await fetchData(`/api/v1/themes`);
+    return response.themes;
+  };
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetchData(`/api/v1/themes`);
-        setThemes(response.themes);
-      } catch (error) {
-        setFetchError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: themes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['themes'],
+    queryFn: fetchThemes,
+  });
 
-    fetchThemes();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return Loading();
   }
-  if (fetchError) {
-    return ShowError(fetchError);
+  if (error) {
+    return ShowError((error as Error).message);
   }
-  if (themes?.length == 0) {
+  if (!themes || themes?.length === 0) {
     return ShowError('데이터 없음');
   }
 

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container/Container';
@@ -15,34 +15,27 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchProducts = async (): Promise<product[]> => {
+    const response = await fetchData(`/api/v1/themes/${themeKey}/products`);
+    return response.products.slice(0, 20);
+  };
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetchData(`/api/v1/themes/${themeKey}/products`);
-        const showProducts = response.products.slice(0, 20);
-        setProducts(showProducts);
-      } catch (error) {
-        setFetchError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchThemes();
-  }, [themeKey]);
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
 
-  if (loading) {
+  if (isLoading) {
     return Loading();
   }
-  if (fetchError) {
-    return ShowError(fetchError);
+  if (error) {
+    return ShowError((error as Error).message);
   }
-  if (products?.length == 0) {
+  if (!products || products?.length === 0) {
     return ShowError('데이터 없음');
   }
 

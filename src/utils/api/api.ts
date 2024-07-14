@@ -5,7 +5,9 @@ import { url } from '@/utils/url/url';
 
 export const fetchData = async (path: string, params?: RankingFilterOption) => {
   try {
-    const response = await axios.get(`${url}${path}`, { params });
+    const response = await axios.get(`${url}${path}`, {
+      params,
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -73,6 +73,11 @@ export type MyAccountInfoData = {
   point: number;
 };
 
+export type PageInfo = {
+  totalResults: number;
+  resultsPerPage: number;
+};
+
 // RequestBody Types
 export type ProductOrderRequestBody = {
   productId: number;
@@ -110,8 +115,5 @@ export type GetThemesResponseBody = {
 export type GetThemesProductsResponseBody = {
   products: ProductData[];
   nextPageToken: string;
-  pageInfo: {
-    totalResults: number;
-    resultsPerPage: number;
-  };
+  pageInfo: PageInfo;
 };

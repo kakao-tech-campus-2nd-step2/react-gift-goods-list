@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import type { UseQueryOptions } from '@tanstack/react-query';
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import type {
+  InfiniteData,
+  QueryFunctionContext,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
+  UseQueryOptions,
+} from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, type UseQueryResult } from '@tanstack/react-query';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 import { vercelApi } from '@/api/axiosInstance';
@@ -21,6 +27,29 @@ function useAxiosQuery<T>(
   return useQuery({
     queryKey: keys,
     queryFn: async (): Promise<T> => axiosInstance(axiosOptions).then((res) => res.data),
+    ...(queryOptions || {}),
+  });
+}
+
+type UseAxiosQueryWithPageResult<T> = UseInfiniteQueryResult<InfiniteData<T>>;
+function useAxiosQueryWithPage<T extends { nextPageToken: string }>(
+  axiosOptions: AxiosRequestConfig,
+  keys: string[],
+  queryOptions?: Omit<
+    UseInfiniteQueryOptions<InfiniteData<T>>,
+    'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
+  >,
+  axiosInstance: AxiosInstance = vercelApi,
+): UseAxiosQueryWithPageResult<T> {
+  return useInfiniteQuery({
+    queryKey: keys,
+    queryFn: async ({ pageParam }: QueryFunctionContext) =>
+      axiosInstance({
+        ...axiosOptions,
+        params: { ...axiosOptions.params, pageToken: pageParam },
+      }).then((res) => res.data),
+    initialPageParam: '0',
+    getNextPageParam: (lastPage) => lastPage,
     ...(queryOptions || {}),
   });
 }
@@ -52,8 +81,8 @@ export function useGetThemes(): UseQueryResult<GetThemesResponseBody> {
 export function useGetThemesProducts({
   themeKey,
   ...params
-}: GetThemesProductsRequestBody): UseQueryResult<GetThemesProductsResponseBody> {
-  return useAxiosQuery<GetThemesProductsResponseBody>(
+}: GetThemesProductsRequestBody): UseAxiosQueryWithPageResult<GetThemesProductsResponseBody> {
+  return useAxiosQueryWithPage<GetThemesProductsResponseBody>(
     {
       method: 'GET',
       url: `/api/v1/themes/${themeKey}/products`,

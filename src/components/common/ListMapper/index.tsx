@@ -42,7 +42,7 @@ function ListMapper<T>({
     return (
       <Wrapper {...wrapperProps}>
         {items.map((item, index) => (
-          <ItemComponent item={item} index={index} />
+          <ItemComponent key={index} item={item} index={index} />
         ))}
       </Wrapper>
     );

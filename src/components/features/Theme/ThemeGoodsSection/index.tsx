@@ -15,13 +15,14 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const {
-    data: productsResponse,
+    data: productsPages,
     isLoading,
     isError,
   } = useGetThemesProducts({
     themeKey,
   });
-  const products = productsResponse?.products || [];
+
+  const products: ProductData[] = productsPages?.pages.flatMap((page) => page.products) || [];
 
   return (
     <Wrapper>

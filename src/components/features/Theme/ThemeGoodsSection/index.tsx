@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import type { InfiniteData } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 
 import { fetchData } from '@/components/api';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -13,32 +15,149 @@ type Props = {
   themeKey: string;
 };
 
+type ProductsPage = {
+  products: GoodsData[];
+  nextPageToken: string | null;
+};
+
+const generateRandomId = (): string => {
+  return Math.random().toString(36).substr(2, 9);
+};
+
+const fetchThemeData = async ({ pageParam = '' }: { pageParam?: string }, themeKey: string) => {
+  const maxResults = 20;
+  const queryParams: Record<string, string | number> = pageParam
+    ? { maxResults, pageToken: pageParam }
+    : { maxResults };
+
+  const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
+  return {
+    products: data.products.map((product: GoodsData) => ({
+      ...product,
+      id: generateRandomId(),
+    })),
+    nextPageToken: data.nextPageToken || null,
+  };
+};
+
+const renderContent = (
+  isLoading: boolean,
+  isError: boolean,
+  data: InfiniteData<ProductsPage> | undefined,
+) => {
+  if (isLoading) {
+    return (
+      <LoadingWrapper>
+        <Loading />
+      </LoadingWrapper>
+    );
+  }
+
+  if (isError) {
+    return <NoItemsMessage>Error fetching data</NoItemsMessage>;
+  }
+
+  if (!data || data.pages[0].products.length === 0) {
+    return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+  }
+
+  const allProducts = data.pages.flatMap((page) => page.products);
+
+  return (
+    <Grid
+      columns={{
+        initial: 2,
+        md: 4,
+      }}
+      gap={16}
+    >
+      {allProducts.map((goods: GoodsData) => (
+        <DefaultGoodsItems
+          key={goods.id}
+          imageSrc={goods.imageURL}
+          title={goods.name}
+          amount={goods.price.sellingPrice}
+          subtitle={goods.brandInfo.name}
+        />
+      ))}
+    </Grid>
+  );
+};
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [currentGoods, setCurrentGoods] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage } =
+    useInfiniteQuery<ProductsPage>(
+      ['themeGoods', themeKey],
+      ({ pageParam }) => fetchThemeData({ pageParam }, themeKey),
+      {
+        getNextPageParam: (lastPage) => lastPage.nextPageToken,
+      },
+    );
   useEffect(() => {
-    const fetchThemeData = async () => {
-      setLoading(true);
-      try {
-        const maxResults = 20;
-        const queryParams = { maxResults };
-
-        const data = await fetchData(`/api/v1/themes/${themeKey}/products`, queryParams);
-        setCurrentGoods(data.products);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error fetching theme data:', error.message);
-        } else {
-          console.error('An unknown error occurred while fetching theme data.');
+    if (!hasNextPage || isFetching) return;
+    const currentLoadMoreRef = loadMoreRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
         }
-      } finally {
-        setLoading(false);
+      },
+      {
+        threshold: 1.0,
+      },
+    );
+    if (currentLoadMoreRef) {
+      observer.observe(currentLoadMoreRef);
+    }
+    return () => {
+      if (currentLoadMoreRef) {
+        observer.unobserve(currentLoadMoreRef);
       }
     };
+  }, [hasNextPage, isFetching, fetchNextPage]);
 
-    fetchThemeData();
-  }, [themeKey]);
+<<<<<<< HEAD
+=======
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
+      );
+    }
+
+    if (isError) {
+      return <NoItemsMessage>Error fetching data</NoItemsMessage>;
+    }
+
+    if (!data || data.pages[0].products.length === 0) {
+      return <NoItemsMessage>상품이 없어요.</NoItemsMessage>;
+    }
+
+    const allProducts = data.pages.flatMap((page) => page.products);
+
+    return (
+      <Grid
+        columns={{
+          initial: 2,
+          md: 4,
+        }}
+        gap={16}
+      >
+        {allProducts.map((goods) => (
+          <DefaultGoodsItems
+            key={goods.id}
+            imageSrc={goods.imageURL}
+            title={goods.name}
+            amount={goods.price.sellingPrice}
+            subtitle={goods.brandInfo.name}
+          />
+        ))}
+      </Grid>
+    );
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -74,9 +193,13 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
     );
   };
 
+>>>>>>> c262e62c89f4016a9382c91656dcad3e578e10af
   return (
     <Wrapper>
-      <Container>{renderContent()}</Container>
+      <Container>
+        {renderContent(isLoading, isError, data)}
+        <div ref={loadMoreRef} />
+      </Container>
     </Wrapper>
   );
 };

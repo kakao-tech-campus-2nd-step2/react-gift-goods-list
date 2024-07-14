@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const BASE_URL = 'https://react-gift-mock-api-harugi7.vercel.app';
 
-
 type QueryParams = Record<string, string | number | boolean>;
 
 const objectToQueryParams = (params: QueryParams): string => {
@@ -22,13 +21,12 @@ type ErrorCase =
   | 'UNEXPECTED_ERROR';
 
 const ERROR_MESSAGES: Record<ErrorCase, string> = {
-  BAD_REQUEST: 'Bad Request: The server could not understand the request due to invalid syntax.',
-  UNAUTHORIZED: 'Unauthorized: Access is denied due to invalid credentials.',
-  FORBIDDEN: 'Forbidden: You do not have the necessary permissions to access this resource.',
-  NOT_FOUND: 'Not Found: The requested resource could not be found.',
-  INTERNAL_SERVER_ERROR:
-    'Internal Server Error: The server has encountered a situation it does not know how to handle.',
-  UNEXPECTED_ERROR: 'An unexpected error occurred.',
+  BAD_REQUEST: '잘못된 요청: 서버가 유효하지 않은 구문으로 요청을 이해하지 못했습니다.',
+  UNAUTHORIZED: '인증되지 않음: 유효하지 않은 자격 증명으로 인해 액세스가 거부되었습니다.',
+  FORBIDDEN: '금지됨: 이 리소스에 액세스할 권한이 없습니다.',
+  NOT_FOUND: '찾을 수 없음: 요청한 리소스를 찾을 수 없습니다.',
+  INTERNAL_SERVER_ERROR: '내부 서버 오류: 서버가 처리할 수 없는 상황을 만났습니다.',
+  UNEXPECTED_ERROR: '예기치 않은 오류가 발생했습니다.',
 };
 
 const handleFetchError = (error: unknown, endpoint: string) => {

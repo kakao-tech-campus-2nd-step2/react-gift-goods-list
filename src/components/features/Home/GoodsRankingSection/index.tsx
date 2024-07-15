@@ -11,13 +11,12 @@ import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
 export const GoodsRankingSection = () => {
+  const queryClient = useQueryClient();
   const [filterOption, setFilterOption] = useState<RankingFilterOption>({
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
 
-  const queryClient = useQueryClient();
-  
   const { data, isLoading, isError } = useGetRankingGoods(filterOption);
 
   const RenderGoodsRankingList = useCallback(() => {

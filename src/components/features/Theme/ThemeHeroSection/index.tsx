@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import type { GetThemesResponse, ThemeData } from '@/api/api';
@@ -19,6 +20,14 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
     queryFn: fetchThemes,
   });
 
+  const currentTheme = data?.themes?.find((theme) => theme.key === themeKey);
+
+  useEffect(() => {
+    if (!currentTheme && isLoading) {
+      navigate('/');
+    }
+  }, [currentTheme, isLoading, navigate])
+
   if (isLoading) {
     return <LoadingWrapper>Loading...</LoadingWrapper>;
   }
@@ -26,11 +35,8 @@ export const ThemeHeroSection = ({ themeKey }: Props) => {
   if (error) {
     return <ErrorWrapper>{error.message || 'An unexpected error occurred'}</ErrorWrapper>;
   }
-
-  const currentTheme = data?.themes?.find((theme) => theme.key === themeKey);
-
+  
   if (!currentTheme) {
-    navigate('/');
     return <ErrorWrapper>The requested theme does not exist</ErrorWrapper>;
   }
 

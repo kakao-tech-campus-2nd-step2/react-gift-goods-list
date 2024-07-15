@@ -77,10 +77,12 @@ const ThemeHeaderRender = ({ themeKey, navigate }: RenderProps) => {
 const ProductsRender = ({ themeKey, navigate }: RenderProps) => {
     const { data, isLoading, error, hasNextPage, fetchNextPage } = useInfiniteQuery<Products>({
         queryKey: ['productsByTheme', themeKey],
-        queryFn: () =>
-            axios.get(`/themes/${themeKey}/products?maxResults=20`).then((res) => res.data),
+        queryFn: ({ pageParam }) =>
+            axios
+                .get(`/themes/${themeKey}/products?maxResults=20&pageToken=${pageParam}`)
+                .then((res) => res.data),
         getNextPageParam: (lastPage) => lastPage.nextPageToken,
-        initialPageParam: 1,
+        initialPageParam: 0,
     });
 
     const loadMoreRef = useRef<HTMLDivElement | null>(null);

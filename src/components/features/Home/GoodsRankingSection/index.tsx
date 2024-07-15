@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Error } from '@/components/common/Error';
 import { Container } from '@/components/common/layouts/Container';
 import { LoadingIcon } from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
-import type { FetchState } from '@/types';
-import { type GoodsData, type RankingFilterOption } from '@/types';
+import type { GoodsData } from '@/types';
+import { type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -16,44 +17,28 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
+  const fetchGoodsRanking = async () => {
+    const response = await axios.get(process.env.REACT_APP_API_KEY + `/api/v1/ranking/products`, {
+      params: { targetType: filterOption.targetType, rankType: filterOption.rankType },
+    });
+    return response.data.products;
+  };
+
+  const { data, error, isLoading } = useQuery<GoodsData[]>({
+    queryKey: ['products', filterOption.targetType, filterOption.rankType],
+    queryFn: fetchGoodsRanking,
   });
-  useEffect(() => {
-    const fetchGoodsRanking = async () => {
-      try {
-        const response = await axios.get(
-          process.env.REACT_APP_API_KEY + `/api/v1/ranking/products`,
-          { params: { targetType: filterOption.targetType, rankType: filterOption.rankType } },
-        );
-        setFetchState({
-          isLoading: false,
-          isError: false,
-          data: response.data.products,
-        });
-      } catch {
-        setFetchState({
-          isLoading: false,
-          isError: true,
-          data: null,
-        });
-      }
-    };
-    fetchGoodsRanking();
-  }, [filterOption]);
 
   const GoodsRanking = () => {
-    if (fetchState.data) {
-      if (fetchState.data.length > 0) {
-        return <GoodsRankingList goodsList={fetchState.data} isLoading={false} error={null} />;
+    if (data) {
+      if (data.length > 0) {
+        return <GoodsRankingList goodsList={data} isLoading={false} error={null} />;
       } else {
         return <Error>보여줄 페이지가 없습니다!</Error>;
       }
-    } else if (fetchState.isError) {
+    } else if (error) {
       return <Error>에러가 발생했습니다.</Error>;
-    } else {
+    } else if (isLoading) {
       return <LoadingIcon />;
     }
   };

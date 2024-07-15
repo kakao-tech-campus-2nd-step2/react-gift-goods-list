@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from 'react-query';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import { fetchData } from '@/api/utils/fetchData';
 import type { GoodsResponse } from '@/types';
 
@@ -15,7 +16,7 @@ const fetchThemeGoods = async ({ pageParam = '0', themeKey }: { pageParam?: stri
 
 export const useThemeGoods = ({ themeKey }: UseThemeGoodsProps) => {
   return useInfiniteQuery<GoodsResponse, Error>(
-    ['themeGoods', themeKey],
+    QUERY_KEYS.themeGoods(themeKey),
     ({ pageParam = '0' }) => fetchThemeGoods({ pageParam, themeKey }),
     {
       getNextPageParam: (lastPage) => lastPage.nextPageToken ?? undefined,

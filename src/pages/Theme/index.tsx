@@ -1,7 +1,8 @@
 import { css } from '@emotion/css';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import type { NavigateFunction } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -13,7 +14,7 @@ import useData from '@/hooks/useData';
 
 import DefaultList from './DefaultList';
 import ThemeHeader from './ThemeHeader';
-// useQuery(['todos', id], () => axios.get(`http://.../${id}`));
+
 export default () => {
     const themeKey = useParams().themeKey ?? '';
     const navigate = useNavigate();
@@ -74,16 +75,40 @@ const ThemeHeaderRender = ({ themeKey, navigate }: RenderProps) => {
     );
 };
 const ProductsRender = ({ themeKey, navigate }: RenderProps) => {
-    const { data, isLoading, error } = useQuery<Products>({
+    const { data, isLoading, error, hasNextPage, fetchNextPage } = useInfiniteQuery<Products>({
         queryKey: ['productsByTheme', themeKey],
         queryFn: () =>
             axios.get(`/themes/${themeKey}/products?maxResults=20`).then((res) => res.data),
+        getNextPageParam: (lastPage) => lastPage.nextPageToken,
+        initialPageParam: 1,
     });
+
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
         if (error) navigate(`/error/${error.name}/themes_${themeKey}`, { replace: true });
-    }, [navigate, themeKey, error]);
+
+        if (!hasNextPage) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) fetchNextPage();
+            },
+            { threshold: 1 },
+        );
+
+        if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+    }, [navigate, themeKey, error, hasNextPage, fetchNextPage]);
 
     if (isLoading) return <LoadingUI />;
 
-    return <DefaultList items={data?.products ?? []} />;
+    return (
+        <div>
+            {data?.pages.map((page, i) => (
+                <React.Fragment key={i}>
+                    <DefaultList items={page.products ?? []} />
+                </React.Fragment>
+            ))}
+            <div ref={loadMoreRef}></div>
+        </div>
+    );
 };

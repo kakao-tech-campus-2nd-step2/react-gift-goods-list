@@ -1,16 +1,16 @@
 import { useInfiniteQuery } from 'react-query';
+import { fetchData } from '@/api/utils/fetchData';
 import type { GoodsResponse } from '@/types';
 
 type UseThemeGoodsProps = {
   themeKey: string;
 };
 
-const fetchThemeGoods = async ({ pageParam = '0', themeKey }: { pageParam?: string, themeKey: string }): Promise<GoodsResponse> => {
-  const response = await fetch(`https://react-gift-mock-api-git-main-faddishcorns-projects.vercel.app/api/v1/themes/${themeKey}/products?pageToken=${pageParam}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch goods');
-  }
-  return response.json();
+const fetchThemeGoods = async ({ pageParam = '0', themeKey }: { pageParam?: string; themeKey: string }): Promise<GoodsResponse> => {
+  const data = await fetchData<GoodsResponse>(`https://react-gift-mock-api-git-main-faddishcorns-projects.vercel.app/api/v1/themes/${themeKey}/products`, {
+    pageToken: pageParam,
+  });
+  return data;
 };
 
 export const useThemeGoods = ({ themeKey }: UseThemeGoodsProps) => {

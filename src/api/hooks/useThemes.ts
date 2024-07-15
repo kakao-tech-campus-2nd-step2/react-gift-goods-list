@@ -7,6 +7,6 @@ const fetchThemes = async (): Promise<ThemeData[]> => {
   return data.themes;
 };
 
-export const useGetThemes = () => {
+export const useThemes = () => {
   return useQuery<ThemeData[], Error>('themes', fetchThemes);
 };

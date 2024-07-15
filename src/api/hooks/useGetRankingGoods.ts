@@ -6,10 +6,21 @@ export const useGetRankingGoods = (filterOption: RankingFilterOption) => {
   return useQuery<GoodsData[], Error>(
     ['rankingGoods', filterOption],
     async () => {
-      const response = await axios.get('https://react-gift-mock-api-git-main-faddishcorns-projects.vercel.app/api/v1/ranking/products', {
-        params: filterOption,
-      });
-      return response.data.products;
+      try {
+        const response = await axios.get('https://react-gift-mock-api-git-main-faddishcorns-projects.vercel.app/api/v1/ranking/products', {
+          params: filterOption,
+        });
+
+        // 추가검증
+        if (!response || !response.data || !Array.isArray(response.data.products)) {
+          throw new Error('유효하지 않은 response');
+        }
+
+        return response.data.products;
+      } catch (error) {
+        console.error('ranking goods fetching 실패:', error);
+        throw new Error('ranking goods를 fetch하는 데 실패하였습니다.');
+      }
     },
     {
       keepPreviousData: true,

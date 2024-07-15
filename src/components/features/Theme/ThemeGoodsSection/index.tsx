@@ -15,7 +15,7 @@ type Props = {
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
   return (
-    <InfiniteWrapper<ThemeProductResponse>
+    <InfiniteWrapper
       queryKey={['themeProducts', themeKey]}
       queryFn={({ pageParam = 0 }) => fetchThemeProducts(themeKey, 20, pageParam)}
     >

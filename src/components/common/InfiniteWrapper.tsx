@@ -5,25 +5,18 @@ import { useInView } from 'react-intersection-observer';
 import type { InfiniteData, QueryFunctionContext, QueryKey } from 'react-query';
 
 import loadingGif from '@/assets/loading.gif';
+import type { ThemeProductResponse } from '@/types';
 import { useInfiniteData } from '@/utils/useInfiniteData';
 
-interface PageResponse {
-  nextPageToken: string | null;
-}
-
-interface InfiniteWrapperProps<TData extends PageResponse> {
+interface InfiniteWrapperProps {
   queryKey: QueryKey;
-  queryFn: (context: QueryFunctionContext<QueryKey>) => Promise<TData>;
-  children: (data: InfiniteData<TData>) => ReactNode;
+  queryFn: (context: QueryFunctionContext<QueryKey>) => Promise<ThemeProductResponse>;
+  children: (data: InfiniteData<ThemeProductResponse>) => ReactNode;
 }
 
-export const InfiniteWrapper = <TData extends PageResponse>({
-  queryKey,
-  queryFn,
-  children,
-}: InfiniteWrapperProps<TData>) => {
+export const InfiniteWrapper = ({ queryKey, queryFn, children }: InfiniteWrapperProps) => {
   const { data, errorMessage, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteData<TData>({ queryKey, queryFn });
+    useInfiniteData<ThemeProductResponse>({ queryKey, queryFn });
   const { ref, inView } = useInView();
 
   React.useEffect(() => {

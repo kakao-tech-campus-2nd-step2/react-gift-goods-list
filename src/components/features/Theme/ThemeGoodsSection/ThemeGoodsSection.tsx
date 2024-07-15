@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container/Container';
@@ -15,36 +17,56 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchProducts = async ({
+    pageParam = '1',
+  }: {
+    pageParam?: string;
+  }): Promise<{
+    products: product[];
+    nextPageToken?: string;
+    pageInfo: { totalResults: number };
+  }> => {
+    const response = await fetchData(`/api/v1/themes/${themeKey}/products`, {
+      pageToken: pageParam,
+      maxResults: 10,
+    });
+    return response;
+  };
+
+  const {
+    data: productData,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['products', themeKey],
+    queryFn: fetchProducts,
+    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    initialPageParam: '1',
+  });
+
+  const { ref, inView } = useInView({
+    threshold: 1.0,
+  });
 
   useEffect(() => {
-    const fetchThemes = async () => {
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetchData(`/api/v1/themes/${themeKey}/products`);
-        const showProducts = response.products.slice(0, 20);
-        setProducts(showProducts);
-      } catch (error) {
-        setFetchError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchThemes();
-  }, [themeKey]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-  if (loading) {
+  if (isLoading) {
     return Loading();
   }
-  if (fetchError) {
-    return ShowError(fetchError);
+  if (error) {
+    return ShowError((error as Error).message);
   }
-  if (products.length == 0) {
+  if (!productData || productData.pages.length === 0) {
     return ShowError('데이터 없음');
   }
+
+  const products = productData.pages.flatMap((page) => page.products);
 
   return (
     <Wrapper>
@@ -67,6 +89,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           ))}
         </Grid>
       </Container>
+      <div ref={ref} />
     </Wrapper>
   );
 };

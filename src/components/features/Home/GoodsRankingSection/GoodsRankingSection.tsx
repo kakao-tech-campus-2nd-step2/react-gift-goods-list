@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container/Container';
 import ShowError from '@/components/Error/ShowError';
@@ -18,37 +19,26 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  const [products, setProducts] = useState<product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchProducts = async (): Promise<product[]> => {
+    const response = await fetchData('/api/v1/ranking/products', {
+      targetType: filterOption.targetType,
+      rankType: filterOption.rankType,
+    });
+    return response.products;
+  };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetchData('/api/v1/ranking/products', {
-          targetType: filterOption.targetType,
-          rankType: filterOption.rankType,
-        });
-        setProducts(response.products);
-      } catch (error) {
-        setFetchError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: products, isLoading, error } = useQuery({
+    queryKey: ['products', filterOption], 
+    queryFn: fetchProducts,
+  });
 
-    fetchProducts();
-  }, [filterOption]);
-
-  if (loading) {
+  if (isLoading) {
     return Loading();
   }
-  if (fetchError) {
-    return ShowError(fetchError);
+  if (error) {
+    return ShowError((error as Error).message);
   }
-  if (products.length == 0) {
+  if (!products || products?.length === 0) {
     return ShowError('데이터 없음');
   }
 

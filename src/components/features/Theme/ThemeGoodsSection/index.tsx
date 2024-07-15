@@ -22,8 +22,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       {(data: InfiniteData<ThemeProductResponse>) => (
         <Wrapper>
           <Container>
-            {data.pages.length === 0 ||
-            (data.pages.length === 1 && data.pages[0].products.length === 0) ? (
+            {isProductsEmpty(data) ? (
               <Message>상품이 없어요.</Message>
             ) : (
               data.pages.map((page, pageIndex) => (
@@ -51,6 +50,12 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         </Wrapper>
       )}
     </InfiniteWrapper>
+  );
+};
+
+const isProductsEmpty = (data: InfiniteData<ThemeProductResponse>): boolean => {
+  return (
+    data.pages.length === 0 || (data.pages.length === 1 && data.pages[0].products.length === 0)
   );
 };
 

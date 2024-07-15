@@ -1,9 +1,8 @@
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 
-import { AuthProvider } from './provider/Auth';
-import { Routes } from './routes';
-
-const queryClient = new QueryClient();
+import { AuthProvider } from '@/provider/Auth';
+import { Routes } from '@/routes';
+import { queryClient } from '@/utils/queryClient';
 
 const App = () => {
   return (

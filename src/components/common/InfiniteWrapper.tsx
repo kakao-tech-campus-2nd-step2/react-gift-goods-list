@@ -15,7 +15,7 @@ interface InfiniteWrapperProps {
 }
 
 export const InfiniteWrapper = ({ queryKey, queryFn, children }: InfiniteWrapperProps) => {
-  const { data, errorMessage, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteData<ThemeProductResponse>({ queryKey, queryFn });
   const { ref, inView } = useInView();
 
@@ -27,10 +27,6 @@ export const InfiniteWrapper = ({ queryKey, queryFn, children }: InfiniteWrapper
 
   if (isLoading) {
     return <Loader src={loadingGif} alt="Loading..." />;
-  }
-
-  if (errorMessage) {
-    return <Message>{errorMessage}</Message>;
   }
 
   return (
@@ -45,11 +41,4 @@ export const InfiniteWrapper = ({ queryKey, queryFn, children }: InfiniteWrapper
 const Loader = styled.img`
   display: block;
   margin: 0 auto;
-`;
-
-const Message = styled.p`
-  width: 100%;
-  text-align: center;
-  font-size: 16px;
-  margin-top: 20px;
 `;

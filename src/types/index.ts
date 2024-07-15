@@ -136,3 +136,8 @@ export interface ProductOrderRequestBody {
   cashReceiptType?: 'PERSONAL' | 'BUSINESS';
   cashReceiptNumber?: string;
 }
+export interface FetchState<T> {
+  isLoading: boolean;
+  isError: boolean;
+  data: T | null;
+}

@@ -1,37 +1,49 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
+import { Error } from '@/components/common/Error';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { RouterPath } from '@/routes/path';
+import { LoadingIcon } from '@/components/common/Loading';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
+import type { FetchState, GoodsData } from '@/types';
+
 
 type Props = {
   themeKey: string;
 };
 
+
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [GoodsList, setGoodsList] = useState<GoodsData[]>();
-  const navigate = useNavigate();
+  const [fetchState, setFetchState] = useState<FetchState<GoodsData[]>>({
+    isLoading: true,
+    isError: false,
+    data: null,
+  });
 
   useEffect(() => {
     const fetchGoods = async () => {
       try {
         const response = await axios.get(
-          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products?maxResults=20`,
+          process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products`,
+          { params: { maxResults: 20 } },
         );
-        setGoodsList(response.data.products);
+        setFetchState({ isLoading: false, isError: false, data: response.data.products });
       } catch {
-        navigate(RouterPath.root);
+        setFetchState({ isLoading: false, isError: true, data: null });
       }
     };
     fetchGoods();
-  }, [navigate, themeKey]);
+  }, [themeKey]);
 
+  if (fetchState.isLoading) {
+    return <LoadingIcon />;
+  }
+  if (fetchState.isError) {
+    return <Error>에러가 발생했습니다.</Error>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -42,7 +54,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {GoodsList?.map(({ id, imageURL, name, price, brandInfo }) => (
+          {fetchState.data?.map(({ id, imageURL, name, price, brandInfo }) => (
             <DefaultGoodsItems
               key={id}
               imageSrc={imageURL}

@@ -2,8 +2,8 @@ export const RouterPath = {
   root: '/',
   home: '/',
   theme: '/theme/:themeKey',
-  myAccount: '/my-account',
   login: '/login',
+  myAccount: '/my-account',
   notFound: '*',
 };
 

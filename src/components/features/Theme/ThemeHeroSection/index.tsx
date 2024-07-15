@@ -1,20 +1,36 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 
+import { useThemes } from '@/api/hooks/useThemes';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { ThemeData } from '@/types';
+import { ErrorMessageContainer } from '@/styles';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data, isLoading, isError } = useThemes();
 
-  if (!currentTheme) {
-    return null;
-  }
+  const [currentTheme, setCurrentTheme] = useState<ThemeData | null>(null);
+
+  useEffect(() => {
+    if (data) {
+      const themes: ThemeData[] = data.themes;
+      const matchedTheme = themes.find((theme: ThemeData) => theme.key === themeKey);
+      if (matchedTheme) {
+        setCurrentTheme(matchedTheme);
+      } else {
+        console.error(`No theme found for key: ${themeKey}`);
+      }
+    }
+  }, [data, themeKey]);
+
+  if (isLoading) return <ErrorMessageContainer>Loading...</ErrorMessageContainer>;
+  if (isError || !currentTheme)
+    return <ErrorMessageContainer>에러가 발생했습니다.</ErrorMessageContainer>;
 
   const { backgroundColor, label, title, description } = currentTheme;
 
@@ -82,7 +98,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

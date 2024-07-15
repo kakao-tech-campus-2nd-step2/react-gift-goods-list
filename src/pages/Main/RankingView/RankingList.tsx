@@ -25,24 +25,21 @@ export default ({ showMoreDetail, targetType, rankType }: Props) => {
             navigate(`/error/${items?.httpStatusCode}/main_rankingList`, { replace: true });
     }, [items?.httpStatusCode, navigate]);
 
+    if (items?.isLoading) return <LoadingUI />;
     return (
         <Grid columns={{ initial: 2, xs: 3, sm: 3, md: 6 }} gap={20}>
-            {items?.isLoading ? (
-                <LoadingUI />
-            ) : (
-                items?.data?.products
-                    .slice(0, showMoreDetail ? undefined : 6)
-                    .map((item, index) => (
-                        <RankingGoodsItems
-                            key={item.id}
-                            rankingIndex={index + 1}
-                            imageSrc={item.imageURL}
-                            subtitle={item.brandInfo.name}
-                            title={item.name}
-                            amount={item.price.sellingPrice}
-                        />
-                    ))
-            )}
+            {items?.data?.products
+                .slice(0, showMoreDetail ? undefined : 6)
+                .map((item, index) => (
+                    <RankingGoodsItems
+                        key={item.id}
+                        rankingIndex={index + 1}
+                        imageSrc={item.imageURL}
+                        subtitle={item.brandInfo.name}
+                        title={item.name}
+                        amount={item.price.sellingPrice}
+                    />
+                ))}
         </Grid>
     );
 };

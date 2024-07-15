@@ -5,8 +5,8 @@ import { Container } from '@/components/common/layouts/Container';
 import Header from '@/components/features/Header';
 
 export default () => {
-    const httpStatus = useParams().http_status;
-    const errorOrigin = useParams().error_origin;
+    const { http_statis: httpStatus } = useParams();
+    const { error_origin: errorOrigin } = useParams();
     return (
         <div>
             <Header />

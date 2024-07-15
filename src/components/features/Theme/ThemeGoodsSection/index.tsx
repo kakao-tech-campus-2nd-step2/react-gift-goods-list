@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useEffect, useRef } from 'react';
 
 import { Error } from '@/components/common/Error';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -16,18 +17,47 @@ type Props = {
 
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const fetchGoods = async () => {
+  const ref = useRef(null);
+
+  const fetchGoods = async (pageToekn: number) => {
     const response = await axios.get(
       process.env.REACT_APP_API_KEY + `/api/v1/themes/${themeKey}/products`,
-      { params: { maxResults: 20 } },
+      { params: { pageToken: pageToekn } },
     );
     return response.data.products;
   };
 
-  const { data, error, isLoading } = useQuery<GoodsData[]>({
+  const { data, isLoading, error, fetchNextPage } = useInfiniteQuery({
     queryKey: ['products', themeKey],
-    queryFn: fetchGoods,
+    queryFn: ({ pageParam = 0 }) => fetchGoods(pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPageToken;
+    },
   });
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        observer.unobserve(ref.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   if (isLoading) {
 
     return <LoadingIcon />;
@@ -45,16 +75,23 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-        {data?.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+        {data?.pages.map(({ products }: { products: GoodsData[] }) => {
+            return (
+              <>
+                {products?.map(({ id, imageURL, name, price, brandInfo }) => (
+                  <DefaultGoodsItems
+                    key={id}
+                    imageSrc={imageURL}
+                    title={name}
+                    amount={price.sellingPrice}
+                    subtitle={brandInfo.name}
+                  />
+                ))}
+              </>
+            );
+          })}
         </Grid>
+          <div ref={ref}></div>
       </Container>
     </Wrapper>
   );

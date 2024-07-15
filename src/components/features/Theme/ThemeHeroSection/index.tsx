@@ -1,16 +1,32 @@
 import styled from '@emotion/styled';
+// import { ThemeMockList } from '@/types/mock';
+import { Spinner } from 'react-bootstrap';
 
+import { useGetThemeCategoryQuery } from '@/apis/tanstackQuery/theme/query';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data, isLoading } = useGetThemeCategoryQuery();
+
+  if (isLoading) {
+    return (
+      <Spinner animation="border" role="status" variant="secondary">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const currentTheme = getCurrentTheme(themeKey, data?.themes);
 
   if (!currentTheme) {
     return null;

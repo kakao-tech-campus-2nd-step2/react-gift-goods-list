@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import Spinner from 'react-bootstrap/Spinner';
 
+import { useGetRankingProductQuery } from '@/apis/tanstackQuery/ranking/query';
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
 import type { RankingFilterOption } from '@/types';
-import { GoodsMockList } from '@/types/mock';
 
+// import { GoodsMockList } from '@/types/mock';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
@@ -15,14 +17,24 @@ export const GoodsRankingSection = () => {
     rankType: 'MANY_WISH',
   });
 
-  // GoodsMockData를 21번 반복 생성
+  const { data: rankingProducts, isLoading, isError } = useGetRankingProductQuery(filterOption);
 
   return (
     <Wrapper>
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={GoodsMockList} />
+        {isLoading ? (
+          <LoadingStatus>
+            <Spinner animation="border" role="status" variant="secondary">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </LoadingStatus>
+        ) : isError ? (
+          <LoadingStatus>Something Goes Run!</LoadingStatus>
+        ) : (
+          <GoodsRankingList goodsList={rankingProducts?.products || []} />
+        )}
       </Container>
     </Wrapper>
   );
@@ -49,4 +61,11 @@ const Title = styled.h2`
     font-size: 35px;
     line-height: 50px;
   }
+`;
+
+const LoadingStatus = styled.div`
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
 `;

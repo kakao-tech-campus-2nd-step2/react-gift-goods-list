@@ -4,7 +4,7 @@ import { GoodsRankingSection } from '@/components/features/Home/GoodsRankingSect
 import { SelectFriendsBanner } from '@/components/features/Home/SelectFriendsBanner';
 import { ThemeCategorySection } from '@/components/features/Home/ThemeCategorySection';
 
-export const HomePage = () => {
+export const HomePage: React.FC = () => {
   return (
     <>
       <SelectFriendsBanner />

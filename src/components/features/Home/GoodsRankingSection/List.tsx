@@ -37,19 +37,17 @@ export const GoodsRankingList = ({ goodsList }: Props) => {
           />
         ))}
       </Grid>
-      {goodsList.length > 6 && (
-        <ButtonWrapper>
-          <Button
-            theme="outline"
-            style={{ maxWidth: '480px' }}
-            onClick={() => {
-              setHasMore((prev) => !prev);
-            }}
-          >
-            {hasMore ? '접기' : '더보기'}
-          </Button>
-        </ButtonWrapper>
-      )}
+      <ButtonWrapper>
+        <Button
+          theme="outline"
+          style={{ maxWidth: '480px' }}
+          onClick={() => {
+            setHasMore((prev) => !prev);
+          }}
+        >
+          {hasMore ? '접기' : '더보기'}
+        </Button>
+      </ButtonWrapper>
     </Wrapper>
   );
 };

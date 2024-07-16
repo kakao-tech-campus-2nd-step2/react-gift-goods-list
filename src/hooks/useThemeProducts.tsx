@@ -38,4 +38,3 @@ export const useThemeProducts = (themeKey: string) => {
     }
   );
 };
-

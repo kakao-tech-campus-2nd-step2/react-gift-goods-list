@@ -25,4 +25,3 @@ export const useThemes = () => {
 
   return [data, { isLoading, isError, errorMessage: error?.message }] as const;
 };
-

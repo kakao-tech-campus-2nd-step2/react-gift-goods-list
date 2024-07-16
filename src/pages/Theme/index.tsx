@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom';
 
+import apiClient from '@/api';
+import type { GetThemesResponse, ThemeData } from '@/api/types/apiTypes';
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
 import { getCurrentTheme } from '@/components/features/Theme/ThemeHeroSection';

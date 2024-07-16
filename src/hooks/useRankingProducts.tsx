@@ -31,4 +31,3 @@ export const useRankingProducts = (filterOption: RankingFilterOption) => {
 
   return [data, { isLoading, isError, errorMessage: error?.message }] as const;
 };
-

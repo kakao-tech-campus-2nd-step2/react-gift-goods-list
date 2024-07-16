@@ -1,39 +1,28 @@
 import { AxiosError } from 'axios';
-import { useEffect,useState } from 'react';
+import { useQuery } from 'react-query';
 
 import apiClient from '@/api/index';
-import type { ThemeData,ThemesResponse } from '@/types';
+import type { ThemeData, ThemesResponse } from '@/types';
 import createErrorMessage from '@/utils/createErrorMessage';
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-  errorMessage: string | null;
-}
+const fetchThemes = async () => {
+  try {
+    const response = await apiClient.get<ThemesResponse>('/api/v1/themes');
+    return response.data.themes;
+  } catch (err) {
+    const error = err as AxiosError;
+    const errorMessage = error instanceof AxiosError ? createErrorMessage(error.response) : 'An unknown error occurred';
+    console.error('Error fetching themes:', errorMessage);
+    throw new Error(errorMessage);
+  }
+};
 
 export const useThemes = () => {
-  const [fetchState, setFetchState] = useState<FetchState<ThemeData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-	errorMessage: null,
-  });
+  const { data, error, isLoading, isError } = useQuery<ThemeData[], Error>(
+    'themes',
+    fetchThemes
+  );
 
-  useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await apiClient.get<ThemesResponse>('/api/v1/themes');
-        setFetchState({ isLoading: false, isError: false, data: response.data.themes, errorMessage: null});
-      } catch (err) {
-		const error = err as AxiosError;
-        console.error(error);
-		const errorMessage = error instanceof AxiosError ? createErrorMessage(error.response) : 'An unknown error occurred';
-        setFetchState({ isLoading: false, isError: true, data: null, errorMessage: errorMessage});
-      }
-    };
-    fetchThemes();
-  }, []);
-
-  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage}] as const;
+  return [data, { isLoading, isError, errorMessage: error?.message }] as const;
 };
+

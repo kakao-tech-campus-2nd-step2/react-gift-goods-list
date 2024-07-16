@@ -1,83 +1,46 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
 import { Container } from '@/components/common/layouts/Container';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
-import { getThemes } from '@/libs/api';
-import { RouterPath } from '@/routes/path';
+import { useThemes } from '@/hooks/useThemes';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
 
 export const ThemeHeroSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [theme, setTheme] = useState<ThemeData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { theme, isLoading, isError, error } = useThemes(themeKey);
 
-  useEffect(() => {
-    const fetchTheme = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const themes = await getThemes();
-        const currentTheme = themes.themes.find((label: ThemeData) => label.key === themeKey);
-
-        if (!currentTheme) {
-          setError('theme을 찾을 수 없음');
-          setLoading(false);
-          return;
-        }
-
-        if (typeof currentTheme === 'string') {
-          setError(currentTheme);
-        } else {
-          setTheme(currentTheme);
-        }
-      } catch (err) {
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTheme();
-  }, [themeKey]);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
+  if (isLoading) {
     return (
       <CenteredContent>
-        <ErrorMessage message={error} />
+        <LoadingSpinner />
+      </CenteredContent>
+    );
+  }
+
+  if (isError || error) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message={error || 'Unknown Error'} />
       </CenteredContent>
     );
   }
 
   if (!theme) {
-    return <Navigate to={RouterPath.notFound} />;
+    return (
+      <CenteredContent>
+        <ErrorMessage message="Theme을 찾을 수 없습니다." />
+      </CenteredContent>
+    );
   }
+
   return (
     <Wrapper backgroundColor={theme.backgroundColor}>
       <Container>
-        {loading ? (
-          <CenteredContent>
-            <LoadingSpinner />
-          </CenteredContent>
-        ) : error != '' ? (
-          <CenteredContent>
-            <ErrorMessage message={error} />
-          </CenteredContent>
-        ) : (
-          <Container>
-            <Label>{theme.label}</Label>
-            <Title>{theme.title}</Title>
-            {theme.description && <Description>{theme.description}</Description>}
-          </Container>
-        )}
+        <Label>{theme.label}</Label>
+        <Title>{theme.title}</Title>
+        {theme.description && <Description>{theme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -145,7 +108,3 @@ const CenteredContent = styled.div`
   height: 100%;
   padding: 20px 0;
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

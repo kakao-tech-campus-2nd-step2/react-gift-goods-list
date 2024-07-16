@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import React from 'react';
 
 import { Image } from '@/components/common/Image';
 
@@ -9,27 +10,23 @@ export type DefaultGoodsItemsProps = {
   amount: number;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export const DefaultGoodsItems = ({
-  imageSrc,
-  subtitle,
-  title,
-  amount,
-  ...props
-}: DefaultGoodsItemsProps) => {
-  return (
-    <Wrapper {...props}>
-      <Image src={imageSrc} alt={`${title} 소개`} width="100%" ratio="square" radius={4} />
-      <InfoWrapper>
-        <Subtitle>{subtitle}</Subtitle>
-        <Title>{title}</Title>
-        <Amount>
-          {amount}
-          <span>원</span>
-        </Amount>
-      </InfoWrapper>
-    </Wrapper>
-  );
-};
+export const DefaultGoodsItems = React.forwardRef<HTMLDivElement, DefaultGoodsItemsProps>(
+  ({ imageSrc, subtitle, title, amount, ...props }, ref) => {
+    return (
+      <Wrapper ref={ref} {...props}>
+        <Image src={imageSrc} alt={`${title} 소개`} width="100%" ratio="square" radius={4} />
+        <InfoWrapper>
+          <Subtitle>{subtitle}</Subtitle>
+          <Title>{title}</Title>
+          <Amount>
+            {amount}
+            <span>원</span>
+          </Amount>
+        </InfoWrapper>
+      </Wrapper>
+    );
+  },
+);
 
 const Wrapper = styled.div`
   width: 100%;
@@ -77,3 +74,5 @@ const Amount = styled.p`
     font-weight: 400;
   }
 `;
+
+export default DefaultGoodsItems;

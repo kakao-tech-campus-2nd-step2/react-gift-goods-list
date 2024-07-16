@@ -1,60 +1,51 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
-import { getTheme } from '@/libs/api';
-import { RouterPath } from '@/routes/path';
+import { useThemeData } from '@/hooks/useThemeData';
+import { useThemeGoods } from '@/hooks/useThemeGoods';
 import { breakpoints } from '@/styles/variants';
-import type { GoodsData } from '@/types';
 
 export const ThemeGoodsSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [goods, setGoods] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const {
+    isLoading: isThemeLoading,
+    isError: isThemeError,
+    error: themeError,
+  } = useThemeData(themeKey);
+  const {
+    data,
+    isFetchingNextPage,
+    isLoading: isGoodsLoading,
+    lastGoodsElementRef,
+  } = useThemeGoods(themeKey);
 
-  useEffect(() => {
-    const fetchGoodsData = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const data = await getTheme(themeKey);
-
-        if (typeof data === 'string') {
-          setError(data);
-        } else {
-          setGoods(data.products);
-        }
-      } catch (err) {
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGoodsData();
-  }, [themeKey]);
-
-  if (loading) {
+  if (isThemeLoading || isGoodsLoading) {
     return <LoadingSpinner />;
   }
 
-  if (error) {
+  if (isThemeError) {
     return (
       <CenteredContent>
-        <ErrorMessage message={error} />
+        <ErrorMessage message={themeError} />
       </CenteredContent>
     );
   }
 
-  if (!goods) {
-    return <Navigate to={RouterPath.notFound} />;
+  const goods = data?.pages.flatMap((page) => page.products) ?? [];
+
+  if (goods.length === 0) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message="표시할 상품이 없습니다." />
+      </CenteredContent>
+    );
   }
+
   return (
     <Wrapper>
       <Container>
@@ -65,16 +56,34 @@ export const ThemeGoodsSection = () => {
           }}
           gap={16}
         >
-          {goods.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {goods.map((good, index) => {
+            if (!good) return null;
+            const { id, imageURL, name, price, brandInfo } = good;
+            if (goods.length === index + 1) {
+              return (
+                <DefaultGoodsItems
+                  ref={lastGoodsElementRef}
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              );
+            } else {
+              return (
+                <DefaultGoodsItems
+                  key={id}
+                  imageSrc={imageURL}
+                  title={name}
+                  amount={price.sellingPrice}
+                  subtitle={brandInfo.name}
+                />
+              );
+            }
+          })}
         </Grid>
+        {isFetchingNextPage && <LoadingSpinner />}
       </Container>
     </Wrapper>
   );
@@ -97,3 +106,5 @@ const CenteredContent = styled.div`
   height: 100%;
   padding: 20px 0;
 `;
+
+export default ThemeGoodsSection;

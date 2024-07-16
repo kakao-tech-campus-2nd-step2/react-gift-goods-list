@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { GetRankingProductsParameters } from '@/api/types';
 import { Container } from '@/components/common/layouts/Container';
@@ -16,6 +16,22 @@ export const GoodsRankingSection = () => {
   });
 
   const { data, error } = useFetchRankingProducts(filterOption);
+
+  useEffect(() => {
+    const fetchRankingProducts = async () => {
+      setErrorMessage(null);
+      try {
+        const response = await ApiService.fetchRankingProducts(filterOption);
+        setRankingProducts(response.products);
+      } catch (error) {
+        if (error as APIError) {
+          setErrorMessage(handleApiError(error as APIError));
+        }
+      }
+    };
+
+    fetchRankingProducts();
+  }, [filterOption]);
 
   return (
     <Wrapper>

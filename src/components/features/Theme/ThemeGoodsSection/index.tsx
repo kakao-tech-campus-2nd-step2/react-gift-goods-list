@@ -79,6 +79,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
         </Grid>
         {hasNextPage && <LoadingTrigger ref={setRef} />}
       </Container>
+      {isLoading && <Loading message="로딩 중..." />}
     </Wrapper>
   );
 };

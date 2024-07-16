@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ApiService } from '@/api';
+import type { ThemeData } from '@/api/types';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { useFetchThemes } from '@/hooks/useFetchThemes';

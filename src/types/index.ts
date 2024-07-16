@@ -116,6 +116,7 @@ export type ThemesResponse = {
 };
 
 export type ThemeProductsResponse = {
+  nextPage: boolean;
   products: ProductData[];
   nextPageToken?: string;
   pageInfo: {

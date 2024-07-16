@@ -1,43 +1,41 @@
 import { AxiosError } from 'axios';
-import { useEffect,useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
 
 import apiClient from '@/api';
-import type { ProductData,ThemeProductsResponse } from '@/types';
+import type { ThemeProductsResponse } from '@/types';
 import createErrorMessage from '@/utils/createErrorMessage';
 
-interface FetchState<T> {
-  isLoading: boolean;
-  isError: boolean;
-  data: T | null;
-  errorMessage: string | null;
-}
+const fetchProducts = async ({ themeKey, pageParam = 0 }: { themeKey: string; pageParam?: number }) => {
+  try {
+    const response = await apiClient.get<ThemeProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
+      params: {
+        pageToken: pageParam,
+        maxResults: 20,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    const error = err as AxiosError;
+    const errorMessage = error instanceof AxiosError ? createErrorMessage(error.response) : 'An unknown error occurred';
+    console.error('Error fetching products:', errorMessage);
+    throw new Error(errorMessage);
+  }
+};
 
 export const useThemeProducts = (themeKey: string) => {
-  const [fetchState, setFetchState] = useState<FetchState<ProductData[]>>({
-    isLoading: true,
-    isError: false,
-    data: null,
-	errorMessage: null,
-  });
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await apiClient.get<ThemeProductsResponse>(`/api/v1/themes/${themeKey}/products`, {
-          params: {
-            maxResults: 20,
-          },
-        });
-        setFetchState({ isLoading: false, isError: false, data: response.data.products, errorMessage: null});
-      } catch (err) {
-        const error = err as AxiosError;
-        const errorMessage = error instanceof AxiosError ? createErrorMessage(error.response) : 'An unknown error occurred';
-        console.error(error);
-        setFetchState({ isLoading: false, isError: true, data: null, errorMessage: errorMessage});
-      }
-    };
-    fetchProducts();
-  }, [themeKey]);
-
-  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage}] as const;
+  return useInfiniteQuery(
+    ['themeProducts', themeKey],
+    ({ pageParam = 0 }) => {
+      return fetchProducts({ themeKey, pageParam });
+    },
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (!lastPage || !lastPage.products || lastPage.products.length < 20) {
+          return undefined;
+        }
+        return pages.length;
+      },
+    }
+  );
 };
+

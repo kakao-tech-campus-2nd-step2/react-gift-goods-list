@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
@@ -13,13 +15,35 @@ type Props = {
 };
 
 export const ThemeGoodsSection = ({ themeKey }: Props) => {
-  const [products, { isLoading, isError, errorMessage}] = useThemeProducts(themeKey);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    error,
+  } = useThemeProducts(themeKey);
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (isError || !products) {
+  if (isError) {
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = 'An unknown error occurred';
+    }
     return (
       <ErrorMessage>
         에러가 발생했습니다.
@@ -28,6 +52,7 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
       </ErrorMessage>
     );
   }
+
   return (
     <Wrapper>
       <Container>
@@ -38,16 +63,20 @@ export const ThemeGoodsSection = ({ themeKey }: Props) => {
           }}
           gap={16}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data?.pages.map(page =>
+            page.products.map(product => (
+              <DefaultGoodsItems
+                key={product.id}
+                imageSrc={product.imageURL}
+                title={product.name}
+                amount={product.price.sellingPrice}
+                subtitle={product.brandInfo.name}
+              />
+            ))
+          )}
         </Grid>
+        <div ref={ref} />
+        {isFetchingNextPage && 'Loading more...'}
       </Container>
     </Wrapper>
   );

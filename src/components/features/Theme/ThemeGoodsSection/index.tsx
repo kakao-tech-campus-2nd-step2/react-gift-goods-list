@@ -1,6 +1,4 @@
 import styled from '@emotion/styled';
-import { useCallback, useRef } from 'react';
-import { useInfiniteQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
@@ -8,42 +6,30 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
-import { getTheme } from '@/libs/api';
+import { useTheme } from '@/hooks/useTheme';
 import { breakpoints } from '@/styles/variants';
 
 export const ThemeGoodsSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
+  const {
+    isThemeLoading,
+    isThemeError,
+    error: themeError,
+    data,
+    isFetchingNextPage,
+    isGoodsLoading,
+    lastGoodsElementRef,
+  } = useTheme(themeKey);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
-    ['themeGoods', themeKey],
-    ({ pageParam = 1 }) => getTheme(themeKey, pageParam * 20),
-    {
-      getNextPageParam: (lastPage, pages) => {
-        if (!lastPage.products || lastPage.products.length < 20) {
-          return undefined;
-        }
-        return pages.length + 1;
-      },
-    },
-  );
-
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastGoodsElementRef = useCallback(
-    (node: HTMLElement | null) => {
-      if (isFetchingNextPage) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [isFetchingNextPage, fetchNextPage, hasNextPage],
-  );
-
-  if (isLoading) {
+  if (isThemeLoading || isGoodsLoading) {
     return <LoadingSpinner />;
+  }
+  if (isThemeError) {
+    return (
+      <CenteredContent>
+        <ErrorMessage message={themeError} />
+      </CenteredContent>
+    );
   }
   if (!data || !data.pages) {
     return (
@@ -80,7 +66,7 @@ export const ThemeGoodsSection = () => {
           gap={16}
         >
           {goods.map((good, index) => {
-            if (!good) return null; // good이 undefined인지 확인
+            if (!good) return null;
             const { id, imageURL, name, price, brandInfo } = good;
             if (goods.length === index + 1) {
               return (

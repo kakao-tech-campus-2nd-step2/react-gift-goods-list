@@ -1,35 +1,15 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { ErrorMessage } from '@/components/common/Error/Error';
 import { Container } from '@/components/common/layouts/Container';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
-import { getThemes } from '@/libs/api';
+import { useThemes } from '@/hooks/useThemes';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
 
 export const ThemeHeroSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const [error, setError] = useState('');
-
-  const {
-    data: themesData,
-    isLoading,
-    isError,
-  } = useQuery(['themes'], getThemes, {
-    onSuccess: (data) => {
-      const currentTheme = data.themes.find((theme: ThemeData) => theme.key === themeKey);
-
-      if (!currentTheme) {
-        setError('Theme을 찾을 수 없습니다.');
-      }
-    },
-    onError: (err) => {
-      setError((err as Error).message);
-    },
-  });
+  const { theme, isLoading, isError, error } = useThemes(themeKey);
 
   if (isLoading) {
     return (
@@ -47,17 +27,7 @@ export const ThemeHeroSection = () => {
     );
   }
 
-  if (!themesData || !themesData.themes) {
-    return (
-      <CenteredContent>
-        <ErrorMessage message="상품 데이터를 불러올 수 없습니다." />
-      </CenteredContent>
-    );
-  }
-
-  const currentTheme = themesData.themes.find((theme: ThemeData) => theme.key === themeKey);
-
-  if (!currentTheme) {
+  if (!theme) {
     return (
       <CenteredContent>
         <ErrorMessage message="Theme을 찾을 수 없습니다." />
@@ -66,11 +36,11 @@ export const ThemeHeroSection = () => {
   }
 
   return (
-    <Wrapper backgroundColor={currentTheme.backgroundColor}>
+    <Wrapper backgroundColor={theme.backgroundColor}>
       <Container>
-        <Label>{currentTheme.label}</Label>
-        <Title>{currentTheme.title}</Title>
-        {currentTheme.description && <Description>{currentTheme.description}</Description>}
+        <Label>{theme.label}</Label>
+        <Title>{theme.title}</Title>
+        {theme.description && <Description>{theme.description}</Description>}
       </Container>
     </Wrapper>
   );
@@ -138,7 +108,3 @@ const CenteredContent = styled.div`
   height: 100%;
   padding: 20px 0;
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

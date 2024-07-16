@@ -9,7 +9,7 @@ const apiClient = axios.create({
 });
 
 // Axios 에러 처리 함수
-const setError = (error: AxiosError) => {
+const getError = (error: AxiosError) => {
   if (error.response) {
     // 서버가 응답을 보낸 경우 (status code가 2xx가 아닌 경우)
     const status = error.response.status;
@@ -44,8 +44,8 @@ export const getThemes = async () => {
     if (axios.isAxiosError(error)) {
       // AxiosError 타입으로 캐스팅하여 처리
       const axiosError = error as AxiosError;
-      console.error('getThemes 요청 중 오류 발생:', setError(axiosError));
-      return setError(axiosError);
+      console.error('getThemes 요청 중 오류 발생:', getError(axiosError));
+      return getError(axiosError);
     } else {
       // 기타 다른 에러 처리
       console.error('getThemes 요청 중 오류 발생:', error);
@@ -62,8 +62,8 @@ export const getRankingProducts = async (params: { targetType: string; rankType:
     if (axios.isAxiosError(error)) {
       // AxiosError 타입으로 캐스팅하여 처리
       const axiosError = error as AxiosError;
-      console.error('getRankingProducts 요청 중 오류 발생:', setError(axiosError));
-      return setError(axiosError);
+      console.error('getRankingProducts 요청 중 오류 발생:', getError(axiosError));
+      return getError(axiosError);
     } else {
       // 기타 다른 에러 처리
       console.error('getRankingProducts 요청 중 오류 발생:', error);
@@ -82,8 +82,8 @@ export const getTheme = async (themeKey: string, maxResults: number = 20) => {
     if (axios.isAxiosError(error)) {
       // AxiosError 타입으로 캐스팅하여 처리
       const axiosError = error as AxiosError;
-      console.error('getTheme 요청 중 오류 발생:', setError(axiosError));
-      return setError(axiosError);
+      console.error('getTheme 요청 중 오류 발생:', getError(axiosError));
+      return getError(axiosError);
     } else {
       // 기타 다른 에러 처리
       console.error('getTheme 요청 중 오류 발생:', error);

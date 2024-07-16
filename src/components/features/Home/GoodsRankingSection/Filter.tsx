@@ -12,7 +12,7 @@ type Props = {
   onFilterOptionChange: (option: RankingFilterOption) => void;
 };
 
-export const GoodsRankingFilter: React.FC<Props> = ({ filterOption, onFilterOptionChange }) => {
+export const GoodsRankingFilter = ({ filterOption, onFilterOptionChange }: Props) => {
   const handleFilterOption = (
     key: keyof RankingFilterOption,
     value: RankingFilterOption[keyof RankingFilterOption],

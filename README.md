@@ -74,7 +74,7 @@ queryKey는 useQuery마다 부여되는 고유한 키 값
 
 ---
 
-### step3
+## step3
 
 - 스크롤을 내리면 추가로 데이터를 요청하여 보여지게 하기
 - 1단계에서 구현한 API를 react-query를 사용해서 구현

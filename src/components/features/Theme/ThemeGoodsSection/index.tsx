@@ -12,7 +12,7 @@ type Props = {
   themeKey: string;
 };
 
-export const ThemeGoodsSection: React.FC<Props> = ({ themeKey }) => {
+export const ThemeGoodsSection = ({ themeKey }: Props) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } = useInfiniteQuery(
     ['themeProducts', themeKey],
     ({ pageParam = 0 }) => fetchThemeProducts(themeKey, pageParam),

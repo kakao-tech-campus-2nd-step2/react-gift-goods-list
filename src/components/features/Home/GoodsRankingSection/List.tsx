@@ -11,7 +11,7 @@ type Props = {
   goodsList: GoodsData[];
 };
 
-export const GoodsRankingList: React.FC<Props> = ({ goodsList }) => {
+export const GoodsRankingList = ({ goodsList }: Props) => {
   const [hasMore, setHasMore] = useState(false);
 
   const currentGoodsList = hasMore ? goodsList : goodsList.slice(0, 6);

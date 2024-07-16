@@ -40,3 +40,12 @@ export interface GoodsResponse {
 export interface ThemesResponse {
   themes: ThemeData[];
 }
+
+export interface GoodsResponseData {
+  products: GoodsData[];
+  nextPageToken: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+}

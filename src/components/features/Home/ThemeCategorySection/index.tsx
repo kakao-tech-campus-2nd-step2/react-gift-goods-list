@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
-import { useThemeContext } from '@/provider/API/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const { themes } = useThemeContext();
+  const { themes } = useTheme();
+
   return (
     <Wrapper>
       <Container>
@@ -20,7 +21,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => (
+          {themes?.map((theme) => (
             <Link to={getDynamicPath.theme(theme.key)} key={theme.id}>
               {typeof theme.imageURL === 'string' && (
                 <ThemeCategoryItem image={theme.imageURL} label={theme.label} key={theme.id} />

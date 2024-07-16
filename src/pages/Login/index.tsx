@@ -20,9 +20,6 @@ export const LoginPage = () => {
       return;
     }
 
-    // TODO: API 연동
-
-    // TODO: API 연동 전까지 임시 로그인 처리
     authSessionStorage.set(id);
 
     const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;

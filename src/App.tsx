@@ -1,15 +1,17 @@
-import { ThemeProvider } from '@/provider/API/ThemeContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { AuthProvider } from './provider/Auth';
 import { Routes } from './routes';
 
+const queryClient = new QueryClient();
+
 const App = () => {
   return (
-    <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Routes />
       </AuthProvider>
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 

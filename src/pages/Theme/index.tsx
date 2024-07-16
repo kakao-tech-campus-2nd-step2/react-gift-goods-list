@@ -2,17 +2,15 @@ import { Navigate, useParams } from 'react-router-dom';
 
 import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
 import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { useThemeContext } from '@/provider/API/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { RouterPath } from '@/routes/path';
 
 export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const { themes, loading } = useThemeContext();
-  const currentTheme = getCurrentTheme(themeKey, themes);
+  const { themes, isLoading } = useTheme();
+  const currentTheme = getCurrentTheme(themeKey, themes ?? []);
 
-  console.log('currentTheme:', currentTheme);
-
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 

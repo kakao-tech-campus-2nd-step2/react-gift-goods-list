@@ -5,7 +5,17 @@ export type ThemeData = {
   title: string;
   description?: string;
   backgroundColor: string;
+  imageURL: string;
 };
+
+export interface ThemesResponse {
+  themes: ThemeData[];
+}
+
+export interface ThemeProductsResponse {
+  products: GoodsData[];
+  nextCursor: number | null;
+}
 
 export type RankingFilterOption = {
   targetType: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
@@ -31,3 +41,8 @@ export type GoodsData = {
     imageURL: string;
   };
 };
+
+export interface RankingProductsResponse {
+  products: GoodsData[];
+  nextCursor: number | null;
+}

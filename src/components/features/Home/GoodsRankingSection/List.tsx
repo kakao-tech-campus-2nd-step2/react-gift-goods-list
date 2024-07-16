@@ -64,6 +64,5 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-
   padding-top: 30px;
 `;

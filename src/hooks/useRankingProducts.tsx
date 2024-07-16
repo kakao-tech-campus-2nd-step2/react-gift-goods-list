@@ -1,53 +1,35 @@
-import { useEffect,useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/libs/api';
 import type { RankingFilterOption } from '@/types';
 
-export const useRankingProducts = (initialFilterOption: RankingFilterOption) => {
-  const [filterOption, setFilterOption] = useState<RankingFilterOption>(initialFilterOption);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [errorState, setErrorState] = useState('');
-
-  const { data, isLoading, isFetching, refetch } = useQuery(
+export const useRankingProducts = (filterOption: RankingFilterOption) => {
+  const { data, isLoading, isFetching, refetch, error } = useQuery(
     ['rankingProducts', filterOption],
     () => getRankingProducts(filterOption),
     {
       keepPreviousData: true,
-      onSuccess: (fetchedData) => {
-        if (fetchedData || fetchedData.products) {
-          setErrorState('');
-          if (typeof fetchedData === 'string') {
-            setErrorState(fetchedData);
-          } else {
-            setIsEmpty(fetchedData.products.length === 0);
-          }
-        } else {
-          setIsEmpty(true);
-        }
-      },
-      onError: (err) => {
-        setErrorState((err as Error).message);
-      },
     },
   );
 
-  useEffect(() => {
-    setIsEmpty(false);
-  }, [filterOption]);
+  const isEmpty = useMemo(() => {
+    if (!data || typeof data === 'string') return false;
+    return data.products.length === 0;
+  }, [data]);
 
-  const handleFilterChange = (newFilterOption: RankingFilterOption) => {
-    setFilterOption(newFilterOption);
-    refetch();
-  };
+  const errorState = useMemo(() => {
+    if (error) return (error as Error).message;
+    if (typeof data === 'string') return data;
+    return '';
+  }, [error, data]);
 
   return {
-    filterOption,
-    isEmpty,
-    errorState,
     data,
     isLoading,
     isFetching,
-    handleFilterChange,
+    isEmpty,
+    errorState,
+    refetch,
   };
 };

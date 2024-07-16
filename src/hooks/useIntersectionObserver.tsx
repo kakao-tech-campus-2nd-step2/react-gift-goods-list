@@ -1,50 +1,51 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-interface UseIntersectionObserverProps {
-  root?: Element | null;
-  rootMargin?: string;
+interface Props {
   threshold?: number | number[];
+  rootMargin?: string;
+  root?: Element | null;
 }
 
-interface UseIntersectionObserverReturn {
-  ref: React.RefObject<HTMLDivElement>;
-  isIntersecting: boolean;
-}
-
-const useIntersectionObserver = ({
-  root = null,
+export const useIntersectionObserver = ({
+  threshold = 0,
   rootMargin = '0px',
-  threshold = 0.1,
-}: UseIntersectionObserverProps): UseIntersectionObserverReturn => {
+  root = null,
+}: Props) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const ref = useRef<Element | null>(null);
+
+  const setRef = useCallback(
+    (node: Element | null) => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+
+      if (node) {
+        ref.current = node;
+        observerRef.current = new IntersectionObserver(
+          ([entry]) => {
+            setIsIntersecting(entry.isIntersecting);
+          },
+          {
+            root,
+            rootMargin,
+            threshold,
+          },
+        );
+        observerRef.current.observe(node);
+      }
+    },
+    [root, rootMargin, threshold],
+  );
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        setIsIntersecting(entry.isIntersecting);
-      },
-      {
-        root,
-        rootMargin,
-        threshold,
-      },
-    );
-
-    const currentRef = ref.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
     };
-  }, [root, rootMargin, threshold]);
+  }, []);
 
-  return { ref, isIntersecting };
+  return { ref, isIntersecting, setRef };
 };
-
-export default useIntersectionObserver;

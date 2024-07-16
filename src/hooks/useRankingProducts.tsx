@@ -12,7 +12,7 @@ interface FetchState<T> {
   errorMessage: string | null;
 }
 
-export const useRankingProducts = (filterOption: RankingFilterOption): [ProductData[] | null, { isLoading: boolean; isError: boolean; errorMessage: string | null }] => {
+export const useRankingProducts = (filterOption: RankingFilterOption) => {
   const [fetchState, setFetchState] = useState<FetchState<ProductData[]>>({
     isLoading: true,
     isError: false,
@@ -61,5 +61,5 @@ export const useRankingProducts = (filterOption: RankingFilterOption): [ProductD
     fetchRankingProducts();
   }, [filterOption]);
 
-  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage }];
+  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage }] as const;
 };

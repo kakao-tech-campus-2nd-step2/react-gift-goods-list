@@ -11,7 +11,7 @@ interface FetchState<T> {
   errorMessage: string | null;
 }
 
-export const useThemeProducts = (themeKey: string): [ProductData[] | null, { isLoading: boolean; isError: boolean, errorMessage: string | null }] => {
+export const useThemeProducts = (themeKey: string) => {
   const [fetchState, setFetchState] = useState<FetchState<ProductData[]>>({
     isLoading: true,
     isError: false,
@@ -59,5 +59,5 @@ export const useThemeProducts = (themeKey: string): [ProductData[] | null, { isL
     fetchProducts();
   }, [themeKey]);
 
-  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage}];
+  return [fetchState.data, { isLoading: fetchState.isLoading, isError: fetchState.isError, errorMessage: fetchState.errorMessage}] as const;
 };

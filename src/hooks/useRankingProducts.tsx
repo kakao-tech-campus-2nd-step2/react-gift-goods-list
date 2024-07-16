@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { getRankingProducts } from '@/libs/api';
@@ -15,7 +15,6 @@ export const useRankingProducts = (initialFilterOption: RankingFilterOption) => 
     {
       keepPreviousData: true,
       onSuccess: (fetchedData) => {
-        // Renamed to 'fetchedData'
         if (fetchedData || fetchedData.products) {
           setErrorState('');
           if (typeof fetchedData === 'string') {
@@ -32,6 +31,10 @@ export const useRankingProducts = (initialFilterOption: RankingFilterOption) => 
       },
     },
   );
+
+  useEffect(() => {
+    setIsEmpty(false);
+  }, [filterOption]);
 
   const handleFilterChange = (newFilterOption: RankingFilterOption) => {
     setFilterOption(newFilterOption);

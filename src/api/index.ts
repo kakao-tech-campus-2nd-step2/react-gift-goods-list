@@ -18,7 +18,7 @@ const apiClient = axios.create({
   },
 });
 
-const apiRequest = async <T>(url: string, options?: AxiosRequestConfig): Promise<T> => {
+export const apiRequest = async <T>(url: string, options?: AxiosRequestConfig): Promise<T> => {
   try {
     const response = await apiClient.request<T>({
       url,
@@ -59,19 +59,15 @@ const apiRequest = async <T>(url: string, options?: AxiosRequestConfig): Promise
 };
 
 export const ApiService = {
-  fetchThemes: async (): Promise<GetThemesResponse> => {
+  fetchThemes: async () => {
     return apiRequest<GetThemesResponse>(ENDPOINTS.THEMES);
   },
 
-  fetchRankingProducts: async (
-    params: GetRankingProductsParameters,
-  ): Promise<GetRankingProductsResponse> => {
+  fetchRankingProducts: async (params: GetRankingProductsParameters) => {
     return apiRequest<GetRankingProductsResponse>(ENDPOINTS.RANKING_PRODUCTS, { params });
   },
 
-  fetchThemeProducts: async (
-    params: GetThemeProductsParameters,
-  ): Promise<GetThemeProductsResponse> => {
+  fetchThemeProducts: async (params: GetThemeProductsParameters) => {
     const { themeKey, ...parameters } = params;
     return apiRequest<GetThemeProductsResponse>(ENDPOINTS.THEME_PRODUCTS(themeKey), {
       params: parameters,

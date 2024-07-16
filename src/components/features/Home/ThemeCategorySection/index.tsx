@@ -6,27 +6,18 @@ import { ApiService } from '@/api';
 import type { ThemeData } from '@/api/types';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
+import { useFetchThemes } from '@/hooks/useFetchThemes';
 import { getDynamicPath } from '@/routes/path';
 import { breakpoints } from '@/styles/variants';
 
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
+  const { data, error } = useFetchThemes();
 
-  useEffect(() => {
-    const getThemes = async () => {
-      try {
-        const response = await ApiService.fetchThemes();
-        setThemes(response.themes);
-      } catch (error) {
-        console.error('테마를 불러올 수 없습니다.', error);
-      }
-    };
-
-    getThemes();
-  }, []);
-
+  if (error) {
+    return <span>error.message</span>;
+  }
   return (
     <Wrapper>
       <Container>
@@ -36,7 +27,7 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes.map((theme) => (
+          {data?.themes.map((theme) => (
             <Link key={theme.id} to={getDynamicPath.theme(theme.key)}>
               <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
             </Link>

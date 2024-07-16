@@ -6,24 +6,28 @@ import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
 import { Container } from '@/components/common/layouts/Container';
 import { Grid } from '@/components/common/layouts/Grid';
 import { LoadingSpinner } from '@/components/common/Loading/Loading';
-import { useTheme } from '@/hooks/useTheme';
+import { useThemeData } from '@/hooks/useThemeData';
+import { useThemeGoods } from '@/hooks/useThemeGoods';
 import { breakpoints } from '@/styles/variants';
 
 export const ThemeGoodsSection = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
   const {
-    isThemeLoading,
-    isThemeError,
+    isLoading: isThemeLoading,
+    isError: isThemeError,
     error: themeError,
+  } = useThemeData(themeKey);
+  const {
     data,
     isFetchingNextPage,
-    isGoodsLoading,
+    isLoading: isGoodsLoading,
     lastGoodsElementRef,
-  } = useTheme(themeKey);
+  } = useThemeGoods(themeKey);
 
   if (isThemeLoading || isGoodsLoading) {
     return <LoadingSpinner />;
   }
+
   if (isThemeError) {
     return (
       <CenteredContent>
@@ -31,22 +35,9 @@ export const ThemeGoodsSection = () => {
       </CenteredContent>
     );
   }
-  if (!data || !data.pages) {
-    return (
-      <CenteredContent>
-        <ErrorMessage message="상품 데이터를 불러올 수 없습니다." />
-      </CenteredContent>
-    );
-  }
 
-  const goods = data.pages.flatMap((page) => page.products) ?? [];
-  if (typeof data?.pages[0] === 'string') {
-    return (
-      <CenteredContent>
-        <ErrorMessage message={data?.pages[0]} />
-      </CenteredContent>
-    );
-  }
+  const goods = data?.pages.flatMap((page) => page.products) ?? [];
+
   if (goods.length === 0) {
     return (
       <CenteredContent>

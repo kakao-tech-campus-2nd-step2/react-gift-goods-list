@@ -1,19 +1,21 @@
 import styled from '@emotion/styled';
-
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import type { ThemeData } from '@/types';
-import { ThemeMockList } from '@/types/mock';
+import { useCurrentTheme } from '@/api/hooks/useCurrentTheme';
 
 type Props = {
   themeKey: string;
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
+  const { data: currentTheme, isLoading, isError } = useCurrentTheme({ themeKey });
 
-  if (!currentTheme) {
-    return null;
+  if (isLoading) {
+    return <div>로딩...</div>;
+  }
+
+  if (isError || !currentTheme) {
+    return <div>데이터를 불러오는 중 문제가 발생하였습니다.</div>;
   }
 
   const { backgroundColor, label, title, description } = currentTheme;
@@ -82,7 +84,3 @@ const Description = styled.p`
     line-height: 32px;
   }
 `;
-
-export const getCurrentTheme = (themeKey: string, themeList: ThemeData[]) => {
-  return themeList.find((theme) => theme.key === themeKey);
-};

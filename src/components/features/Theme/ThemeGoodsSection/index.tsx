@@ -11,7 +11,7 @@ import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 import apiClient from '@/utils/api';
 
-const fetchProductsByTheme = async (themeKey: string) => {
+const getProductsByTheme = async (themeKey: string) => {
   const response = await apiClient.get<{ products: GoodsData[] }>(`/themes/${themeKey}/products`, {
     params: {
       maxResults: 20,
@@ -28,7 +28,7 @@ export const ThemeProductsSection = () => {
     isLoading,
     isError,
     error,
-  } = useQuery(['themeProducts', themeKey], () => fetchProductsByTheme(themeKey!), {
+  } = useQuery(['themeProducts', themeKey], () => getProductsByTheme(themeKey!), {
     enabled: !!themeKey,
   });
 

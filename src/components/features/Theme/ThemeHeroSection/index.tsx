@@ -10,7 +10,7 @@ import { breakpoints } from '@/styles/variants';
 import type { ThemeData } from '@/types';
 import apiClient from '@/utils/api';
 
-const fetchThemeInfo = async (themeKey: string) => {
+const getThemeInfo = async (themeKey: string) => {
   const response = await apiClient.get<{ themes: ThemeData[] }>('/themes');
   return response.data.themes.find((theme) => theme.key === themeKey);
 };
@@ -23,7 +23,7 @@ export const ThemeHeader = () => {
     isLoading,
     isError,
     error,
-  } = useQuery(['theme', themeKey], () => fetchThemeInfo(themeKey!), {
+  } = useQuery(['theme', themeKey], () => getThemeInfo(themeKey!), {
     enabled: !!themeKey,
   });
 

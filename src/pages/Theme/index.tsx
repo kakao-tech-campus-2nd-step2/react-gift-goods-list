@@ -9,7 +9,7 @@ import { RouterPath } from '@/routes/path';
 import type { ThemeData } from '@/types';
 import apiClient from '@/utils/api';
 
-const fetchThemeDetails = async (themeKey: string) => {
+const getThemeDetails = async (themeKey: string) => {
   const response = await apiClient.get<{ themes: ThemeData[] }>('/themes');
   return response.data.themes.find((theme) => theme.key === themeKey);
 };
@@ -22,7 +22,7 @@ export const ThemePage = () => {
     isLoading: isThemeLoading,
     isError: isThemeError,
     error,
-  } = useQuery(['theme', themeKey], () => fetchThemeDetails(themeKey), {
+  } = useQuery(['theme', themeKey], () => getThemeDetails(themeKey), {
     enabled: !!themeKey,
   });
 

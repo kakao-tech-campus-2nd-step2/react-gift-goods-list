@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
+import type { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { Container } from '@/components/common/layouts/Container';
+import { Loader } from '@/components/common/Spinner';
 import { breakpoints } from '@/styles/variants';
 import type { GoodsData, RankingFilterOption } from '@/types';
 import apiClient from '@/utils/api';
@@ -10,7 +12,7 @@ import apiClient from '@/utils/api';
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
 
-const fetchGoodsRanking = async (filterOption: RankingFilterOption) => {
+const getGoodsRanking = async (filterOption: RankingFilterOption) => {
   const { data } = await apiClient.get<{ products: GoodsData[] }>('/ranking/products', {
     params: filterOption,
   });
@@ -27,14 +29,18 @@ export const GoodsRankingSection = () => {
     data: goodsList,
     isLoading,
     isError,
-  } = useQuery(['goodsRanking', filterOption], () => fetchGoodsRanking(filterOption));
+    error,
+  } = useQuery(['goodsRanking', filterOption], () => getGoodsRanking(filterOption));
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isError) {
-    return <div>Error loading goods ranking</div>;
+    const axiosError = error as AxiosError;
+    const errorMessage =
+      axiosError.response?.status === 404 ? '상품을 찾을 수 없습니다.' : '오류가 발생했습니다.';
+    return <div>{errorMessage}</div>;
   }
 
   return (
@@ -42,7 +48,11 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goodsList || []} />
+        {goodsList && goodsList.length > 0 ? (
+          <GoodsRankingList goodsList={goodsList} />
+        ) : (
+          <div>상품이 없어요.</div>
+        )}
       </Container>
     </Wrapper>
   );

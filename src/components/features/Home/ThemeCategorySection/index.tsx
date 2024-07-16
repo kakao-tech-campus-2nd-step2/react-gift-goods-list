@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
@@ -12,40 +12,37 @@ import { type ThemeData } from '@/types';
 import { ThemeCategoryItem } from './ThemeCategoryItem';
 
 export const ThemeCategorySection = () => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>();
-
   const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
-  useEffect(() => {
-    axios
-      .get(url)
-      .then((res) => {
-        setThemes(res.data.themes);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error('Error fetching themes:', err);
-        setError(err); // 에러 메시지 설정
-      })
-      .finally(() => {
-        setLoading(false); // 로딩 상태 해제
-      });
-  }, []);
 
-  if (loading)
+  const fetchData = () => {
+    return axios.get(url).then((res) => {
+      return res.data.themes;
+    });
+  };
+
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ['fetchThemeCategory'],
+    queryFn: fetchData, //api 함수
+  });
+
+  if (isLoading) {
     return (
       <Container>
         <div>데이터를 로딩중입니다.</div>
       </Container>
     );
-  if (error)
-    return (
-      <Container>
-        <div>Error: {error}</div>
-      </Container>
-    );
-  if (themes.length === 0)
+  }
+
+  if (isError) {
+    if (error instanceof Error) {
+      return (
+        <Container>
+          <div>Error: {error.message}</div>
+        </Container>
+      );
+    }
+  }
+  if (data.length === 0)
     return (
       <Container>
         <div>데이터가 존재하지 않습니다.</div>
@@ -61,12 +58,11 @@ export const ThemeCategorySection = () => {
             md: 6,
           }}
         >
-          {themes &&
-            themes.map((theme) => (
-              <Link to={getDynamicPath.theme(theme.key)}>
-                <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
-              </Link>
-            ))}
+          {data.map((theme: ThemeData) => (
+            <Link to={getDynamicPath.theme(theme.key)}>
+              <ThemeCategoryItem image={theme.imageURL} label={theme.label} />
+            </Link>
+          ))}
         </Grid>
       </Container>
     </Wrapper>

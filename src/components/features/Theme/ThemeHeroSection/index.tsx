@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Container } from '@/components/common/layouts/Container';
@@ -13,43 +14,50 @@ type Props = {
 };
 
 export const ThemeHeroSection = ({ themeKey }: Props) => {
-  const [themes, setThemes] = useState<ThemeData[]>([]);
   const [currentTheme, setCurrentTheme] = useState<ThemeData>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>();
 
   const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/themes';
-  useEffect(() => {
-    axios
-      .get(url)
-      .then((res) => {
-        setThemes(res.data.themes);
-      })
-      .catch((err) => {
-        console.error('Error fetching themes:', err);
-        setError(err); // 에러 메시지 설정
-      });
-  }, []);
 
-  useEffect(() => {
-    setCurrentTheme(getCurrentTheme(themeKey, themes));
-  }, [themeKey, themes]);
+  const fetchData = () => {
+    return axios.get(url).then((res) => {
+      setCurrentTheme(getCurrentTheme(themeKey, res.data.themes));
+      return res.data.themes;
+    });
+  };
 
-  useEffect(() => {
-    setLoading(false);
-  }, [currentTheme]);
-  if (loading)
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ['fetchThemeHeader'],
+    queryFn: fetchData, //api 함수
+  });
+
+  // useEffect(() => {
+  //   setCurrentTheme(getCurrentTheme(themeKey, data));
+  // }, [data, themeKey]);
+
+  if (isLoading) {
     return (
       <Container>
         <div>데이터를 로딩중입니다.</div>
       </Container>
     );
-  if (error)
+  }
+
+  if (isError) {
+    if (error instanceof Error) {
+      return (
+        <Container>
+          <div>Error: {error.message}</div>
+        </Container>
+      );
+    }
+  }
+  if (data.length === 0)
     return (
       <Container>
-        <div>Error: {error}</div>
+        <div>데이터가 존재하지 않습니다.</div>
       </Container>
     );
+
   if (!currentTheme) return <Link to={RouterPath.notFound} />;
   else {
     const { backgroundColor, label, title, description } = currentTheme;

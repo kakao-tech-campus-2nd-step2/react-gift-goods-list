@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Container } from '@/components/common/layouts/Container';
 import { breakpoints } from '@/styles/variants';
-import { type GoodsData, type RankingFilterOption } from '@/types';
+import { type RankingFilterOption } from '@/types';
 
 import { GoodsRankingFilter } from './Filter';
 import { GoodsRankingList } from './List';
@@ -14,42 +15,42 @@ export const GoodsRankingSection = () => {
     targetType: 'ALL',
     rankType: 'MANY_WISH',
   });
-  const [goods, setGoods] = useState<GoodsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>();
 
   const url = 'https://react-gift-mock-api-two.vercel.app/api/v1/ranking/products';
-  useEffect(() => {
-    axios({
+
+  const fetchData = () => {
+    return axios({
       method: 'get',
       url: url,
       params: filterOption,
-    })
-      .then((res) => {
-        setGoods(res.data.products);
-      })
-      .catch((err) => {
-        console.error('Error fetching themes:', err);
-        setError(err); // 에러 메시지 설정
-      })
-      .finally(() => {
-        setLoading(false); // 로딩 상태 해제
-      });
-  }, [filterOption]);
+    }).then((res) => {
+      return res.data.products;
+    });
+  };
 
-  if (loading)
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ['fetchGoodsRanking', filterOption],
+    queryFn: fetchData, //api 함수
+  });
+
+  if (isLoading) {
     return (
       <Container>
         <div>데이터를 로딩중입니다.</div>
       </Container>
     );
-  if (error)
-    return (
-      <Container>
-        <div>Error: {error}</div>
-      </Container>
-    );
-  if (goods.length === 0)
+  }
+
+  if (isError) {
+    if (error instanceof Error) {
+      return (
+        <Container>
+          <div>Error: {error.message}</div>
+        </Container>
+      );
+    }
+  }
+  if (data.length === 0)
     return (
       <Container>
         <div>데이터가 존재하지 않습니다.</div>
@@ -61,7 +62,7 @@ export const GoodsRankingSection = () => {
       <Container>
         <Title>실시간 급상승 선물랭킹</Title>
         <GoodsRankingFilter filterOption={filterOption} onFilterOptionChange={setFilterOption} />
-        <GoodsRankingList goodsList={goods} />
+        <GoodsRankingList goodsList={data} />
       </Container>
     </Wrapper>
   );

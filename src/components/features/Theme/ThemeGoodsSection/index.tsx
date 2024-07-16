@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import type { AxiosError } from 'axios';
-import { useQuery } from 'react-query';
+import { useCallback, useRef } from 'react';
+import type { QueryFunctionContext } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { DefaultGoodsItems } from '@/components/common/GoodsItem/Default';
@@ -11,26 +13,52 @@ import { breakpoints } from '@/styles/variants';
 import type { GoodsData } from '@/types';
 import apiClient from '@/utils/api';
 
-const getProductsByTheme = async (themeKey: string) => {
+const getProductsByTheme = async ({
+  pageParam = 1,
+  queryKey,
+}: QueryFunctionContext<[string, string]>) => {
+  const themeKey = queryKey[1];
   const response = await apiClient.get<{ products: GoodsData[] }>(`/themes/${themeKey}/products`, {
     params: {
       maxResults: 20,
+      page: pageParam,
     },
   });
-  return response.data.products;
+  return {
+    products: response.data.products,
+    nextPage: pageParam + 1,
+    isLast: response.data.products.length === 0,
+  };
 };
 
 export const ThemeProductsSection = () => {
   const { themeKey } = useParams<{ themeKey: string }>();
+  const loadMoreTriggerRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    data: products,
-    isLoading,
-    isError,
-    error,
-  } = useQuery(['themeProducts', themeKey], () => getProductsByTheme(themeKey!), {
-    enabled: !!themeKey,
-  });
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ['themeProducts', themeKey ?? ''],
+    getProductsByTheme,
+    {
+      getNextPageParam: (lastPage) => (!lastPage.isLast ? lastPage.nextPage : undefined),
+      enabled: !!themeKey,
+    },
+  );
+
+  const observer = useRef<IntersectionObserver>();
+
+  const lastItemRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, fetchNextPage, hasNextPage],
+  );
 
   if (isLoading) {
     return <Loader />;
@@ -43,12 +71,12 @@ export const ThemeProductsSection = () => {
     return <div>{errorMessage}</div>;
   }
 
-  if (!products || products.length === 0) {
+  if (!data || data.pages[0].products.length === 0) {
     return <div>상품이 없어요.</div>;
   }
 
   return (
-    <ProductsWrapper>
+    <ProductsContainer>
       <Container>
         <Grid
           columns={{
@@ -57,22 +85,41 @@ export const ThemeProductsSection = () => {
           }}
           gap={16}
         >
-          {products.map(({ id, imageURL, name, price, brandInfo }) => (
-            <DefaultGoodsItems
-              key={id}
-              imageSrc={imageURL}
-              title={name}
-              amount={price.sellingPrice}
-              subtitle={brandInfo.name}
-            />
-          ))}
+          {data.pages.map((page, pageIndex) =>
+            page.products.map(({ id, imageURL, name, price, brandInfo }, index) => {
+              if (pageIndex === data.pages.length - 1 && index === page.products.length - 1) {
+                return (
+                  <div key={id} ref={lastItemRef}>
+                    <DefaultGoodsItems
+                      key={id}
+                      imageSrc={imageURL}
+                      title={name}
+                      amount={price.sellingPrice}
+                      subtitle={brandInfo.name}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <DefaultGoodsItems
+                    key={id}
+                    imageSrc={imageURL}
+                    title={name}
+                    amount={price.sellingPrice}
+                    subtitle={brandInfo.name}
+                  />
+                );
+              }
+            }),
+          )}
         </Grid>
+        <div ref={loadMoreTriggerRef} />
       </Container>
-    </ProductsWrapper>
+    </ProductsContainer>
   );
 };
 
-const ProductsWrapper = styled.section`
+const ProductsContainer = styled.section`
   width: 100%;
   padding: 28px 16px 180px;
 

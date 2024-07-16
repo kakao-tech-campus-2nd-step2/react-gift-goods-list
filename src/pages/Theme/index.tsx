@@ -9,7 +9,7 @@ import { RouterPath } from '@/routes/path';
 import type { ThemeData } from '@/types';
 import apiClient from '@/utils/api';
 
-const getThemeDetails = async (themeKey: string) => {
+const fetchThemeData = async (themeKey: string) => {
   const response = await apiClient.get<{ themes: ThemeData[] }>('/themes');
   return response.data.themes.find((theme) => theme.key === themeKey);
 };
@@ -18,26 +18,26 @@ export const ThemePage = () => {
   const { themeKey = '' } = useParams<{ themeKey: string }>();
 
   const {
-    data: currentTheme,
-    isLoading: isThemeLoading,
-    isError: isThemeError,
+    data: selectedTheme,
+    isLoading: themeLoading,
+    isError: themeError,
     error,
-  } = useQuery(['theme', themeKey], () => getThemeDetails(themeKey), {
+  } = useQuery(['theme', themeKey], () => fetchThemeData(themeKey), {
     enabled: !!themeKey,
   });
 
-  if (isThemeLoading) {
+  if (themeLoading) {
     return <Loader />;
   }
 
-  if (isThemeError) {
+  if (themeError) {
     const axiosError = error as AxiosError;
     const errorMessage =
       axiosError.response?.status === 404 ? '테마를 찾을 수 없습니다.' : '오류가 발생했습니다.';
     return <div>{errorMessage}</div>;
   }
 
-  if (!currentTheme) {
+  if (!selectedTheme) {
     return <Navigate to={RouterPath.home} />;
   }
 

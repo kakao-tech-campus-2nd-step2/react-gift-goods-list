@@ -13,7 +13,7 @@ export interface ImageProps extends ImgHTMLAttributes<HTMLDivElement> {
 }
 
 export default function Image({ ratio, radius, src, width, height, ...rest }: ImageProps) {
-  return <StyledImageContainer {...{ ratio, radius, src, width, height }} {...rest} />;
+  return <StyledImageContainer ratio={ratio} radius={radius} src={src} width={width} height={height} {...rest} />;
 }
 
 const ratioStyles = (ratio?: Ratio) => {

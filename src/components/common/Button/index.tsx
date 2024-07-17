@@ -18,7 +18,7 @@ interface StyledButtonProps {
 
 export default function Button({ theme = 'kakao', size = 'large', children, ...rest }: ButtonProps) {
   return (
-    <StyledButton {...{ theme, size }} {...rest}>
+    <StyledButton theme={theme} size={size} {...rest}>
       {children}
     </StyledButton>
   );

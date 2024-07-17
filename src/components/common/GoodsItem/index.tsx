@@ -18,7 +18,7 @@ export interface GoodsItemProps {
 export default function GoodsItem({ imageSrc, subtitle, title, amount, rankingIndex }: GoodsItemProps) {
   const imageSize = rankingIndex ? IMAGE_SIZE_RANKING : IMAGE_SIZE_GOODS_ITEM;
 
-  const renderRanking = () => rankingIndex && <Ranking {...{ rankingIndex }} />;
+  const renderRanking = () => rankingIndex && <Ranking rankingIndex={rankingIndex} />;
 
   return (
     <StyledGoodsItem rankingIndex={rankingIndex}>

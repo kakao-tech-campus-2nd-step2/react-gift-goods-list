@@ -1,22 +1,13 @@
-import { Navigate, useParams } from 'react-router-dom';
+import React from 'react';
+import Layout from '@components/features/Layout';
+import { SectionHeader } from '@components/common';
+import { GoodsItemList } from '@components/features/Theme';
 
-import { ThemeGoodsSection } from '@/components/features/Theme/ThemeGoodsSection';
-import { getCurrentTheme, ThemeHeroSection } from '@/components/features/Theme/ThemeHeroSection';
-import { RouterPath } from '@/routes/path';
-import { ThemeMockList } from '@/types/mock';
-
-export const ThemePage = () => {
-  const { themeKey = '' } = useParams<{ themeKey: string }>();
-  const currentTheme = getCurrentTheme(themeKey, ThemeMockList);
-
-  if (!currentTheme) {
-    return <Navigate to={RouterPath.notFound} />;
-  }
-
+export default function Theme() {
   return (
-    <>
-      <ThemeHeroSection themeKey={themeKey} />
-      <ThemeGoodsSection themeKey={themeKey} />
-    </>
+    <Layout>
+      <SectionHeader />
+      <GoodsItemList />
+    </Layout>
   );
-};
+}

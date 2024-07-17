@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Image } from '@components/common';
-import { LoginForm } from '@components/features/Login';
+import LoginForm from '@components/features/Login/LoginForm';
 import kakaoLogo from '@assets/images/kakao-logo.svg';
 
 const IMAGE_ALT = '카카오 로고';

@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@components/features/Layout';
-import { GoodsItemList, ThemeHeader } from '@components/features/Theme';
+import GoodsItemList from '@components/features/Theme/GoodsItemList';
+import ThemeHeader from '@components/features/Theme/ThemeHeader';
 
 export default function Theme() {
   return (

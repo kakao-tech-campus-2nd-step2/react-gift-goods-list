@@ -11,7 +11,7 @@ module.exports = {
       '@routes': path.resolve(__dirname, 'src/routes'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@context': path.resolve(__dirname, 'src/context'),
-      '@types': path.resolve(__dirname, 'src/types'),
+      '@internalTypes': path.resolve(__dirname, 'src/types'),
       '@apis': path.resolve(__dirname, 'src/apis'),
     },
   },

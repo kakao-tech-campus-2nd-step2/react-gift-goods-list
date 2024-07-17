@@ -4,7 +4,7 @@ import { Grid, Button, GoodsItem, StatusHandler } from '@components/common';
 import useToggle from '@hooks/useToggle';
 import { useFilter } from '@context/filter/useFilter';
 import { useQuery } from '@tanstack/react-query';
-import { RankingProductsResponse } from '@/types/responseTypes';
+import { RankingProductsResponse } from '@internalTypes/responseTypes';
 import { getRankingProducts } from '@apis/ranking';
 import { AxiosError } from 'axios';
 

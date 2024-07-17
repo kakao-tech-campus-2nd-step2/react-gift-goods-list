@@ -10,7 +10,7 @@
       "@routes/*": ["./src/routes/*"],
       "@utils/*": ["./src/utils/*"],
       "@context/*": ["./src/context/*"],
-      "@types/*": ["./src/types/*"],
+      "@internalTypes/*": ["./src/types/*"],
       "@apis/*": ["./src/apis/*"],
     }
   }

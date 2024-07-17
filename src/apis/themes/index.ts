@@ -1,5 +1,5 @@
-import { ThemeProductsRequest } from '@/types/requestTypes';
-import { ThemeProductsResponse, ThemesResponse } from '@/types/responseTypes';
+import { ThemeProductsRequest } from '@internalTypes/requestTypes';
+import { ThemeProductsResponse, ThemesResponse } from '@internalTypes/responseTypes';
 import axiosInstance from '../instance';
 import { THEME_PATHS } from './path';
 

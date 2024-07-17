@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ROUTE_PATH } from '@routes/path';
 import { getDynamicPath } from '@utils/getDynamicPath';
-import { ThemesResponse } from '@/types/responseTypes';
+import { ThemesResponse } from '@internalTypes/responseTypes';
 import { AxiosError } from 'axios';
 import ThemeItem from './ThemeItem';
 

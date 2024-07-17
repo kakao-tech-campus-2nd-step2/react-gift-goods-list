@@ -1,5 +1,5 @@
-import { RankingProductsRequest } from '@/types/requestTypes';
-import { RankingProductsResponse } from '@/types/responseTypes';
+import { RankingProductsRequest } from '@internalTypes/requestTypes';
+import { RankingProductsResponse } from '@internalTypes/responseTypes';
 import axiosInstance from '../instance';
 import { RANKING_PATHS } from './path';
 

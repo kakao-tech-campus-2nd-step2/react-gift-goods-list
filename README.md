@@ -37,3 +37,16 @@ Callback은 간단하지만 콜백 지옥이 발생할 수 있습니다. Promise
 
 ### 질문 3. React Query와 queryKey
 React Query는 서버 상태 관리, 캐싱, 비동기 데이터 페칭을 간소화합니다. queryKey는 각 쿼리를 고유하게 식별하여 캐싱, 업데이트, 무효화를 효율적으로 관리하는 데 사용됩니다.
+
+
+## 🛠️ 코드 리뷰 반영
+### 📄 요구 사항
+- [] .env파일 .gitignore에 추가
+- [] 불필요한 rest operator 제거
+- [] 불필요한 barrel file pattern 지양하도록 리팩토링
+- [] useInfiniteScroll scroll 조건과 fetchNextPage를 인자로 받아 hook을 개선
+- [] useGoodsItemListQuery hook
+  - [] queryKey 오타 수정
+  - [] queryKey, queryFn 분리 제거
+  - [] useInfiniteQuery 타입 지정 오류 개선
+- [] type 절대경로 네임스페이스 지정

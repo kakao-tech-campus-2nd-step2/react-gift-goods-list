@@ -1,12 +1,18 @@
-import { AuthProvider } from './provider/Auth';
-import { Routes } from './routes';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import AuthProvider from '@context/auth/AuthProvider';
+import FilterProvider from '@context/filter/FilterProvider';
+import GlobalStyles from '@assets/styles';
 
-const App = () => {
+function App() {
   return (
-    <AuthProvider>
-      <Routes />
-    </AuthProvider>
+    <FilterProvider>
+      <AuthProvider>
+        <GlobalStyles />
+        <Outlet />
+      </AuthProvider>
+    </FilterProvider>
   );
-};
+}
 
 export default App;

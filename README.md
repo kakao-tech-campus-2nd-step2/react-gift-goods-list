@@ -50,3 +50,4 @@ React Query는 서버 상태 관리, 캐싱, 비동기 데이터 페칭을 간�
   - [x] queryKey, queryFn 분리 제거
   - [x] useInfiniteQuery 타입 지정 오류 개선
 - [x] type 절대경로 네임스페이스 지정
+- [] spread operator을 통한 props 전달 제거

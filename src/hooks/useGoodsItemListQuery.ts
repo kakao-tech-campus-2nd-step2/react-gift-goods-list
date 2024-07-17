@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 interface useGoodsItemListQueryProps {
-  themeKey: string;
+  themeKey: string | undefined;
   rowsPerPage: number;
 }
 

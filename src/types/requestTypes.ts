@@ -4,7 +4,7 @@ export interface RankingProductsRequest {
 }
 
 export interface ThemeProductsRequest {
-  themeKey: string;
+  themeKey: string | undefined;
   pageToken?: string;
   maxResults?: number;
 }

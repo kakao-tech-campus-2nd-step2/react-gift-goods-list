@@ -4,16 +4,16 @@ import { GoodsItem, Grid, CenteredContainer, StatusHandler } from '@components/c
 import { useParams } from 'react-router-dom';
 import useGoodsItemListQuery from '@hooks/useGoodsItemListQuery';
 import useInfiniteScroll from '@hooks/useInfiniteScroll';
+import { ThemeProductsRequest } from '@internalTypes/requestTypes';
 
 const GRID_GAP = 14;
 const GRID_COLUMNS = 4;
 const MAX_RESULTS = 20;
 
 export default function GoodsItemList() {
-  const { themeKey } = useParams<{ themeKey: string }>();
-  const stringThemeKey = themeKey as string;
+  const { themeKey } = useParams<Pick<ThemeProductsRequest, 'themeKey'>>();
   const { products, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useGoodsItemListQuery(
-    { themeKey: stringThemeKey, rowsPerPage: MAX_RESULTS },
+    { themeKey, rowsPerPage: MAX_RESULTS },
   );
   const ref = useInfiniteScroll({ condition: hasNextPage && !isFetchingNextPage, fetchNextPage });
 

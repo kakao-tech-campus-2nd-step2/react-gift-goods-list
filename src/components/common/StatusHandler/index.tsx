@@ -9,7 +9,7 @@ interface StatusHanlderProps {
   isError: boolean;
   isEmpty: boolean;
   isFetchingNextPage?: boolean;
-  error?: AxiosError | null;
+  error?: AxiosError | null | unknown;
   children: ReactNode;
 }
 

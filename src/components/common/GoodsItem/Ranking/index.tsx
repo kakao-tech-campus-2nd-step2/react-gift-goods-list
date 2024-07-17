@@ -7,12 +7,8 @@ interface RankingProps {
   rankingIndex: number;
 }
 
-export default function Ranking({ rankingIndex, ...rest }: RankingProps) {
-  return (
-    <Badge rankingIndex={rankingIndex} {...rest}>
-      {rankingIndex}
-    </Badge>
-  );
+export default function Ranking({ rankingIndex }: RankingProps) {
+  return <Badge rankingIndex={rankingIndex}>{rankingIndex}</Badge>;
 }
 
 const Badge = styled.div<{ rankingIndex: number }>`

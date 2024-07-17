@@ -1,5 +1,5 @@
 import React from 'react';
-import FilterProvider from '@/context/filter/FilterProvider';
+import FilterProvider from '@context/filter/FilterProvider';
 import { Meta, StoryObj } from '@storybook/react';
 import Filter from '.';
 

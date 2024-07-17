@@ -15,9 +15,9 @@ export interface GridProps {
   children: ReactNode;
 }
 
-export default function Grid({ gap, columns, children, rest }: GridProps) {
+export default function Grid({ gap, columns, children }: GridProps) {
   return (
-    <StyledGrid gap={gap} columns={columns} {...rest}>
+    <StyledGrid gap={gap} columns={columns}>
       {children}
     </StyledGrid>
   );

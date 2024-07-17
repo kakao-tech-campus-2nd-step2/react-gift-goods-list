@@ -9,12 +9,8 @@ export interface CenteredContainerProps {
   children: ReactNode;
 }
 
-export default function CenteredContainer({ maxWidth, children, ...rest }: CenteredContainerProps) {
-  return (
-    <InnerContainer maxWidth={maxWidth} {...rest}>
-      {children}
-    </InnerContainer>
-  );
+export default function CenteredContainer({ maxWidth, children }: CenteredContainerProps) {
+  return <InnerContainer maxWidth={maxWidth}>{children}</InnerContainer>;
 }
 
 const InnerContainer = styled.div<{ maxWidth: MaxWidth }>`

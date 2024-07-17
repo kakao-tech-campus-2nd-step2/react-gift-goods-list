@@ -6,10 +6,10 @@ export interface ErrorMessageProps {
   message: string;
 }
 
-export default function ErrorMessage({ message, ...rest }: ErrorMessageProps) {
+export default function ErrorMessage({ message }: ErrorMessageProps) {
   return (
     <Container justifyContent="center" alignItems="center">
-      <Message {...rest}>{message}</Message>
+      <Message>{message}</Message>
     </Container>
   );
 }

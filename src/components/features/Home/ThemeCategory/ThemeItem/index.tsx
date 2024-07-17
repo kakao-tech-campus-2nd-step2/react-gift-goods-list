@@ -10,9 +10,9 @@ export interface ThemeItemProps {
   label: string;
 }
 
-export default function ThemeItem({ image, label, ...rest }: ThemeItemProps) {
+export default function ThemeItem({ image, label }: ThemeItemProps) {
   return (
-    <ThemeItemContainer {...rest}>
+    <ThemeItemContainer>
       <Container flexDirection="column" alignItems="center">
         <Image src={image} width={IMAGE_SIZE} height={IMAGE_SIZE} radius={IMAGE_RADIUS} alt={label} />
         <CategoryName>{label}</CategoryName>

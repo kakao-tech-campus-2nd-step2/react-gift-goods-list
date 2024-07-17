@@ -9,21 +9,13 @@ export interface ContainerProps {
   alignItems?: 'center' | 'flex-start' | 'flex-end' | 'baseline' | 'stretch';
 }
 
-export default function Container({
-  maxWidth,
-  children,
-  flexDirection,
-  justifyContent,
-  alignItems,
-  ...rest
-}: ContainerProps) {
+export default function Container({ maxWidth, children, flexDirection, justifyContent, alignItems }: ContainerProps) {
   return (
     <StyledContainer
       maxWidth={maxWidth}
       flexDirection={flexDirection}
       justifyContent={justifyContent}
       alignItems={alignItems}
-      {...rest}
     >
       {children}
     </StyledContainer>

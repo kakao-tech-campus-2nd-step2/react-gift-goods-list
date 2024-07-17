@@ -8,9 +8,9 @@ export interface TargetProps {
   selectTarget: (target: TargetType) => void;
 }
 
-export default function Target({ selectedTarget, selectTarget, ...rest }: TargetProps) {
+export default function Target({ selectedTarget, selectTarget }: TargetProps) {
   return (
-    <Container justifyContent="space-around" {...rest}>
+    <Container justifyContent="space-around">
       {FILTER_TARGETS.map(({ id, icon, name, targetType }) => (
         <TargetItem
           key={id}

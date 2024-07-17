@@ -9,9 +9,9 @@ export interface WishProps {
   selectWish: (wish: WishType) => void;
 }
 
-export default function Wish({ selectedWish, selectWish, ...rest }: WishProps) {
+export default function Wish({ selectedWish, selectWish }: WishProps) {
   return (
-    <WishContainer {...rest}>
+    <WishContainer>
       <Container justifyContent="center" alignItems="center">
         {FILTER_WISHS.map(({ id, wish, rankType }) => (
           <WishItem key={id} wish={wish} selected={selectedWish === rankType} onSelect={() => selectWish(rankType)} />

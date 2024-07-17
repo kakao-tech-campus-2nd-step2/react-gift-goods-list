@@ -46,7 +46,7 @@ React Query는 서버 상태 관리, 캐싱, 비동기 데이터 페칭을 간�
 - [x] 불필요한 barrel file pattern 지양하도록 리팩토링
 - [x] useInfiniteScroll scroll 조건과 fetchNextPage를 인자로 받아 hook을 개선
 - [] useGoodsItemListQuery hook
-  - [] queryKey 오타 수정
+  - [x] queryKey 오타 수정
   - [] queryKey, queryFn 분리 제거
   - [] useInfiniteQuery 타입 지정 오류 개선
 - [] type 절대경로 네임스페이스 지정

@@ -11,7 +11,7 @@ interface useGoodsItemListQueryProps {
 }
 
 export default function useGoodsItemListQuery({ themeKey, rowsPerPage }: useGoodsItemListQueryProps) {
-  const queryKey = ['theneProduct', themeKey];
+  const queryKey = ['themeProduct', themeKey];
   const queryFn = ({ pageParam = '0' }: QueryFunctionContext) =>
     getThemesProducts({ themeKey, pageToken: pageParam, maxResults: rowsPerPage } as ThemeProductsRequest);
 

@@ -15,7 +15,7 @@ export default function GoodsItemList() {
   const { products, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useGoodsItemListQuery(
     { themeKey: stringThemeKey, rowsPerPage: MAX_RESULTS },
   );
-  const ref = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
+  const ref = useInfiniteScroll({ condition: hasNextPage && !isFetchingNextPage, fetchNextPage });
 
   const isEmpty = products.length === 0;
 

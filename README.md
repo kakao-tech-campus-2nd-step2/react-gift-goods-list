@@ -44,7 +44,7 @@ React Query는 서버 상태 관리, 캐싱, 비동기 데이터 페칭을 간�
 - [x] .env파일 .gitignore에 추가
 - [x] 불필요한 rest operator 제거
 - [x] 불필요한 barrel file pattern 지양하도록 리팩토링
-- [] useInfiniteScroll scroll 조건과 fetchNextPage를 인자로 받아 hook을 개선
+- [x] useInfiniteScroll scroll 조건과 fetchNextPage를 인자로 받아 hook을 개선
 - [] useGoodsItemListQuery hook
   - [] queryKey 오타 수정
   - [] queryKey, queryFn 분리 제거

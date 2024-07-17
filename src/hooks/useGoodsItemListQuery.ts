@@ -1,8 +1,5 @@
 import { getThemesProducts } from '@apis/themes';
-import { ThemeProductsRequest } from '@/types/requestTypes';
-import { ThemeProductsResponse } from '@/types/responseTypes';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { useMemo } from 'react';
 
 interface useGoodsItemListQueryProps {
@@ -11,13 +8,9 @@ interface useGoodsItemListQueryProps {
 }
 
 export default function useGoodsItemListQuery({ themeKey, rowsPerPage }: useGoodsItemListQueryProps) {
-  const { data, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery<
-    ThemeProductsResponse,
-    AxiosError
-  >({
+  const { data, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['themeProduct', themeKey],
-    queryFn: ({ pageParam = '0' }) =>
-      getThemesProducts({ themeKey, pageToken: pageParam, maxResults: rowsPerPage } as ThemeProductsRequest),
+    queryFn: ({ pageParam = '0' }) => getThemesProducts({ themeKey, pageToken: pageParam, maxResults: rowsPerPage }),
     initialPageParam: '0',
     getNextPageParam: (lastPage) => lastPage.nextPageToken,
   });

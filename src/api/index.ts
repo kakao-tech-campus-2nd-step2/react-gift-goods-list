@@ -1,10 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import type { AxiosRequestConfig } from 'axios';
-import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
-
 import type {
-  AjaxResult,
+  InfiniteData,
+  QueryFunctionContext,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
+  UseQueryOptions,
+} from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, type UseQueryResult } from '@tanstack/react-query';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+
+import { vercelApi } from '@/api/axiosInstance';
+import type {
   GetRankingProductsRequestBody,
   GetRankingProductsResponseBody,
   GetThemesProductsRequestBody,
@@ -12,69 +18,77 @@ import type {
   GetThemesResponseBody,
 } from '@/api/type';
 
-axios.defaults.baseURL = 'https://react-gift-mock-api-jasper200207.vercel.app';
-
-export type UseAxiosReturn<T> = {
-  data: AjaxResult<T>;
-  loading: boolean;
-  error: boolean;
-  refetch: () => void;
-};
-
-function useAxios<T>(options: AxiosRequestConfig): UseAxiosReturn<T> {
-  const [data, setData] = useState<AjaxResult<T>>({ success: false, data: null });
-  const [state, setState] = useState<'Wait' | 'Loading' | 'Success' | 'Error'>('Wait');
-
-  const fetchData = useCallback(async () => {
-    setState('Loading');
-    const result = await axios(options)
-      .then((response) => {
-        setState('Success');
-        return { success: true, data: response.data } as AjaxResult<T>;
-      })
-      .catch((error) => {
-        setState('Error');
-        return { success: false, data: error } as AjaxResult<T>;
-      });
-    setData(result);
-  }, [options]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return {
-    data,
-    loading: state === 'Loading' || state === 'Wait',
-    error: state === 'Error',
-    refetch: fetchData,
-  };
-}
-
-export function useGetRankingProducts(
-  params: GetRankingProductsRequestBody,
-): UseAxiosReturn<GetRankingProductsResponseBody> {
-  return useAxios<GetRankingProductsResponseBody>({
-    method: 'GET',
-    url: '/api/v1/ranking/products',
-    params,
+function useAxiosQuery<T>(
+  axiosOptions: AxiosRequestConfig,
+  keys: string[],
+  queryOptions?: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>,
+  axiosInstance: AxiosInstance = vercelApi,
+): UseQueryResult<T> {
+  return useQuery({
+    queryKey: keys,
+    queryFn: async (): Promise<T> => axiosInstance(axiosOptions).then((res) => res.data),
+    ...(queryOptions || {}),
   });
 }
 
-export function useGetThemes(): UseAxiosReturn<GetThemesResponseBody> {
-  return useAxios<GetThemesResponseBody>({
-    method: 'GET',
-    url: '/api/v1/themes',
+type UseAxiosQueryWithPageResult<T> = UseInfiniteQueryResult<InfiniteData<T>>;
+function useAxiosQueryWithPage<T extends { nextPageToken: string }>(
+  axiosOptions: AxiosRequestConfig,
+  keys: string[],
+  queryOptions?: Omit<
+    UseInfiniteQueryOptions<InfiniteData<T>>,
+    'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'
+  >,
+  axiosInstance: AxiosInstance = vercelApi,
+): UseAxiosQueryWithPageResult<T> {
+  return useInfiniteQuery({
+    queryKey: keys,
+    queryFn: async ({ pageParam }: QueryFunctionContext) =>
+      axiosInstance({
+        ...axiosOptions,
+        params: { ...axiosOptions.params, pageToken: pageParam },
+      }).then((res) => res.data),
+    initialPageParam: '0',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getNextPageParam: (lastPage: any) => lastPage.nextPageToken,
+    ...(queryOptions || {}),
   });
+}
+
+export function useGetRankingProducts({
+  targetType,
+  rankType,
+}: GetRankingProductsRequestBody): UseQueryResult<GetRankingProductsResponseBody> {
+  return useAxiosQuery<GetRankingProductsResponseBody>(
+    {
+      method: 'GET',
+      url: '/api/v1/ranking/products',
+      params: { targetType, rankType },
+    },
+    ['ranking', targetType, rankType],
+  );
+}
+
+export function useGetThemes(): UseQueryResult<GetThemesResponseBody> {
+  return useAxiosQuery<GetThemesResponseBody>(
+    {
+      method: 'GET',
+      url: '/api/v1/themes',
+    },
+    ['themes'],
+  );
 }
 
 export function useGetThemesProducts({
   themeKey,
   ...params
-}: GetThemesProductsRequestBody): UseAxiosReturn<GetThemesProductsResponseBody> {
-  return useAxios<GetThemesProductsResponseBody>({
-    method: 'GET',
-    url: `/api/v1/themes/${themeKey}/products`,
-    params,
-  });
+}: GetThemesProductsRequestBody): UseAxiosQueryWithPageResult<GetThemesProductsResponseBody> {
+  return useAxiosQueryWithPage<GetThemesProductsResponseBody>(
+    {
+      method: 'GET',
+      url: `/api/v1/themes/${themeKey}/products`,
+      params,
+    },
+    ['themes', themeKey],
+  );
 }

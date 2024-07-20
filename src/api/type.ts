@@ -73,6 +73,11 @@ export type MyAccountInfoData = {
   point: number;
 };
 
+export type PageInfo = {
+  totalResults: number;
+  resultsPerPage: number;
+};
+
 // RequestBody Types
 export type ProductOrderRequestBody = {
   productId: number;
@@ -88,8 +93,8 @@ export type ProductOrderRequestBody = {
 };
 
 export type GetRankingProductsRequestBody = {
-  targetType?: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
-  rankType?: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
+  targetType: 'ALL' | 'FEMALE' | 'MALE' | 'TEEN';
+  rankType: 'MANY_WISH' | 'MANY_RECEIVE' | 'MANY_WISH_RECEIVE';
 };
 
 export type GetThemesProductsRequestBody = {
@@ -110,8 +115,5 @@ export type GetThemesResponseBody = {
 export type GetThemesProductsResponseBody = {
   products: ProductData[];
   nextPageToken: string;
-  pageInfo: {
-    totalResults: number;
-    resultsPerPage: number;
-  };
+  pageInfo: PageInfo;
 };
